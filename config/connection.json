@@ -1,4 +1,4 @@
 {
 	"URL":"ws://relay.systemsop.com/ws",
-	"port":80
+	"port":8001
 }
