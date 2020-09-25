@@ -5,90 +5,156 @@ import signals_logger
 import signals_actions
 
 
-PARAMS = op('parameter1') 
+PARAMS = op('parameter1') # Parameters from SudoSignals TOX
 
-REPORTINGTIMER = op('timer_reporting')
+REPORTINGTIMER = op('timer_reporting') # Timer that triggers regular reporting.
 
 
-class Signals:
+class Signals:    
+	"""TouchDesigner Extension that communicates with the SudoSignals Cloud Resources.
+
+    This extension handles the connection, reporting, and setting controls with WS 
+	messaging back to the SudoSignals Cloud Resources. 
+
+    Attributes:
+        _op: A TouchDesigner Operator that runs this extension.
+        _client: A WS Client that formats and sends messages.
+		_productid: A string is used to identify this installation.
+    """
 	def __init__(self, op):
+		"""Inits Signals and attempts to start a connection and reporting."""
 		self._op = op
 		self._client = None
 		self._productid =  PARAMS['Productid', 'value'].val 
 		
 		self.startConnection()
 		self.startReporting()
+		# TODO (IS): We should probably send the current state of the controls on init.
 
 	@property
 	def Client(self):
+		"""Exposes the client as a property"""
 		return self._client
 
 	@property
 	def ProductId(self):
+		"""Exposes the productid as a property"""
 		return self._productid
 
 	@ProductId.setter
 	def ProductId(self, id):
+		"""When the productid is set we should restart the connection"""
 		self._productid = id
 		self.startConnection()
 
 	def startConnection(self):
+		"""Verifies the ProductId property is structured correctly and starts a connection."""
 		if self.verify():
+			# ProductId is formatted correctly
 			if self._client:
+				# A client already exists... might be connected...
 				self._client.Disconnect()
-			
+
+			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
+			# Start Connection. Populate the onConnect and onReceive Callbacks.
 			self._client.Connect( onConnect=self.connectedHandler, onReceive=self.dataHandler )
 
 	def endConnection(self):
+		"""End Signals connection and reporting."""
 		self.stopReporting()
 		if self._client:
+			# A client Exists... disconnect it.
 			self._client.Disconnect()
 			self._client = None
 
 	def connectedHandler(self):
+		"""This is used as a callback once the client Connects."""
+
+		# Send the controls to the sudosignals service.
 		self.SendControlsUpdate()
 		return
 
 	def dataHandler(self, doc):
+		"""A Callback for handling receiving data from the WS connection."""
+		
+		# Get the Action Type
 		action = doc['action']
+		
+		# Look up the Action in the signals_actions API
 		if action in signals_actions.SWITCH:
+			# This action is defined in the API.
+			# Run the function and pass in the data received.  
 			signals_actions.SWITCH[action](doc['data'])
 		else:
+			# This action is not defined in the API
+			# Print it.
 			print(doc)
 
 	def verify(self):
+		"""Verifies the productid is valid."""
 		if self._productid == "":
+			# ProductID is empty.
 			signals_logger.Log('Product ID Missing')
 			return False
 
 		if self._verifyProductID(self._productid):
+			# productid is Valid.
 			return True
 		else: 
+			# productid is not Valid.
 			signals_logger.Log('Product ID invalid')
 			return False
 
 	def _verifyProductID(self, productID):
+		"""Validates the ProductID"""
+		# this is a simple validation process
+		# TODO (IS): There is probably more we can do here to validate.
 		return len(self._productid) > 10
 
 	def startReporting(self):
+		"""Starts the reporting process."""
 		REPORTINGTIMER.par.start.pulse()
 		return
 
 	def stopReporting(self):
+		"""Stops the reporting process."""
 		REPORTINGTIMER.par.init.pulse()
 		return
 
 	def SendControlsUpdate(self, userControls={}):
-		requiredControls = {"_system": "internalControls"}
-		combinedControls = {**requiredControls, **userControls}
+		"""Compiles the control update packet and sends it.
+		
+		:param userControls: a dict where keys are control labels and values are op paths
+		"""
+
+		# dict of required comps
+		requiredControls = {"_system": "internalControls"} 
+		# combine required and user submitted.
+		combinedControls = {**requiredControls, **userControls} 
+
+		# generate the structured message 
 		controlForm = signals_controls.GenerateControlsForm(combinedControls)
+
+		# create its highlevel key.
 		controlData = {"controls": controlForm}
+		# Send it. 
 		self._client.SendUpdate(controlData)
 
 
 	def Report(self, userReports={}):
+		"""Compiles all of the reports and sends it.
+		
+		:param userReports: a dict where keys are report labels and values are DATs to be reported
+		"""
+
+		# dict of required reports
 		requiredReports = {"info": "null_DAT_report", "report": "null_CHOP_report"}
+		# combine required with user reports
 		combinedReports = {**requiredReports, **userReports}
+		
+		# Generate the structured reports.
 		reportData = signals_reporter.GenerateReportData(combinedReports)
+		
+		# Send it.
 		self._client.SendUpdate(reportData)

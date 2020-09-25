@@ -1,14 +1,18 @@
+""" A TouchDesigner Module that structures Custom Parameters in COMP to be sent to SudoSignals."""
+
 import json
 import time 
 
-def packTuplet( tuplet):
+def packTuplet(tuplet):
+	"""Packs a tuplet with correct label and order"""
 	packedTuplet = {}
 	packedTuplet['label'] = tuplet[0].label
 	packedTuplet['pars'] = [packPar(thisPar) for thisPar in tuplet] 
 	packedTuplet['order'] = tuplet[0].order
 	return packedTuplet
 
-def packPar( par):
+def packPar(par):
+	"""Packs a par with information to reconstruct in SudoSignals"""
 	packedPar = {}
 	packedPar['name'] = par.name
 	packedPar['op'] = par.owner.path
@@ -21,6 +25,7 @@ def packPar( par):
 	return packedPar 
 
 def makeForm(op):
+	"""Pack all of the pages into separate keys."""
 	form = []
 	pages = op.customPages
 	for page in pages:
@@ -32,6 +37,7 @@ def makeForm(op):
 	return form
 
 def GenerateControlsForm(template):
+	"""Create a key per operator and generate a form for all pages and params"""
 	ControlsForm = {}
 	for key in template:
 		theOp = op(template[key])
