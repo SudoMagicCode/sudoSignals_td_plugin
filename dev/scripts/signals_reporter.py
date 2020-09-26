@@ -1,6 +1,8 @@
+"""Generates Reports to send to the SudoSignals cloud"""
 import signals_logger
 
 def datToJson(dat):
+	"""Converts a 2 column TableDAT to a DICT"""
 	tempDict = {}
 	for row in dat.rows():
 		key = row[0].val
@@ -10,9 +12,10 @@ def datToJson(dat):
 
 
 def GenerateReportData(template):
+	"""Goes through each entry in the template and creates a dict."""
 	reportdata = {}
 	for key in template:
-		theOp = op(template[key])
+		theOp = op(template[key]) #DAT to be reported.
 		if theOp.isDAT:
 			if theOp.numCols > 1:
 				reportdata[key] = datToJson( op(template[key]) )

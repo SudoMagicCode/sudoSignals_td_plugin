@@ -4,6 +4,7 @@ WEBSOCKET = op('websocket1')
 RETRYTIMER = op('timer_connection')
 
 class Client:
+	"""A Websocket client that connects back to SudoSignal Cloud"""
 	def __init__(self, installationid):
 		self.installationID = installationid
 		self.connected = False
