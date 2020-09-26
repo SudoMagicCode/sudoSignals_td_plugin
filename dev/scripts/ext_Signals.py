@@ -25,8 +25,9 @@ class Signals:
 		"""Inits Signals and attempts to start a connection and reporting."""
 		self._op = op
 		self._client = None
-		self._productid =  PARAMS['Productid', 'value'].val 
 		
+		self._productid = op.par.Productid.eval()
+
 		self.startConnection()
 		self.startReporting()
 		# TODO (IS): We should probably send the current state of the controls on init.
