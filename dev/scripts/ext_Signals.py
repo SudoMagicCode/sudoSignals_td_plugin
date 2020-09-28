@@ -25,8 +25,9 @@ class Signals:
 		"""Inits Signals and attempts to start a connection and reporting."""
 		self._op = op
 		self._client = None
-		self._productid =  PARAMS['Productid', 'value'].val 
 		
+		self._productid = op.par.Productid.eval()
+
 		self.startConnection()
 		self.startReporting()
 		# TODO (IS): We should probably send the current state of the controls on init.
@@ -49,12 +50,11 @@ class Signals:
 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
-		if self._client:
-			# A client already exists... might be connected...
-			self.endConnection()
-			
 		if self.verify():
 			# ProductId is formatted correctly
+			if self._client:
+				# A client already exists... might be connected...
+				self._client.Disconnect()
 
 			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
@@ -73,7 +73,6 @@ class Signals:
 		"""This is used as a callback once the client Connects."""
 
 		# Send the controls to the sudosignals service.
-		signals_logger.Log("Connected!")
 		self.SendControlsUpdate()
 		return
 
