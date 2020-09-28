@@ -49,11 +49,12 @@ class Signals:
 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
+		if self._client:
+			# A client already exists... might be connected...
+			self.endConnection()
+			
 		if self.verify():
 			# ProductId is formatted correctly
-			if self._client:
-				# A client already exists... might be connected...
-				self._client.Disconnect()
 
 			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
@@ -72,6 +73,7 @@ class Signals:
 		"""This is used as a callback once the client Connects."""
 
 		# Send the controls to the sudosignals service.
+		signals_logger.Log("Connected!")
 		self.SendControlsUpdate()
 		return
 
