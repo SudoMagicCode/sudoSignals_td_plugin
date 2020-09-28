@@ -50,12 +50,11 @@ class Signals:
 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
+		# ProductId is formatted correctly
+		if self._client:
+			# A client already exists... might be connected...
+			self._client.Disconnect()
 		if self.verify():
-			# ProductId is formatted correctly
-			if self._client:
-				# A client already exists... might be connected...
-				self._client.Disconnect()
-
 			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
 			# Start Connection. Populate the onConnect and onReceive Callbacks.
