@@ -9,6 +9,7 @@ PARAMS = op('parameter1') # Parameters from SudoSignals TOX
 
 REPORTINGTIMER = op('timer_reporting') # Timer that triggers regular reporting.
 
+LINK = "https://api.sudosignals.com/help?version="
 
 class Signals:    
 	"""TouchDesigner Extension that communicates with the SudoSignals Cloud Resources.
