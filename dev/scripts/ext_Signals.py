@@ -5,10 +5,15 @@ import signals_logger
 import signals_actions
 
 
-PARAMS = op('parameter1') # Parameters from SudoSignals TOX
+PARAMS 			= op('parameter1') # Parameters from SudoSignals TOX
 
-REPORTINGTIMER = op('timer_reporting') # Timer that triggers regular reporting.
+REPORTINGTIMER 	= op('timer_reporting') # Timer that triggers regular reporting.
 
+LINKS 			= {
+	'Help' 					: "https://api.sudosignals.com/help?version=",
+	'Sudosignalsdashboard' 	: "https://dashboard.sudosignals.com/",
+	'Bugreport'				: "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
+}
 
 class Signals:    
 	"""TouchDesigner Extension that communicates with the SudoSignals Cloud Resources.
@@ -26,7 +31,11 @@ class Signals:
 		self._op = op
 		self._client = None
 		
-		self._productid = op.par.Productid.eval()
+		self._productidPar = op.par.Productid
+		self._productid = None
+		self.UpdateProductId()
+
+		self.startTimers()
 
 		self.startConnection()
 		self.startReporting()
@@ -45,17 +54,33 @@ class Signals:
 	@ProductId.setter
 	def ProductId(self, id):
 		"""When the productid is set we should restart the connection"""
-		self._productid = id
+		if self.hasProductId:
+			self._productid = id
+			self.startConnection()
+		else:
+			pass
+
+	@property
+	def hasProductId(self):
+		return True if self._productid is not '' else False
+
+	def UpdateProductId(self):
+		self._productid = self._productidPar.eval()
 		self.startConnection()
+		pass
+
+	def startTimers(self):
+		timers = self._op.findChildren(type=timerCHOP, depth=1)
+		for eachTimer in timers:
+			eachTimer.par.active = True
 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
+		# ProductId is formatted correctly
+		if self._client:
+			# A client already exists... might be connected...
+			self._client.Disconnect()
 		if self.verify():
-			# ProductId is formatted correctly
-			if self._client:
-				# A client already exists... might be connected...
-				self._client.Disconnect()
-
 			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
 			# Start Connection. Populate the onConnect and onReceive Callbacks.
@@ -94,7 +119,7 @@ class Signals:
 
 	def verify(self):
 		"""Verifies the productid is valid."""
-		if self._productid == "":
+		if self._productid == "" or self._productidPar == None:
 			# ProductID is empty.
 			signals_logger.Log('Product ID Missing')
 			return False
@@ -157,5 +182,20 @@ class Signals:
 		# Generate the structured reports.
 		reportData = signals_reporter.GenerateReportData(combinedReports)
 		
-		# Send it.
-		self._client.SendUpdate(reportData)
+		# check for a product ID
+		if self.hasProductId:
+			# Send it.
+			self._client.SendUpdate(reportData)
+		
+		else:
+			pass
+	
+	def PulsePar(self, parName):
+		""" Dictionary Lookup for links
+		"""
+		link 	= LINKS.get(parName)
+		
+		if parName is not 'Help':
+			ui.viewFile(link)
+		else:
+			ui.viewFile(f'{link}{self._op.par.Version.eval()}')
