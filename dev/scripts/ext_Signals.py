@@ -29,13 +29,12 @@ class Signals:
 	def __init__(self, op):
 		"""Inits Signals and attempts to start a connection and reporting."""
 		self._op = op
+		self._parent = op.parent()
 		self._client = None
 		
-		self._productidPar = op.par.Productid
+		self._productidPar = op.parent().par.Productid
 		self._productid = None
 		self.UpdateProductId()
-
-		self.startTimers()
 
 		self.startConnection()
 		self.startReporting()
@@ -54,11 +53,8 @@ class Signals:
 	@ProductId.setter
 	def ProductId(self, id):
 		"""When the productid is set we should restart the connection"""
-		if self.hasProductId:
-			self._productid = id
-			self.startConnection()
-		else:
-			pass
+		self._productid = id
+		self.startConnection()
 
 	@property
 	def hasProductId(self):
@@ -68,11 +64,6 @@ class Signals:
 		self._productid = self._productidPar.eval()
 		self.startConnection()
 		pass
-
-	def startTimers(self):
-		timers = self._op.findChildren(type=timerCHOP, depth=1)
-		for eachTimer in timers:
-			eachTimer.par.active = True
 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
@@ -172,7 +163,7 @@ class Signals:
 		"""Compiles all of the reports and sends it.
 		
 		:param userReports: a dict where keys are report labels and values are DATs to be reported
-		"""
+		"""		
 
 		# dict of required reports
 		requiredReports = {"info": "null_DAT_report", "report": "null_CHOP_report"}
@@ -194,8 +185,8 @@ class Signals:
 		""" Dictionary Lookup for links
 		"""
 		link 	= LINKS.get(parName)
-		
-		if parName is not 'Help':
-			ui.viewFile(link)
-		else:
+
+		if parName == 'Help':
 			ui.viewFile(f'{link}{self._op.par.Version.eval()}')
+		else:
+			ui.viewFile(link)
