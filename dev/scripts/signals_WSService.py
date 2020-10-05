@@ -35,7 +35,6 @@ class Client:
 
 	def _onConnect(self):
 		if self.installationID:
-
 			self.connected = True
 			
 			#send Own Packet

@@ -26,15 +26,18 @@ class Signals:
         _client: A WS Client that formats and sends messages.
 		_productid: A string is used to identify this installation.
     """
-	def __init__(self, op):
+	def __init__(self, myOp):
 		"""Inits Signals and attempts to start a connection and reporting."""
-		self._op = op
-		self._parent = op.parent()
+		self._op = myOp
 		self._client = None
 		
-		self._productidPar = op.parent().par.Productid
-		self._productid = None
+		self._productidPar	 	= op('../').par.Productid
+		self._productid 		= None
 		self.UpdateProductId()
+
+		self._controlCompPar 	= op('../').par.Controlcomp
+		self._controlComp		= None
+		self._setControlComp()
 
 		self.startConnection()
 		self.startReporting()
@@ -65,9 +68,21 @@ class Signals:
 		self.startConnection()
 		pass
 
+	@property
+	def ControlComp(self):
+		return self._controlComp
+	
+	@ControlComp.setter
+	def ControlComp(self, targetComp):
+		self._controlComp = targetComp
+
+	def _setControlComp(self):
+		self._controlComp = self._controlCompPar.eval()
+
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
 		# ProductId is formatted correctly
+
 		if self._client:
 			# A client already exists... might be connected...
 			self._client.Disconnect()
@@ -155,9 +170,11 @@ class Signals:
 
 		# create its highlevel key.
 		controlData = {"controls": controlForm}
-		# Send it. 
-		self._client.SendUpdate(controlData)
-
+		
+		# only send if we have a valid product ID
+		if self.hasProductId:
+			# Send it. 
+			self._client.SendUpdate(controlData)
 
 	def Report(self, userReports={}):
 		"""Compiles all of the reports and sends it.

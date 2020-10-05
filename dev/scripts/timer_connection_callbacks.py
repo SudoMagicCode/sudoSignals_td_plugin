@@ -42,8 +42,8 @@ def onCycle(timerOp, segment, cycle):
 
 def onDone(timerOp, segment, interrupt):
 
-	if parent().ext.Signals.hasProductId:
-		parent().ext.Signals.Client.Connect()
+	if op('base_private_ext').ext.Signals.hasProductId:
+		op('base_private_ext').ext.Signals.Client.Connect()
 
 	else:
 		pass

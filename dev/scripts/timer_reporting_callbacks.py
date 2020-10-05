@@ -41,7 +41,7 @@ def onCycle(timerOp, segment, cycle):
 	return
 
 def onDone(timerOp, segment, interrupt):
-	parent().ext.Signals.Report()
+	op('base_private_ext').ext.Signals.Report()
 	timerOp.par.start.pulse()
 	return
 	

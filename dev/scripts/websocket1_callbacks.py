@@ -2,14 +2,14 @@
 # dat - the DAT that received a message
 
 def onConnect(dat):
-	parent().ext.Signals.Client.Connected()
+	op('base_private_ext').ext.Signals.Client.Connected()
 	return
 
 # me - this DAT
 # dat - the DAT that received a message
 
 def onDisconnect(dat):
-	parent().ext.Signals.Client.Disconnected()
+	op('base_private_ext').ext.Signals.Client.Disconnected()
 	return
 
 # me - this DAT
@@ -21,7 +21,7 @@ def onDisconnect(dat):
 
 def onReceiveText(dat, rowIndex, message):
 	if message != "ok":
-		parent().ext.Signals.Client.Receive(message)
+		op('base_private_ext').ext.Signals.Client.Receive(message)
 	return
 
 
