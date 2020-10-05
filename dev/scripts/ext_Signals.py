@@ -6,7 +6,6 @@ import signals_actions
 
 
 PARAMS 			= op('parameter1') # Parameters from SudoSignals TOX
-
 REPORTINGTIMER 	= op('timer_reporting') # Timer that triggers regular reporting.
 
 LINKS 			= {
@@ -125,7 +124,7 @@ class Signals:
 
 	def verify(self):
 		"""Verifies the productid is valid."""
-		if self._productid == "" or self._productidPar == None:
+		if self._productid == "" or self._productid == None:
 			# ProductID is empty.
 			signals_logger.Log('Product ID Missing')
 			return False
