@@ -6,7 +6,6 @@ import signals_actions
 
 
 PARAMS 			= op('parameter1') # Parameters from SudoSignals TOX
-
 REPORTINGTIMER 	= op('timer_reporting') # Timer that triggers regular reporting.
 
 LINKS 			= {
@@ -26,16 +25,18 @@ class Signals:
         _client: A WS Client that formats and sends messages.
 		_productid: A string is used to identify this installation.
     """
-	def __init__(self, op):
+	def __init__(self, myOp):
 		"""Inits Signals and attempts to start a connection and reporting."""
-		self._op = op
+		self._op = myOp
 		self._client = None
 		
-		self._productidPar = op.par.Productid
-		self._productid = None
+		self._productidPar	 	= op('../').par.Productid
+		self._productid 		= None
 		self.UpdateProductId()
 
-		self.startTimers()
+		self._controlCompPar 	= op('../').par.Controlcomp
+		self._controlComp		= None
+		self._setControlComp()
 
 		self.startConnection()
 		self.startReporting()
@@ -54,11 +55,8 @@ class Signals:
 	@ProductId.setter
 	def ProductId(self, id):
 		"""When the productid is set we should restart the connection"""
-		if self.hasProductId:
-			self._productid = id
-			self.startConnection()
-		else:
-			pass
+		self._productid = id
+		self.startConnection()
 
 	@property
 	def hasProductId(self):
@@ -69,14 +67,21 @@ class Signals:
 		self.startConnection()
 		pass
 
-	def startTimers(self):
-		timers = self._op.findChildren(type=timerCHOP, depth=1)
-		for eachTimer in timers:
-			eachTimer.par.active = True
+	@property
+	def ControlComp(self):
+		return self._controlComp
+	
+	@ControlComp.setter
+	def ControlComp(self, targetComp):
+		self._controlComp = targetComp
+
+	def _setControlComp(self):
+		self._controlComp = self._controlCompPar.eval()
 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
 		# ProductId is formatted correctly
+
 		if self._client:
 			# A client already exists... might be connected...
 			self._client.Disconnect()
@@ -119,7 +124,7 @@ class Signals:
 
 	def verify(self):
 		"""Verifies the productid is valid."""
-		if self._productid == "" or self._productidPar == None:
+		if self._productid == "" or self._productid == None:
 			# ProductID is empty.
 			signals_logger.Log('Product ID Missing')
 			return False
@@ -164,15 +169,17 @@ class Signals:
 
 		# create its highlevel key.
 		controlData = {"controls": controlForm}
-		# Send it. 
-		self._client.SendUpdate(controlData)
-
+		
+		# only send if we have a valid product ID
+		if self.hasProductId:
+			# Send it. 
+			self._client.SendUpdate(controlData)
 
 	def Report(self, userReports={}):
 		"""Compiles all of the reports and sends it.
 		
 		:param userReports: a dict where keys are report labels and values are DATs to be reported
-		"""
+		"""		
 
 		# dict of required reports
 		requiredReports = {"info": "null_DAT_report", "report": "null_CHOP_report"}
@@ -194,8 +201,8 @@ class Signals:
 		""" Dictionary Lookup for links
 		"""
 		link 	= LINKS.get(parName)
-		
-		if parName is not 'Help':
-			ui.viewFile(link)
-		else:
+
+		if parName == 'Help':
 			ui.viewFile(f'{link}{self._op.par.Version.eval()}')
+		else:
+			ui.viewFile(link)
