@@ -75,6 +75,11 @@ class Client:
 		data["action"] = "update"
 		self.Send(data)
 		return
+
+	def SendAlert(self, data):
+		data["action"] = "alert"
+		self.Send(data)
+		return
 		
 	def Disconnect(self):
 		self._disconnect()
