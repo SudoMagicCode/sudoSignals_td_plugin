@@ -15,11 +15,9 @@ TODO (IS): Actions to be created - setScene, forceReport, runScript
 
 
 def setPar(data):
-	print('')
+	# print(data)
 	thisOp = op(data['op'])
 	thisOp.par[data['parName']] = data['value']
-
-
 
 
 SWITCH = {
