@@ -13,6 +13,7 @@ def onValueChange(par, prev):
 
 	elif par.name == 'Controlcomp':
 		op('base_private_ext').ControlComp = par.eval()
+
 	return
 	
 def onPulse(par):

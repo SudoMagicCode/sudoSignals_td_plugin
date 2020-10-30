@@ -34,6 +34,7 @@ class Client:
 		return
 
 	def _onConnect(self):
+		print("attempting _onConnect")
 		if self.installationID:
 			self.connected = True
 			
@@ -79,7 +80,8 @@ class Client:
 		self._disconnect()
 		return
 		
-	def Connect(self, onConnect=None, onReceive=None, address="wss://qsnzjcchgg.execute-api.us-east-1.amazonaws.com/dev"):
+	def Connect(self, onConnect=None, onReceive=None, address="wss://qsnzjcchgg.execute-api.us-east-1.amazonaws.com/dev"):		
+		print("running Connect")
 		self._receivedCB = onReceive
 		self._connectedCB = onConnect
 		self.address = address
@@ -93,6 +95,7 @@ class Client:
 
 
 def tryCB(cb, arg=None):
+	print("trying callback")
 	if cb is None:
 		return
 	if callable(cb):
@@ -102,6 +105,8 @@ def tryCB(cb, arg=None):
 			else:
 				cb()
 		except Exception as e:
+			pass
 			print(e)
 	else:
+		pass
 		print("cb is not callable.")

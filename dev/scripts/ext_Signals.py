@@ -4,12 +4,6 @@ import signals_controls
 import signals_logger
 import signals_actions
 
-# signals_WSService = mod('signals_WSService')
-# signals_reporter = mod('signals_reporter')
-# signals_controls = mod('signals_controls')
-# signals_logger = mod('signals_logger')
-# signals_actions = mod('signals_actions')
-
 PARAMS 			= op('parameter1') # Parameters from SudoSignals TOX
 REPORTINGTIMER 	= op('timer_reporting') # Timer that triggers regular reporting.
 
@@ -108,8 +102,11 @@ class Signals:
 		if self.verify():
 			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
+			print("creating a new client")
 			# Start Connection. Populate the onConnect and onReceive Callbacks.
+			print("starting a new connection")
 			self._client.Connect( onConnect=self.connectedHandler, onReceive=self.dataHandler )
+			op('../').par.Connected = True
 
 	def endConnection(self):
 		self._endConnection()
@@ -121,6 +118,7 @@ class Signals:
 			# A client Exists... disconnect it.
 			self._client.Disconnect()
 			self._client = None
+			op('../').par.Connected = False
 
 	def connectedHandler(self):
 		"""This is used as a callback once the client Connects."""
