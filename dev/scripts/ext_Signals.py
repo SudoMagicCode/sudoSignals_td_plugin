@@ -4,7 +4,6 @@ import signals_controls
 import signals_logger
 import signals_actions
 
-
 PARAMS 			= op('parameter1') # Parameters from SudoSignals TOX
 REPORTINGTIMER 	= op('timer_reporting') # Timer that triggers regular reporting.
 
@@ -30,13 +29,15 @@ class Signals:
 		self._op = myOp
 		self._client = None
 		
+		# point to target par for prodcut id, None as default, attempt to eval the par
 		self._productidPar	 	= op('../').par.Productid
 		self._productid 		= None
 		self.UpdateProductId()
 
+		# point to target par for control comp, None as default, attempt to eval the par
 		self._controlCompPar 	= op('../').par.Controlcomp
 		self._controlComp		= None
-		self._setControlComp()
+		self.UpdateControlComp()
 
 		self.startConnection()
 		self.startReporting()
@@ -47,6 +48,7 @@ class Signals:
 		"""Exposes the client as a property"""
 		return self._client
 
+	# - - - - - - - - Prodcut ID - - - - - - - - 
 	@property
 	def ProductId(self):
 		"""Exposes the productid as a property"""
@@ -56,6 +58,7 @@ class Signals:
 	def ProductId(self, id):
 		"""When the productid is set we should restart the connection"""
 		self._productid = id
+		self.endConnection()
 		self.startConnection()
 
 	@property
@@ -64,9 +67,11 @@ class Signals:
 
 	def UpdateProductId(self):
 		self._productid = self._productidPar.eval()
+		self.endConnection()
 		self.startConnection()
 		pass
 
+	# - - - - - - - - Control COMP - - - - - - - - 
 	@property
 	def ControlComp(self):
 		return self._controlComp
@@ -74,13 +79,22 @@ class Signals:
 	@ControlComp.setter
 	def ControlComp(self, targetComp):
 		self._controlComp = targetComp
+		self.startConnection()
 
-	def _setControlComp(self):
+	@ControlComp.setter
+	def ControlComp(self, targetComp):
+		self._controlComp = targetComp
+
+	def UpdateControlComp(self):
 		self._controlComp = self._controlCompPar.eval()
+		self.startConnection()
 
+	# - - - - - - - - Singnals Operations - - - - - - - - 
 	def startConnection(self):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
 		# ProductId is formatted correctly
+
+		print("starting connection")
 
 		if self._client:
 			# A client already exists... might be connected...
@@ -88,21 +102,31 @@ class Signals:
 		if self.verify():
 			# Create a new Client.
 			self._client = signals_WSService.Client( self._productid )
+			print("creating a new client")
 			# Start Connection. Populate the onConnect and onReceive Callbacks.
+			print("starting a new connection")
 			self._client.Connect( onConnect=self.connectedHandler, onReceive=self.dataHandler )
+			op('../').par.Connected = True
 
 	def endConnection(self):
+		self._endConnection()
+
+	def _endConnection(self):
 		"""End Signals connection and reporting."""
 		self.stopReporting()
 		if self._client:
 			# A client Exists... disconnect it.
 			self._client.Disconnect()
 			self._client = None
+			op('../').par.Connected = False
 
 	def connectedHandler(self):
 		"""This is used as a callback once the client Connects."""
 
+		print("now connected")
+
 		# Send the controls to the sudosignals service.
+		self.startReporting()
 		self.SendControlsUpdate()
 		return
 
@@ -150,7 +174,7 @@ class Signals:
 
 	def stopReporting(self):
 		"""Stops the reporting process."""
-		REPORTINGTIMER.par.init.pulse()
+		REPORTINGTIMER.par.initialize.pulse()
 		return
 
 	def SendControlsUpdate(self, userControls={}):
@@ -160,9 +184,10 @@ class Signals:
 		"""
 
 		# dict of required comps
-		requiredControls = {"_system": "internalControls"} 
+		requiredControls = {"_system": "internalControls",
+							"_userDefined": self.ControlComp} 
 		# combine required and user submitted.
-		combinedControls = {**requiredControls, **userControls} 
+		combinedControls = {**requiredControls, **userControls}
 
 		# generate the structured message 
 		controlForm = signals_controls.GenerateControlsForm(combinedControls)
