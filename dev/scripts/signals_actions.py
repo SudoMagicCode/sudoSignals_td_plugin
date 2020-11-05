@@ -17,7 +17,11 @@ TODO (IS): Actions to be created - setScene, forceReport, runScript
 def setPar(data):
 	# print(data)
 	thisOp = op(data['op'])
-	thisOp.par[data['parName']] = data['value']
+	if thisOp.par[data['parName']].isPulse:
+		if data['value'] == 1:
+			thisOp.par[data['parName']].pulse()
+	else:
+		thisOp.par[data['parName']] = data['value']
 
 
 SWITCH = {
