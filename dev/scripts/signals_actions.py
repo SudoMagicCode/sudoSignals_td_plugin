@@ -15,7 +15,7 @@ TODO (IS): Actions to be created - setScene, forceReport, runScript
 
 
 def setPar(data):
-	# print(data)
+	print(data)
 	thisOp = op(data['op'])
 	if thisOp.par[data['parName']].isPulse:
 		if data['value'] == 1:

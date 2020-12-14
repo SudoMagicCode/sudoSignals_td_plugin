@@ -26,6 +26,7 @@ class Client:
 	def _send(self, doc):
 		doc['installationid'] = self.installationID
 		WEBSOCKET.sendText(json.dumps(doc))
+		print(doc)
 		return
 
 	def _receive(self, sDoc):
@@ -85,7 +86,7 @@ class Client:
 		self._disconnect()
 		return
 		
-	def Connect(self, onConnect=None, onReceive=None, address="wss://qsnzjcchgg.execute-api.us-east-1.amazonaws.com/dev"):		
+	def Connect(self, onConnect=None, onReceive=None, address="wss://b5eg4qq6bc.execute-api.us-east-1.amazonaws.com/dev"):		
 		print("running Connect")
 		self._receivedCB = onReceive
 		self._connectedCB = onConnect
