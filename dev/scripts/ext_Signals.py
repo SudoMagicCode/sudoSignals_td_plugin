@@ -221,7 +221,22 @@ class Signals:
 		
 		else:
 			pass
+
+	def Alert(self, aType, data):
+		"""Triggers an alert"""
+		if op('parameter1')['Usealerts', 1] == 1:
+			data["alertType"] =  aType
+			if not ui.performMode and op('parameter1')['Silence', 1] == 0:
+				# We are in Network Editor mode and not silenced.
+				self._client.SendAlert(data)
+			elif ui.performMode:
+				# We are in Perform mode.
+				self._client.SendAlert(data)
+			else:
+				pass
+
 	
+
 	def PulsePar(self, parName):
 		""" Dictionary Lookup for links
 		"""
