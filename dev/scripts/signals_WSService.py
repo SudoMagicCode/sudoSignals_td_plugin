@@ -94,7 +94,7 @@ class Client:
 		self._disconnect()
 		return
 		
-	def Connect(self, onConnect=None, onReceive=None, address="wss://b5eg4qq6bc.execute-api.us-east-1.amazonaws.com/dev"):		
+	def Connect(self, onConnect=None, onReceive=None, address=None):		
 		print("running Connect")
 		self._receivedCB = onReceive
 		self._connectedCB = onConnect
