@@ -2,6 +2,7 @@
 # dat - the DAT that received a message
 
 def onConnect(dat):
+	op('timer_expires').par.start.pulse()
 	op('base_private_ext').ext.Signals.Client.Connected()
 	return
 
