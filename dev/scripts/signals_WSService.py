@@ -27,7 +27,6 @@ class Client:
 	def _send(self, doc):
 		doc['installationid'] = self.installationID
 		WEBSOCKET.sendText(json.dumps(doc))
-		print(doc)
 		return
 
 	def _receive(self, sDoc):
@@ -36,7 +35,6 @@ class Client:
 		return
 
 	def _onConnect(self):
-		print("attempting _onConnect")
 		if self.installationID:
 			self.connected = True
 			
@@ -93,9 +91,12 @@ class Client:
 	def Disconnect(self):
 		self._disconnect()
 		return
+
+	def AttemptReconnect(self):
+		self._connect()
+		return
 		
 	def Connect(self, onConnect=None, onReceive=None, address=None):		
-		print("running Connect")
 		self._receivedCB = onReceive
 		self._connectedCB = onConnect
 		self.address = address

@@ -119,12 +119,10 @@ class Signals:
 			op('../').par.Connected = True
 
 	def SetDev(self):
-		self._endConnection()
 		self.startConnection(dev=True)
 		pass
 
 	def SetProd(self):
-		self._endConnection()
 		self.startConnection(dev=False)
 		pass
 
