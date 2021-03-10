@@ -12,7 +12,7 @@
 
 
 def onTableChange(dat):
-	op('base_private_ext').ext.Signals.SendControlsUpdate()
+	op('base_private_ext').ext.Signals.SetControls()
 	return
 
 def onRowChange(dat, rows):
