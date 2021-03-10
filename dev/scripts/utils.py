@@ -4,7 +4,7 @@ def parDataBlock(par):
 		"name": par.name,
 		"label": par.label,
 		"path": par.owner.path,
-		"type": par.style,
+		"style": par.style,
 		"index": par.index
 	}
 

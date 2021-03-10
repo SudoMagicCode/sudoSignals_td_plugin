@@ -1,87 +1,60 @@
 import json
+import os
 
-import reporter 
+from reporter import SignalsReporter
+from controls import SignalsControls
 from router import SignalsRouter
-import utils
 
 WEBSOCKET = op('websocket1')
 REPORT_TIMER = op('report_timer')
 
-INSTANCE_ID = "TOUCHDESIGNER_OMG"
-
-class SignalsClient(SignalsRouter):
+class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
 	def __init__(self):
-		super().__init__(WEBSOCKET)
+		# Inherit Router
+		SignalsRouter.__init__(self, WEBSOCKET)
+		# Inherit Reporter
+		SignalsReporter.__init__(self)
+		# Get current controlComp then inherit Signals
+		currentControlComp = op('../').par.Controlcomp.eval()
+		SignalsControls.__init__(self, currentControlComp)
+		
 		# Add Action Routes to hand incoming messages.
-		self.AddActionRoute("Start", self.SendIdentifyPacket)
 		self.AddActionRoute("control-Update", self.UpdateControls)
 		
 		# Setup Reporting
-		self._reporter = reporter.Reporter()
-		self._reporter.AddReportable(op('null_defaultReport'))
+		self.AddReportable( op('null_defaultReport') )
 
 		# Set Product ID
-		self.ProductId = INSTANCE_ID
+		self.Id = os.getenv('SIGNALS_ID')
 
 		# Start connection here.
 		WEBSOCKET.par.active = 1
 
 		# Send control-Set packet.
-		self._controlsComp = op('base1')
 		self.SetControls()
 
 		# Start Sending Reports.
+		self.SendReport()
 		REPORT_TIMER.par.start.pulse()
-
-	@property
-	def ControlComp(self):
-		return self._controlsComp
-
-	@ControlComp.setter 
-	def ControlComp(self, op):
-		self._controlsComp = op
-		self.SetControls()
-
-	def SendIdentifyPacket(self, data):
-		'''Sends identity packet to SudoSignals Desktop Service'''
-		newIdentifyPacket = {
-			"action": "identify", 
-			"data": {
-				"SoftwareName": "TouchDesigner", 
-				"SoftwareVersion": "TouchDesignerVersion"
-			}
-		}
-		self.SendMessage(newIdentifyPacket)
 
 
 	def SendReport(self):
 		newReportPacket = {
 			"action": "report",
-			"data": self._reporter.CreateReport()
+			"data": self.CreateReport()
 		}
 		self.SendMessage(newReportPacket)
 
 
 	def SetControls(self):
 		'''Sends control-Set packet to SudoSginals Desktop Service'''
-		controls = []
-		pagesToSend = self._controlsComp.customPages
-		
-		for p in pagesToSend:
-			newPageDataBlock = {
-				"name": p.name,
-				"owner": p.owner.path,
-				"pars": utils.CreateAllParDataBlocks(p)
-			}
-			controls.append(newPageDataBlock)
-		
-		newSetControlsPacket = {
-			"action": "control-Set", 
-			"data": controls
+		controlState = self.CreateControls()
+		newControlPacket = {
+			"action": "control-Set",
+			"data": {"state": controlState}
 		}
-		self.SendMessage(newSetControlsPacket)
+		self.SendMessage(newControlPacket)
 
 
-	def UpdateControls(self, data):
-		print("____control-Update____")
-		print(data)
+	def UpdateControls(self, packet):
+		self.UpdateControlComp(packet['data'])

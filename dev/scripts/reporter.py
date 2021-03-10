@@ -1,4 +1,4 @@
-class Reporter:
+class SignalsReporter:
 	def __init__(self):
 		self._reportables = []
 		return
