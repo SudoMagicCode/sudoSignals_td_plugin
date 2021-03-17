@@ -28,4 +28,7 @@ class SignalsControls:
 		return controls
 
 	def UpdateControlComp(self, state):
-		self._controllable.par[state['name']] = state['currentValue']
+		if(self._controllable.par[state['name']].style == "Pulse"):
+			self._controllable.par[state['name']].pulse()
+		else:
+			self._controllable.par[state['name']] = state['currentValue']
