@@ -7,10 +7,13 @@
 
 def onStart():
 	op('base_private_ext').par.reinitextensions.pulse()
+	op('base_private_ext').SignalsStartUp()
+	
 	return
 
 def onCreate():
 	op('base_private_ext').par.reinitextensions.pulse()
+	op('base_private_ext').SignalsStartUp()
 	return
 
 def onExit():

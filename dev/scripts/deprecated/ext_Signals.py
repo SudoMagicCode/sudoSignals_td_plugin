@@ -6,6 +6,8 @@ import signals_actions
 
 PARAMS 			= op('parameter1') # Parameters from SudoSignals TOX
 REPORTINGTIMER 	= op('timer_reporting') # Timer that triggers regular reporting.
+DEVWSS			= "wss://b5eg4qq6bc.execute-api.us-east-1.amazonaws.com/dev"
+PRODWSS 			= "wss://603t4a99m8.execute-api.us-east-1.amazonaws.com/prod"
 
 LINKS 			= {
 	'Help' 					: "https://api.sudosignals.com/help?version=",
@@ -90,11 +92,17 @@ class Signals:
 		self.startConnection()
 
 	# - - - - - - - - Singnals Operations - - - - - - - - 
-	def startConnection(self):
+	def startConnection(self, dev=False):
 		"""Verifies the ProductId property is structured correctly and starts a connection."""
 		# ProductId is formatted correctly
 
 		print("starting connection")
+		WssAddress = PRODWSS
+
+		if dev:
+			WssAddress = DEVWSS
+		else:
+			pass
 
 		if self._client:
 			# A client already exists... might be connected...
@@ -105,8 +113,18 @@ class Signals:
 			print("creating a new client")
 			# Start Connection. Populate the onConnect and onReceive Callbacks.
 			print("starting a new connection")
-			self._client.Connect( onConnect=self.connectedHandler, onReceive=self.dataHandler )
+			self._client.Connect( onConnect=self.connectedHandler, 
+									onReceive=self.dataHandler,
+									address= WssAddress)
 			op('../').par.Connected = True
+
+	def SetDev(self):
+		self.startConnection(dev=True)
+		pass
+
+	def SetProd(self):
+		self.startConnection(dev=False)
+		pass
 
 	def endConnection(self):
 		self._endConnection()
@@ -221,7 +239,22 @@ class Signals:
 		
 		else:
 			pass
+
+	def Alert(self, aType, data):
+		"""Triggers an alert"""
+		if op('parameter1')['Usealerts', 1] == 1:
+			data["alertType"] =  aType
+			if not ui.performMode and op('parameter1')['Silence', 1] == 0:
+				# We are in Network Editor mode and not silenced.
+				self._client.SendAlert(data)
+			elif ui.performMode:
+				# We are in Perform mode.
+				self._client.SendAlert(data)
+			else:
+				pass
+
 	
+
 	def PulsePar(self, parName):
 		""" Dictionary Lookup for links
 		"""

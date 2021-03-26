@@ -43,7 +43,7 @@ def onCycle(timerOp, segment, cycle):
 def onDone(timerOp, segment, interrupt):
 
 	if op('base_private_ext').ext.Signals.hasProductId:
-		op('base_private_ext').ext.Signals.Client.Connect()
+		op('base_private_ext').ext.Signals.Client.AttemptReconnect()
 
 	else:
 		pass

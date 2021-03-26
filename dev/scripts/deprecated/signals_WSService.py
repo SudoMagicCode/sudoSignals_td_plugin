@@ -2,6 +2,7 @@ import json
 
 WEBSOCKET = op('websocket1')
 RETRYTIMER = op('timer_connection')
+EXPIRETIMER = op('timer_expires')
 
 class Client:
 	"""A Websocket client that connects back to SudoSignal Cloud"""
@@ -34,12 +35,11 @@ class Client:
 		return
 
 	def _onConnect(self):
-		print("attempting _onConnect")
 		if self.installationID:
 			self.connected = True
 			
 			#send Own Packet
-			self._send({"action": "own", "installationid": self.installationID})
+			self._send({"action": "own", "installationid": self.installationID, "expiresSoon": False})
 			tryCB(self._connectedCB)
 		else:
 			#we can't own the installation yet... disconnect to save resources.
@@ -71,17 +71,32 @@ class Client:
 		self._onDisconnect()
 		return
 
+	def SendExpireNotice(self):
+		data = {}
+		data["action"] = "own"
+		data["expiresSoon"] = True
+		self.Send(data)
+		return
+
 	def SendUpdate(self, data):
 		data["action"] = "update"
+		self.Send(data)
+		return
+
+	def SendAlert(self, data):
+		data["action"] = "alert"
 		self.Send(data)
 		return
 		
 	def Disconnect(self):
 		self._disconnect()
 		return
+
+	def AttemptReconnect(self):
+		self._connect()
+		return
 		
-	def Connect(self, onConnect=None, onReceive=None, address="wss://qsnzjcchgg.execute-api.us-east-1.amazonaws.com/dev"):		
-		print("running Connect")
+	def Connect(self, onConnect=None, onReceive=None, address=None):		
 		self._receivedCB = onReceive
 		self._connectedCB = onConnect
 		self.address = address
