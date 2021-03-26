@@ -16,7 +16,7 @@ class SignalsRouter(object):
 	@Id.setter
 	def Id(self, id):
 		if id is None:
-			raise signalsErrors.IDError
+			raise signalsErrors.IDError()
 		self._id = id
 		self.SendIdentifyPacket({})
 

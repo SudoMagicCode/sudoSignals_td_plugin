@@ -6,16 +6,15 @@
 # Make sure the corresponding toggle is enabled in the Parameter Execute DAT.
 
 def onValueChange(par, prev):
-	# use par.eval() to get current value
-	if par.name == 'Productid':
-		print("Product ID Changed")
-		op('base_private_ext').ProductId = par.eval()
 
-	elif par.name == 'Controlcomp':
-		op('base_private_ext').ControlComp = par.eval()
+	if par.name == 'Controlcomp':
+		op('base_private_ext').ext.Signals.ControlComp = par.eval()
+		op('base_private_ext').ext.Signals.SetControls()
 
 	return
 	
 def onPulse(par):
-	op('base_private_ext').PulsePar(par.name)
+	
+	if par.page == 'About':
+		op('base_private_ext').PulsePar(par)
 	return
