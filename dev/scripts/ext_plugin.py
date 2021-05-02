@@ -6,9 +6,9 @@ from controls import SignalsControls
 from router import SignalsRouter
 import tdDialogHelper
 
-WEBSOCKET 			= op('websocket1')
-REPORT_TIMER 		= op('report_timer')
-
+WEBSOCKET = op('websocket1')
+REPORT_TIMER = op('report_timer')
+RELEASE_SOURCE = "https://github.com/SudoMagicCode/sudoSignals_td_plugin_releases/releases/latest"
 LINKS = {
 	'Help' 					: "https://sudomagiccode.github.io/SudoSignals/",
 	'Forum'					: "https://github.com/SudoMagicCode/SudoSignals/discussions",
@@ -20,9 +20,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
 	
 	def __init__(self):
 		self.PARSignalsid		= parent.signals.par.Signalsid
+		self.PARSignalsName 	= parent.signals.par.Signalsname
 		self.PARConnected 		= parent.signals.par.Connected
 		self.PARControlcomp 	= parent.signals.par.Controlcomp
-		self.PARReports1		= parent.signals.par.Reports1
 		self.PARStartupdelay	= parent.signals.par.Startupdelay
 		self.signalsReports 	= op('null_defaultReport')
 
@@ -44,11 +44,21 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
 		# Set Product ID
 		self._getSignalsId
 
+		# Set Product Name
+		self._getSignalsName
 
 
 	###################################
 	##### Signals TOX Par Handles #####
 	###################################
+
+	@property
+	def parSignalsName(self):
+		return self.PARSignalsName.eval()
+
+	@parSignalsName.setter
+	def parSignalsName(self, parVal):
+		parent.signals.par['Signalsname'] = parVal
 
 	@property
 	def parSignalsid(self):
@@ -96,10 +106,33 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
 		> signals ID string retrieved from the signals env var
 		'''
 
-		signalsId 			= os.getenv('SIGNALS_ID')
+		try:
+			signalsId = os.getenv('SIGNALS_ID')
+		except:
+			signalsId = 'no_id_assigned'
+
 		self.parSignalsid 	= signalsId
 		self.Id 			= signalsId
 		return signalsId
+
+	@property
+	def _getSignalsName(self):
+		'''Updates Signals Name - both member and par
+		
+		Args
+		----------
+		None
+
+		Returns 
+		----------
+		signalsName (str)
+		> signals Name string retrieved from the signals env var
+		'''		
+
+		signalsName = os.getenv('SIGNALS_NAME')
+		self.parSignalsName 	= signalsName
+		return signalsName
+
 
 	@property
 	def hasValidSignalsId(self):

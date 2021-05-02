@@ -23,11 +23,14 @@ class SignalsRouter(object):
 
 	def SendIdentifyPacket(self, data):
 		'''Sends identity packet to SudoSignals Desktop Service'''
+		tdVersion = f"{app.version} {app.build}"
+		pluginVersion = parent.signals.par.Version.eval()
 		newIdentifyPacket = {
 			"action": "identify", 
 			"data": {
 				"SoftwareName": "TouchDesigner", 
-				"SoftwareVersion": "TouchDesignerVersion"
+				"SoftwareVersion": tdVersion,
+				"PluginVersion" : pluginVersion
 			}
 		}
 		self.SendMessage(newIdentifyPacket)

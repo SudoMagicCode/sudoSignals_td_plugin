@@ -1,0 +1,19 @@
+version: v0.1.98.20210430
+installation:
+    productid: e53aa3ed2f
+    user: ""
+startup:
+    prestartBAT: ""
+    processes:
+        - id: 179255e67fd
+          name: TouchDesigner_Demo
+          programPath: C:\Program Files\Derivative\TouchDesigner.2021.12380\bin\TouchDesigner.exe
+          filePath: C:\Users\ragan\Desktop\signals-demo.toe
+          autoRestart: false
+          restartLimit: 0
+          controlled: false
+          killTimeout: 0
+    poststartBAT: ""
+daemon:
+    configurationPort: 10000
+services: []
