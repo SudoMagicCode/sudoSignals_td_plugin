@@ -9,4 +9,4 @@ class IDError(Error):
         message -- explanation of the error
     """
 	def __init__(self, message):
-		self.message
+		self.message = message
