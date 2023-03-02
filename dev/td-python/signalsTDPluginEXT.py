@@ -5,20 +5,22 @@ from reporter import SignalsReporter
 from controls import SignalsControls
 from router import SignalsRouter
 import tdDialogHelper
+import utils
 
-WEBSOCKET = op('websocket1')
+WEBSOCKET = op('websocket_signals')
 REPORT_TIMER = op('report_timer')
 RELEASE_SOURCE = "https://github.com/SudoMagicCode/sudoSignals_td_plugin_releases/releases/latest"
-LINKS = {
-    'Help' 					: "https://sudomagiccode.github.io/SudoSignals/",
-    'Forum'					: "https://github.com/SudoMagicCode/SudoSignals/discussions",
-    'Sudosignalsdashboard' 	: "https://dashboard.sudosignals.com/",
-    'Bugreport'				: "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
-}
 
 class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
     '''SiganlsClient Doc Strings
     '''
+    
+    LINKS = {
+        'Help' 					: "https://sudomagiccode.github.io/SudoSignals/",
+        'Forum'					: "https://github.com/SudoMagicCode/SudoSignals/discussions",
+        'Sudosignalsdashboard' 	: "https://dashboard.sudosignals.com/",
+        'Bugreport'				: "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
+    }
     
     def __init__(self):
         self.PARSignalsid		= parent.signals.par.Signalsid
@@ -35,7 +37,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         SignalsReporter.__init__(self)
 
         # Get current controlComp then inherit Signals
-        SignalsControls.__init__(self, self.parControlcomp)
+        SignalsControls.__init__(self, self.PARControlcomp.eval())
 
         # Add Action Routes to hand incoming messages.
         self.AddActionRoute("control-Update", self.UpdateControls)
@@ -49,6 +51,8 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         # Set Product Name
         self._getSignalsName
 
+        print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
+
     ###################################
     ##### Signals TOX Par Handles #####
     ###################################
@@ -57,26 +61,14 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
     def parSignalsName(self):
         return self.PARSignalsName.eval()
 
-    @parSignalsName.setter
-    def parSignalsName(self, parVal):
-        parent.signals.par['Signalsname'] = parVal
-
     @property
     def parSignalsid(self):
         return self.PARSignalsid.eval()
-
-    @parSignalsid.setter
-    def parSignalsid(self, parVal):
-        parent.signals.par['Signalsid'] = parVal
 
     @property
     def parConnected(self):
         return self.PARConnected.eval()
     
-    @parConnected.setter
-    def parConnected(self, parVal):
-        parent.signals.par['Connected'] = parVal
-
     @property
     def parControlcomp(self):
         return self.PARControlcomp.eval()
@@ -88,10 +80,6 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
     @property
     def parStartupdelay(self):
         return self.PARStartupdelay.eval()
-
-    ###################################
-    #                                 #
-    ###################################
 
     @property
     def _getSignalsId(self):
@@ -112,8 +100,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         except:
             signalsId = 'no_id_assigned'
 
-        self.PARSignalsid 	= signalsId
-        self.Id 			= signalsId
+
+        self.PARSignalsid.val = signalsId
+        self.Id = signalsId
         return signalsId
 
     @property
@@ -131,7 +120,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         '''		
 
         signalsName = os.getenv('SIGNALS_NAME')
-        self.parSignalsName 	= signalsName
+        self.PARSignalsName.val	= signalsName
         return signalsName
 
 
@@ -156,6 +145,23 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         }
         self.SendMessage(newReportPacket)
 
+    def SendLog(self):
+        '''Sends Reports
+        
+        Args
+        ----------
+        None
+
+        Returns 
+        ----------
+        None
+        '''
+        newLogPacket = {
+            "action": "log",
+            "data": self.CreateLog()
+        }
+        self.SendMessage(newLogPacket)
+
     def SetControls(self):
         '''Sends control-Set packet to SudoSginals Desktop Service
         
@@ -179,7 +185,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         self.UpdateControlComp(packet['data'])
 
     def UpdateConnected(self, state):
-        self.parConnected = state
+        self.PARConnected.val = state
 
     def SignalsStartUp(self):
         '''Signals Start-up Sequence
@@ -198,7 +204,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         None
         '''
         print('-'*20)
-        print(f"SUDOSIGNALS :: INFO :: Starting TD Client")
+        print(utils.TextPortMsg('INFO', 'Starting TD Client'))
         print('-'*20)
 
         # Start connection here.
@@ -211,24 +217,3 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         # Start Sending Reports.
         self.SendReport()
         REPORT_TIMER.par.start.pulse()
-    
-    def PulsePar(self, par):
-        '''Signals Start-up Sequence
-
-        Ensures signals start up is consistent, and reliable.
-        Waits to send control updates until 60 frames have passed. This
-        Should ensure that we've completed any necessary start-up and 
-        initialization elements
-        
-        Args
-        ----------
-        par (TD Parameter)
-        > Pulsed parameter object from parent.signals
-
-        Returns 
-        ----------
-        None
-        '''
-
-        webLink = LINKS.get(par.name)
-        ui.viewFile(webLink)
