@@ -30,7 +30,8 @@ def Startupdelay(par) -> None:
     pass
 
 def Resetconnection(par) -> None:
-    pass
+    SIGNALS.par.reinitextensions.pulse()
+    SIGNALS.SignalsStartUp()
 
 #NOTE About Page
 def Help(par) -> None:

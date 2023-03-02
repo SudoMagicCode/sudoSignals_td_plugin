@@ -1,9 +1,11 @@
 import json
 import os
 
+from identity import SignalsIdentity
 from reporter import SignalsReporter
 from controls import SignalsControls
 from router import SignalsRouter
+
 import tdDialogHelper
 import utils
 
@@ -30,6 +32,15 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         self.PARStartupdelay	= parent.signals.par.Startupdelay
         self.signalsReports 	= op('null_defaultReport')
 
+        # Inherit identity
+        SignalsIdentity.__init__(self)
+
+        # Set Product ID
+        self._getSignalsId
+
+        # Set Product Name
+        self._getSignalsName
+
         # Inherit Router
         SignalsRouter.__init__(self, WEBSOCKET)
 
@@ -45,17 +56,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         # Setup Reporting
         self.AddReportable( self.signalsReports )
 
-        # Set Product ID
-        self._getSignalsId
-
-        # Set Product Name
-        self._getSignalsName
-
         print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
-
-    ###################################
-    ##### Signals TOX Par Handles #####
-    ###################################
 
     @property
     def parSignalsName(self):
@@ -96,10 +97,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         '''
 
         try:
-            signalsId = os.getenv('SIGNALS_ID')
+            signalsId = me.var('SIGNALS_ID')
         except:
             signalsId = 'no_id_assigned'
-
 
         self.PARSignalsid.val = signalsId
         self.Id = signalsId
@@ -119,14 +119,20 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         > signals Name string retrieved from the signals env var
         '''		
 
-        signalsName = os.getenv('SIGNALS_NAME')
+        try:
+            signalsName = me.var('SIGNALS_NAME')
+        except:
+            signalsName = 'no_name_assigned'
+
         self.PARSignalsName.val	= signalsName
+        self.Name = signalsName
         return signalsName
 
 
     @property
     def hasValidSignalsId(self):
         return True if self.Id is not None else False
+
 
     def SendReport(self):
         '''Sends Reports
