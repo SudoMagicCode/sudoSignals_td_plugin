@@ -7,9 +7,22 @@ class SignalsRouter(object):
     '''
     def __init__(self, socket:OP) -> None:
         self._routes = {}
+        self._id = None
         self._socket = socket
         self.AddActionRoute("Start", self.SendIdentifyPacket)
         return
+
+    @property
+    def Id(self) -> str:
+        return self._id
+
+    @Id.setter
+    def Id(self, id) -> None:
+        if id is None:
+            tdDialogHelper.WarnNoProductId()
+            raise signalsErrors.IDError("TouchDesigner has no Signals ID")
+        self._id = id
+        self.SendIdentifyPacket({})
 
     def SendIdentifyPacket(self, data) -> None:
         '''Sends identity packet to SudoSignals Desktop Service'''
@@ -35,6 +48,7 @@ class SignalsRouter(object):
             print("No id present. Supressing Message.")
             return
         packet['identifier'] = self._id
+        # debug(packet)
         self._socket.sendText(json.dumps(packet))
         return
 

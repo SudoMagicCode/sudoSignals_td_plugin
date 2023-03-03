@@ -23,5 +23,4 @@ def ParsePar(par:callable) -> callable:
         func(par)
     except Exception as E:
         pass
-        
     return
