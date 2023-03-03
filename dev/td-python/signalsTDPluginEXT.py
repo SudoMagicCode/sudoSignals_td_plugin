@@ -4,6 +4,8 @@ import os
 from reporter import SignalsReporter
 from controls import SignalsControls
 from router import SignalsRouter
+from logger import SignalsLogger
+
 import tdDialogHelper
 import utils
 
@@ -11,7 +13,7 @@ WEBSOCKET = op('websocket_signals')
 REPORT_TIMER = op('report_timer')
 RELEASE_SOURCE = "https://github.com/SudoMagicCode/sudoSignals_td_plugin_releases/releases/latest"
 
-class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
+class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogger):
     '''SiganlsClient Doc Strings
     '''
     
@@ -21,7 +23,8 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         'Sudosignalsdashboard' 	: "https://dashboard.sudosignals.com/",
         'Bugreport'				: "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
     }
-    
+    DEFAULT_CUSTOM_PARS = op('base_default_custom_pars')
+
     def __init__(self):
         self.PARSignalsid		= parent.signals.par.Signalsid
         self.PARSignalsName 	= parent.signals.par.Signalsname
@@ -39,11 +42,8 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         # Get current controlComp then inherit Signals
         SignalsControls.__init__(self, self.PARControlcomp.eval())
 
-        # Add Action Routes to hand incoming messages.
-        self.AddActionRoute("control-Update", self.UpdateControls)
-        
-        # Setup Reporting
-        self.AddReportable( self.signalsReports )
+        #Inherit Signals Logger
+        SignalsLogger.__init__(self)
 
         # Set Product ID
         self._getSignalsId
@@ -51,11 +51,13 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         # Set Product Name
         self._getSignalsName
 
-        print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
+        # Add Action Routes to hand incoming messages.
+        self.AddActionRoute("control-Update", self.UpdateControls)
+        
+        # Setup Reporting
+        self.AddReportable( self.signalsReports )
 
-    ###################################
-    ##### Signals TOX Par Handles #####
-    ###################################
+        print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
 
     @property
     def parSignalsName(self):
@@ -96,10 +98,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         '''
 
         try:
-            signalsId = os.getenv('SIGNALS_ID')
+            signalsId = me.var('SIGNALS_ID')
         except:
             signalsId = 'no_id_assigned'
-
 
         self.PARSignalsid.val = signalsId
         self.Id = signalsId
@@ -119,10 +120,14 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         > signals Name string retrieved from the signals env var
         '''		
 
-        signalsName = os.getenv('SIGNALS_NAME')
-        self.PARSignalsName.val	= signalsName
-        return signalsName
+        try:
+            signalsName = me.var('SIGNALS_NAME')
+        except:
+            signalsName = 'no_name_assigned'
 
+        self.PARSignalsName.val	= signalsName
+        self.Name = signalsName
+        return signalsName
 
     @property
     def hasValidSignalsId(self):
@@ -145,7 +150,18 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         }
         self.SendMessage(newReportPacket)
 
-    def SendLog(self):
+    def SendLog(self, logPacket:dict) -> None:
+        if logPacket == None:
+            print(utils.TextPortMsg('WARN', 'Log supressed - Nonetype received'))
+
+        else:
+            newLogPacket = {
+                "action": "log",
+                "data": logPacket
+            }
+            self.SendMessage(newLogPacket)        
+
+    def SetLog(self, logLvl:int, logMsg:str) -> None:
         '''Sends Reports
         
         Args
@@ -156,11 +172,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
         ----------
         None
         '''
-        newLogPacket = {
-            "action": "log",
-            "data": self.CreateLog()
-        }
-        self.SendMessage(newLogPacket)
+
+        newLog = self.CreateLog(logLvl, logMsg)
+        self.SendLog(newLog)
 
     def SetControls(self):
         '''Sends control-Set packet to SudoSginals Desktop Service
@@ -180,6 +194,23 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls):
             "data": {"state": controlState}
         }
         self.SendMessage(newControlPacket)
+
+    def SetLogFromTable(self, LogOp:op) -> None:
+        '''Sends log info to SudoSignals Desktop Service
+        
+        Args
+        ----------
+        None
+
+        Returns 
+        ----------
+        None
+        '''
+
+        newLog = self.CreateLogFromTable(LogOp)
+        self.SendLog(newLog)
+        # clear message
+        LogOp[1, 1] = ''
 
     def UpdateControls(self, packet):
         self.UpdateControlComp(packet['data'])

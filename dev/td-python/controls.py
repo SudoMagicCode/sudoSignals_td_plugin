@@ -16,20 +16,15 @@ class SignalsControls:
 
 	def CreateControls(self) -> list:
 		controls = []
-		
-		if self._controllable == None:
-			raise signalsErrors.ControlError('No Valid Control COMP. Ensure your operator exists')
-		
-		else:
-			pagesToSend = self._controllable.customPages
+		pagesToSend = self._controllable.customPages
 
-			for p in pagesToSend:
-				newPageDataBlock = {
-					"name": p.name,
-					"owner": p.owner.path,
-					"pars": utils.CreateAllParDataBlocks(p)
-				}
-				controls.append(newPageDataBlock)
+		for p in pagesToSend:
+			newPageDataBlock = {
+				"name": p.name,
+				"owner": p.owner.path,
+				"pars": utils.CreateAllParDataBlocks(p)
+			}
+			controls.append(newPageDataBlock)
 		return controls
 
 	def UpdateControlComp(self, state) -> None:

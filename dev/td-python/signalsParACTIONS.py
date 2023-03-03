@@ -18,7 +18,14 @@ def Connected(par) -> None:
     pass
 
 def Controlcomp(par) -> None:
-    SIGNALS.ControlComp = par.eval()
+    if par.eval() == None:
+        control_comp = SIGNALS.DEFAULT_CUSTOM_PARS
+    else:
+        control_comp = par.eval()
+    
+    debug(control_comp)
+
+    SIGNALS.ControlComp = control_comp
     SIGNALS.SetControls()
 
 def Customreports(par) -> None:
@@ -30,7 +37,8 @@ def Startupdelay(par) -> None:
     pass
 
 def Resetconnection(par) -> None:
-    pass
+    SIGNALS.par.reinitextensions.pulse()
+    SIGNALS.SignalsStartUp()
 
 #NOTE About Page
 def Help(par) -> None:

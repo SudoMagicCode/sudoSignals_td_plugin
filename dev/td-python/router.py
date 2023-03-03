@@ -48,6 +48,7 @@ class SignalsRouter(object):
             print("No id present. Supressing Message.")
             return
         packet['identifier'] = self._id
+        # debug(packet)
         self._socket.sendText(json.dumps(packet))
         return
 
