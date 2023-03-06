@@ -1,0 +1,11 @@
+Reports are any time series data that you wish to have graphed on the sudoSignals web dashboard.
+
+Any report should be packaged into a table where column 0 contains the names for the metrics to be recorded, and column 1 contains the values you wish to be recorded. The base_reports example is included as a default, but users are encouraged to generate a table with the reports they wish to capture.
+
+By default sudoSignals will send the following to your dashboard from a Perform CHOP:
+- fps
+- msec
+- cpumsec
+- gpu_mem_used
+- total_gpu_mem
+- cpu_mem_used

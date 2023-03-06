@@ -1,0 +1,3 @@
+Custom Controls are derived from Custom Parameters in TouchDesigner. You can assign the custom parameters from any component to sudoSignals, but dragging and dropping the Component Operator with custom parameters that you'd like to use onto the sudoSignals Component
+
+Once assigned, you should see controls on the web dashboard update with changes in TouchDesigner, and changes on the web pushed to your TOE file.

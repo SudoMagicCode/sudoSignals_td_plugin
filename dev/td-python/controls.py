@@ -1,22 +1,22 @@
 import utils
+import signalsErrors
 
 class SignalsControls:
-	def __init__(self, op):
+	def __init__(self, op:OP) -> None:
 		self._controllable = op
 		return
 		
 	@property
-	def ControlComp(self):
+	def ControlComp(self) -> callable:
 		return self._controllable
 
 	@ControlComp.setter
 	def ControlComp(self, op):
 		self._controllable = op
 
-	def CreateControls(self):
-		pagesToSend = self._controllable.customPages
-		
+	def CreateControls(self) -> list:
 		controls = []
+		pagesToSend = self._controllable.customPages
 
 		for p in pagesToSend:
 			newPageDataBlock = {
@@ -27,7 +27,7 @@ class SignalsControls:
 			controls.append(newPageDataBlock)
 		return controls
 
-	def UpdateControlComp(self, state):
+	def UpdateControlComp(self, state) -> None:
 		if(self._controllable.par[state['name']].style == "Pulse"):
 			self._controllable.par[state['name']].pulse()
 		else:

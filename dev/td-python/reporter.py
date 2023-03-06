@@ -12,6 +12,7 @@ class SignalsReporter:
 				newReport.append({"label": key, "value": value})
 		return {"kpis": newReport}
 
+
 	def AddReportable(self, op):
 		if op.isDAT:
 			if op.numCols > 2:

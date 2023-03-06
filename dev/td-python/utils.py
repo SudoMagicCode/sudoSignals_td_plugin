@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def parDataBlock(par, group=False):
 	dataBlock = {
 		"name": par.name,
@@ -34,4 +36,8 @@ def CreateAllParDataBlocks(page):
 		parsData.append(groupDataBlock(g))
 	return parsData
 
-		
+def GetLogTimeStamp() -> str:
+	return datetime.now().isoformat(' ', 'seconds')
+
+def TextPortMsg(level:str, msg:str) -> str:
+	return f'{GetLogTimeStamp()} [*] SUDOSIGNALS :: {level} :: {msg}'
