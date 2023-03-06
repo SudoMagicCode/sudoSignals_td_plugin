@@ -1,1 +1,19 @@
-# Overview of Custom Logs
+Logs are text based information that you would like to display on your sudoSignals dashboard on the logs tab. Logs can be useful for capturing any information that is not time series in nature - or not easily graphed. For example, you may want to log when a particular event takes place in your project, or when specific error occurs. Logs allow you to see that information on the web dashboard.
+
+Logs should be a Table DAT with two rows and tow columns. 
+
+Row 0, column 0 should have the cell contents `logLevel`. Valid log levels include:
+0 - INFO
+1 - WARN
+2 - CRIT
+
+A log message on the dashboard will include a log level, and the time the log was recorded. 
+
+Row 1, column 0 should have the cell contents `msg`. Log messages are truncated after 255 characters. 
+
+To log a message to the web dashboard, first set the desired log level, then set the contents of row 1, column 1 to the desired message. The contents of this cell will be queued to be sent to the dashboard, and the cell itself will be cleared and ready for the next log.
+
+See the example Text DATs for sample applications
+- base_log/text_info
+- base_log/text_warn
+- base_log/text_critical

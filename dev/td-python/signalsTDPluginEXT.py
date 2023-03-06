@@ -58,6 +58,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         self.AddReportable( self.signalsReports )
 
         print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
+        self.SetLog(0, 'SudoSignals TouchDesigner Plugin Initialized')
 
     @property
     def parSignalsName(self):
@@ -209,6 +210,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
         newLog = self.CreateLogFromTable(LogOp)
         self.SendLog(newLog)
+        
         # clear message
         LogOp[1, 1] = ''
 
