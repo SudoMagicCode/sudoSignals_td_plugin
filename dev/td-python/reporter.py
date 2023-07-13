@@ -3,7 +3,7 @@ class SignalsReporter:
 		self._reportables = []
 		return
 	
-	def CreateReport(self):
+	def CreateReport(self) -> dict:
 		newReport = []
 		for r in self._reportables:
 			for row in r.rows():
@@ -13,7 +13,7 @@ class SignalsReporter:
 		return {"kpis": newReport}
 
 
-	def AddReportable(self, op):
+	def AddReportable(self, op) -> callable:
 		if op.isDAT:
 			if op.numCols > 2:
 				print("SIGNALS WARNING: Reportable OP '"+op.path+"' has more than 2 columns.\nSignals will use only the first 2 columns to build reports.")

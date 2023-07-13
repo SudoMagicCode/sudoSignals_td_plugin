@@ -5,22 +5,11 @@
 # 
 # Make sure the corresponding toggle is enabled in the Parameter Execute DAT.
 
-import signalsParACTIONS as ACTIONS
-
 def onValueChange(par, prev) -> None:
-    ParsePar(par)
-
+    op('base_private_ext').Parse_par(par)
     return
     
 def onPulse(par) -> None:
-    ParsePar(par)
-
+    op('base_private_ext').Parse_par(par)
     return
 
-def ParsePar(par:callable) -> callable:
-    try:
-        func = getattr(ACTIONS, par.name)
-        func(par)
-    except Exception as E:
-        pass
-    return
