@@ -14,8 +14,8 @@ REPORT_TIMER = op('report_timer')
 RELEASE_SOURCE = "https://github.com/SudoMagicCode/sudoSignals_td_plugin_releases/releases/latest"
 
 class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogger):
-    '''SiganlsClient Doc Strings
-    '''
+    """SiganlsClient Doc Strings
+    """
     
     LINKS = {
         'Help' 					: "https://sudomagiccode.github.io/SudoSignals/",
@@ -31,7 +31,10 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         self.PARConnected 		= parent.signals.par.Connected
         self.PARControlcomp 	= parent.signals.par.Controlcomp
         self.PARStartupdelay	= parent.signals.par.Startupdelay
+        self.PARManualconfig    = parent.signals.par.Manualconfig
         self.signalsReports 	= op('null_defaultReport')
+
+        self._reset_websocket(WEBSOCKET)
 
         # Inherit Router
         SignalsRouter.__init__(self, WEBSOCKET)
@@ -86,7 +89,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
     @property
     def _getSignalsId(self):
-        '''Updates Signals ID - both member and par
+        """Updates Signals ID - both member and par
         
         Args
         ----------
@@ -96,12 +99,16 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         ----------
         signalsId (str)
         > signals ID string retrieved from the signals env var
-        '''
+        """
 
-        try:
-            signalsId = me.var('SIGNALS_ID')
-        except:
-            signalsId = 'no_id_assigned'
+        if self.PARManualconfig.eval():
+            signalsId = self.PARSignalsid.eval()
+
+        else:
+            try:
+                signalsId = me.var('SIGNALS_ID')
+            except:
+                signalsId = 'no_id_assigned'
 
         self.PARSignalsid.val = signalsId
         self.Id = signalsId
@@ -109,7 +116,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
     @property
     def _getSignalsName(self):
-        '''Updates Signals Name - both member and par
+        """Updates Signals Name - both member and par
         
         Args
         ----------
@@ -119,7 +126,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         ----------
         signalsName (str)
         > signals Name string retrieved from the signals env var
-        '''		
+        """		
 
         try:
             signalsName = me.var('SIGNALS_NAME')
@@ -135,7 +142,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         return True if self.Id is not None else False
 
     def SendReport(self):
-        '''Sends Reports
+        """Sends Reports
         
         Args
         ----------
@@ -144,7 +151,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         Returns 
         ----------
         None
-        '''
+        """
         newReportPacket = {
             "action": "report",
             "data": self.CreateReport()
@@ -153,7 +160,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
     def SendLog(self, logPacket:dict) -> None:
         if logPacket == None:
-            print(utils.TextPortMsg('WARN', 'Log supressed - Nonetype received'))
+            print(utils.TextPortMsg('WARN', 'Log suppressed - Nonetype received'))
 
         else:
             newLogPacket = {
@@ -163,22 +170,23 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
             self.SendMessage(newLogPacket)        
 
     def SetLog(self, logLvl:int, logMsg:str) -> None:
-        '''Sends Reports
+        """Sends Reports
         
         Args
         ----------
-        None
+        self (`callable`)
+        > Class instance
 
         Returns 
         ----------
         None
-        '''
+        """
 
         newLog = self.CreateLog(logLvl, logMsg)
         self.SendLog(newLog)
 
     def SetControls(self):
-        '''Sends control-Set packet to SudoSginals Desktop Service
+        """Sends control-Set packet to SudoSginals Desktop Service
         
         Args
         ----------
@@ -187,7 +195,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         Returns 
         ----------
         None
-        '''
+        """
 
         controlState = self.CreateControls()
         newControlPacket = {
@@ -197,7 +205,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         self.SendMessage(newControlPacket)
 
     def SetLogFromTable(self, LogOp:op) -> None:
-        '''Sends log info to SudoSignals Desktop Service
+        """Sends log info to SudoSignals Desktop Service
         
         Args
         ----------
@@ -206,7 +214,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         Returns 
         ----------
         None
-        '''
+        """
 
         newLog = self.CreateLogFromTable(LogOp)
         self.SendLog(newLog)
@@ -221,7 +229,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         self.PARConnected.val = state
 
     def SignalsStartUp(self):
-        '''Signals Start-up Sequence
+        """Signals Start-up Sequence
 
         Ensures signals start up is consistent, and reliable.
         Waits to send control updates until 60 frames have passed. This
@@ -235,7 +243,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         Returns 
         ----------
         None
-        '''
+        """
         print('-'*20)
         print(utils.TextPortMsg('INFO', 'Starting TD Client'))
         print('-'*20)
@@ -250,3 +258,6 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         # Start Sending Reports.
         self.SendReport()
         REPORT_TIMER.par.start.pulse()
+
+    def _reset_websocket(self, websocket:callable) -> None:
+        websocket.par.reset.pulse()

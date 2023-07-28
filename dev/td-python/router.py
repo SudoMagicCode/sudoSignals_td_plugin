@@ -19,7 +19,7 @@ class SignalsRouter(object):
     @Id.setter
     def Id(self, id) -> None:
         if id is None:
-            tdDialogHelper.WarnNoProductId()
+            # tdDialogHelper.WarnNoProductId()
             raise signalsErrors.IDError("TouchDesigner has no Signals ID")
         self._id = id
         self.SendIdentifyPacket({})
@@ -59,4 +59,4 @@ class SignalsRouter(object):
         try:
             self._routes[packet["action"]](packet)
         except KeyError:
-            print('Action "'+packet['action']+'" is not recognized/implemented.')
+            print('SIGNALS ROUTER | Action "'+packet['action']+'" is not recognized/implemented.')
