@@ -248,6 +248,8 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         print(utils.TextPortMsg('INFO', 'Starting TD Client'))
         print('-'*20)
 
+        self._reset_websocket(WEBSOCKET)
+
         # Start connection here.
         WEBSOCKET.par.active = 1
 
@@ -261,3 +263,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
     def _reset_websocket(self, websocket:callable) -> None:
         websocket.par.reset.pulse()
+
+    def Clean_up(self) -> None:
+        self._clean_up()
+
+    def _clean_up(self) -> None:
+        parent.signals.par.Connected = False

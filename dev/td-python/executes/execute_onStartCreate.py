@@ -17,6 +17,7 @@ def onCreate():
 	return
 
 def onExit():
+	op('base_private_ext').Clean_up()
 	return
 
 def onProjectPreSave():
