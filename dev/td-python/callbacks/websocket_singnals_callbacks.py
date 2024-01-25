@@ -31,6 +31,7 @@ def onReceiveText(dat, rowIndex, message):
 # Only binary frame messages will be handled in this function.
 
 def onReceiveBinary(dat, contents):
+	op('base_private_ext').ext.Signals.RecvBinary(contents)
 	return
 
 # me - this DAT
