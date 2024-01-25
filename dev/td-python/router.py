@@ -1,7 +1,7 @@
 import json
 import signalsErrors
 import tdDialogHelper
-
+import packets
 class SignalsRouter(object):
     '''
     '''
@@ -9,7 +9,7 @@ class SignalsRouter(object):
         self._routes = {}
         self._id = None
         self._socket = socket
-        self.AddActionRoute("Start", self.SendIdentifyPacket)
+        self.AddActionRoute(packets.corePackets_pb2.PacketType.START, self.SendIdentifyPacket)
         return
 
     @property
@@ -28,28 +28,26 @@ class SignalsRouter(object):
         '''Sends identity packet to SudoSignals Desktop Service'''
         tdVersion = f"{app.version} {app.build}"
         pluginVersion = parent.signals.par.Version.eval()
-        newIdentifyPacket = {
-            "action": "identify", 
-            "data": {
-                "SoftwareName": "TouchDesigner", 
-                "SoftwareVersion": tdVersion,
-                "PluginVersion" : pluginVersion
-            }
-        }
-        self.SendMessage(newIdentifyPacket)
+
+        newPacket = packets.CreateIdentifyPacket("TouchDesigner", tdVersion, pluginVersion)
+        self.SendMessage(newPacket)
 
     def RecvMessage(self, message) -> None:
         '''We are receiving a message from the Daemon'''
         newPacket = json.loads(message)
         self._routeMessage(newPacket)
 
+    def RecvBinary(self, contents) -> None:
+        '''We are receiving a binary, possible protobuf'''
+        packet = packets.corePackets_pb2.CorePacket()
+        packet.ParseFromString(contents)
+        self._routeBinaryMessage(packet, packet.action)
+
     def SendMessage(self, packet) -> None:
         if self._id is None:
             print("No id present. Supressing Message.")
             return
-        packet['identifier'] = self._id
-        # debug(packet)
-        self._socket.sendText(json.dumps(packet))
+        self._socket.sendBinary(packet.SerializeToString())
         return
 
     def AddActionRoute(self, routeName, routeFunction) -> None:
@@ -60,3 +58,9 @@ class SignalsRouter(object):
             self._routes[packet["action"]](packet)
         except KeyError:
             print('SIGNALS ROUTER | Action "'+packet['action']+'" is not recognized/implemented.')
+
+    def _routeBinaryMessage(self, packet, route) -> None:
+        try:
+            self._routes[route](packet)
+        except KeyError:
+            print('SIGNALS ROUTER | Action "'+packets.corePackets_pb2.PacketType.Name(route)+'" is not recognized/implemented.')
