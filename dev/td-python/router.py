@@ -29,7 +29,7 @@ class SignalsRouter(object):
         tdVersion = f"{app.version} {app.build}"
         pluginVersion = parent.signals.par.Version.eval()
 
-        newPacket = packets.CreateIdentifyPacket("TouchDesigner", tdVersion, pluginVersion)
+        newPacket = packets.CreateIdentifyPacket(self._id, "TouchDesigner", tdVersion, pluginVersion)
         self.SendMessage(newPacket)
 
     def RecvMessage(self, message) -> None:
@@ -47,7 +47,8 @@ class SignalsRouter(object):
         if self._id is None:
             print("No id present. Supressing Message.")
             return
-        self._socket.sendBinary(packet.SerializeToString())
+        print(packet)
+        self._socket.sendText(packet)
         return
 
     def AddActionRoute(self, routeName, routeFunction) -> None:

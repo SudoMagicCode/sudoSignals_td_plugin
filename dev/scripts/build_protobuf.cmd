@@ -1,13 +1,6 @@
 @echo off
 
 
-where protoc
-if (%ERRORLEVEL% NEQ 0 ) then (
-	echo protobuf compiler not found. Please download it from here: https://github.com/protocolbuffers/protobuf/releases/tag/v25.2
-	goto :done
-)
-
-
 echo starting...
 
 set src_dir=../protobuf/src
