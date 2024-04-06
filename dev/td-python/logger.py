@@ -1,26 +1,38 @@
 import utils
+import packets
 
 class SignalsLogger:
     def __init__(self):
         self.__logTables = []
         return
     
-    def CreateLog(self, logLvl:int, logMsg:str) -> dict:
+    def CreateLog(self, logLvl:int, logMsg:str) -> packets.fieldTypes_pb2.Log:
         newLog = None
 
-        valid_log_lvl = [0, 1, 2]
+        valid_log_lvl = [0, 1, 2, 3]
+        log_level_map = [
+            packets.fieldTypes_pb2.Log.LogLevel.RESERVED,
+            packets.fieldTypes_pb2.Log.LogLevel.INFO,
+            packets.fieldTypes_pb2.Log.LogLevel.WARN,
+            packets.fieldTypes_pb2.Log.LogLevel.CRIT
+        ]
         if logLvl not in valid_log_lvl:
             print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, or 2'))
         else:
-            newLog = {
-                'logLevel' : logLvl,
-                'message' : logMsg
-            }
+            newLog = packets.fieldTypes_pb2.Log()
+            newLog.level = log_level_map[logLvl]
+            newLog.message = logMsg
         return newLog
 
-    def CreateLogFromTable(self, logOp:op) -> dict:
+    def CreateLogFromTable(self, logOp:op) -> packets.fieldTypes_pb2.Log:
         newLog = None
-        valid_log_level = ['0', '1', '2']
+        valid_log_level = ['0', '1', '2', '3']
+        log_level_map = {
+            '0':packets.fieldTypes_pb2.Log.LogLevel.RESERVED,
+            '1':packets.fieldTypes_pb2.Log.LogLevel.INFO,
+            '2':packets.fieldTypes_pb2.Log.LogLevel.WARN,
+            '3':packets.fieldTypes_pb2.Log.LogLevel.CRIT
+        }
         
         #check to ensure op is table
         if logOp.type != 'table':
@@ -34,9 +46,8 @@ class SignalsLogger:
                 if logOp[0, 1].val not in valid_log_level:
                     print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, or 2'))
                 else:
-                    newLog = {
-                        'logLevel' : int(logOp[0, 1].val),
-                        'message' : logOp[1, 1].val			
-                    }
+                    newLog = packets.fieldTypes_pb2.Log()
+                    newLog.level = log_level_map[logOp[0, 1].val]
+                    newLog.message = logOp[1, 1].val
 
         return newLog

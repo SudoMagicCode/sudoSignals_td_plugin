@@ -11,13 +11,54 @@ except:
 
 def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
 	newPacket = packets_pb2.WebsocketPacket()
-	newPacket.action = packets_pb2.PacketType.IDENTIFY
-	newLocalIdentifier = packets_pb2.LocalIdentifier()
-	newLocalIdentifier.processId = signals_id
-	newPacket.local.CopyFrom(newLocalIdentifier)
-	newIdentifyData = dataTypes_pb2.IdentifyData()
-	newIdentifyData.software = software
-	newIdentifyData.version = softwareVersion
-	newPacket.data.Pack(newIdentifyData)
-
+	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_IDENTIFY
+	
+	newIdentity = packets_pb2.PacketIdentity()
+	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+	newIdentity.additionalIdentifiers['process_id'] = signals_id
+	newIdentity.additionalIdentifiers['software'] = software
+	newIdentity.additionalIdentifiers['software_version'] = softwareVersion
+	newIdentity.additionalIdentifiers['plugin_version'] = pluginVersion
 	return newPacket 
+
+def CreateLogPacket(logLevel: fieldTypes_pb2.Log.LogLevel, message: str):
+	newPacket = packets_pb2.WebsocketPacket()
+	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_LOG
+
+	newIdentity = packets_pb2.PacketIdentity()
+	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+
+	newLogPayload = fieldTypes_pb2.Log()
+	newLogPayload.level = logLevel
+	newLogPayload.message = message
+
+	newPacket.payload.Pack(newLogPayload)
+
+	return newPacket
+
+def CreateReportPacket(dataFrame: fieldTypes_pb2.DataFrame):
+	newPacket = packets_pb2.WebsocketPacket()
+	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_REPORT
+	
+	newIdentity = packets_pb2.PacketIdentity()
+	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+
+	newReportPayload = fieldTypes_pb2.Report()
+	newReportPayload.data.CopyFrom(dataFrame)
+
+	newPacket.payload.Pack(newReportPayload)
+
+	return newPacket
+
+def CreateControlsPacket():
+	newPacket = packets_pb2.WebsocketPacket()
+	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_CONTROLS
+	
+	newIdentity = packets_pb2.PacketIdentity()
+	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+
+	newControlPayload = fieldTypes_pb2.Control()
+
+	newPacket.payload.Pack(newControlPayload)
+
+	return newPacket

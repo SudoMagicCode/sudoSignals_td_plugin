@@ -1,4 +1,5 @@
 import json
+from google.protobuf.json_format import MessageToJson, Parse
 import signalsErrors
 import tdDialogHelper
 import packets
@@ -9,7 +10,7 @@ class SignalsRouter(object):
         self._routes = {}
         self._id = None
         self._socket = socket
-        self.AddActionRoute(packets.corePackets_pb2.PacketType.START.Name(), self.SendIdentifyPacket)
+        self.AddActionRoute(packets.packets_pb2.WebsocketPacket.START, self.SendIdentifyPacket)
         return
 
     @property
@@ -34,21 +35,21 @@ class SignalsRouter(object):
 
     def RecvMessage(self, message) -> None:
         '''We are receiving a message from the Daemon'''
-        newPacket = json.loads(message)
+        newPacket = Parse(message, packets.packets_pb2.WebsocketPacket())
         self._routeMessage(newPacket)
 
     def RecvBinary(self, contents) -> None:
         '''We are receiving a binary, possible protobuf'''
-        packet = packets.corePackets_pb2.CorePacket()
+        packet = packets.packets_pb2.WebsocketPacket()
         packet.ParseFromString(contents)
         self._routeBinaryMessage(packet, packet.action)
 
-    def SendMessage(self, packet) -> None:
+    def SendMessage(self, packet: packets.packets_pb2.WebsocketPacket) -> None:
         if self._id is None:
             print("No id present. Supressing Message.")
             return
-        print(packet)
-        self._socket.sendText(packet)
+        jsonData = MessageToJson(packet)
+        self._socket.sendText(jsonData)
         return
 
     def AddActionRoute(self, routeName, routeFunction) -> None:
@@ -64,4 +65,4 @@ class SignalsRouter(object):
         try:
             self._routes[route](packet)
         except KeyError:
-            print('SIGNALS ROUTER | Action "'+packets.corePackets_pb2.PacketType.Name(route)+'" is not recognized/implemented.')
+            print('SIGNALS ROUTER | Action "'+packets.packets_pb2.WebsocketPacket.PacketType.Name(route)+'" is not recognized/implemented.')

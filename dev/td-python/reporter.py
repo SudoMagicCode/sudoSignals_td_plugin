@@ -1,16 +1,48 @@
+import packets
+import time
 class SignalsReporter:
 	def __init__(self):
+		self._pendingReportables = []
 		self._reportables = []
+		self.dataFields = {}
 		return
 	
-	def CreateReport(self) -> dict:
-		newReport = []
+	def _pollFields(self):
+		currentTime = time.now()
+		if "time" in self.dataFields:
+			self.dataFields["time"].values.add(currentTime)
+		else:
+			newDataField = packets.fieldTypes_pb2.DataField()
+			newDataField.name = "time"
+			newDataField.type = packets.fieldTypes_pb2.DataField.DataFieldTypes.TIME
+			self.dataFields["time"] = newDataField
+			self.dataFields["time"].values.add(currentTime)
+		
 		for r in self._reportables:
 			for row in r.rows():
 				key = row[0].val
 				value = row[1].val
-				newReport.append({"label": key, "value": value})
-		return {"kpis": newReport}
+				fieldHash = r.name+":"+key
+				dataField = None
+				if fieldHash in self.dataFields:
+					dataField = self.dataFields[fieldHash]
+				else:
+					newDataField = packets.fieldTypes_pb2.DataField()
+					newDataField.name = key
+					newDataField.type = packets.fieldTypes_pb2.DataField.DataFieldTypes.NUMBER
+					self.dataFields[fieldHash] = newDataField
+					dataField = newDataField
+					
+				dataField.values.add(value)
+		return 
+	
+	def CreateDataFrame(self) -> packets.fieldTypes_pb2.DataFrame:
+		newDataFrame = packets.fieldTypes_pb2.DataFrame()
+		newDataFrame.fields.extend(list(self.dataFields.values()))
+		self.dataFields = {}
+		self._reportables.extend(self._pendingReportables)
+		self._pendingReportables = []
+		return newDataFrame
 
 
 	def AddReportable(self, op) -> callable:
@@ -23,4 +55,4 @@ class SignalsReporter:
 		else:
 			print("SIGNALS WARNING: Reportable OP '"+op.path+"' is not a DAT.\nSignals will use only DAT operators to create reports.")
 			return
-		self._reportables.append(op)
+		self._pendingReportables.append(op)

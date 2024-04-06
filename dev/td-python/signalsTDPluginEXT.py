@@ -8,6 +8,7 @@ from logger import SignalsLogger
 
 import tdDialogHelper
 import utils
+import packets
 
 WEBSOCKET = op('websocket_signals')
 REPORT_TIMER = op('report_timer')
@@ -142,78 +143,40 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         return True if self.Id is not None else False
 
     def SendReport(self):
-        """Sends Reports
-        
-        Args
-        ----------
-        None
+        newDataFrame = self.CreateDataFrame()
+        newDataFrame.name = self.parSignalsid
 
-        Returns 
-        ----------
-        None
-        """
-        newReportPacket = {
-            "action": "report",
-            "data": self.CreateReport()
-        }
+        newReportPacket = packets.CreateReportPacket(newDataFrame)
+
         self.SendMessage(newReportPacket)
 
-    def SendLog(self, logPacket:dict) -> None:
-        if logPacket == None:
+    def SendLog(self, log:packets.fieldTypes_pb2.Log) -> None:
+        if log == None:
             print(utils.TextPortMsg('WARN', 'Log suppressed - Nonetype received'))
 
         else:
-            newLogPacket = {
-                "action": "log",
-                "data": logPacket
-            }
+            newLogPacket = packets.CreateLogPacket(log.level,log.message)
             self.SendMessage(newLogPacket)        
 
     def SetLog(self, logLvl:int, logMsg:str) -> None:
-        """Sends Reports
-        
-        Args
-        ----------
-        self (`callable`)
-        > Class instance
-
-        Returns 
-        ----------
-        None
-        """
-
         newLog = self.CreateLog(logLvl, logMsg)
         self.SendLog(newLog)
 
     def SetControls(self):
-        """Sends control-Set packet to SudoSginals Desktop Service
-        
-        Args
-        ----------
-        None
-
-        Returns 
-        ----------
-        None
+        """Sends control-Set packet to SudoSignals Desktop Service
         """
 
-        controlState = self.CreateControls()
-        newControlPacket = {
-            "action": "control-Set",
-            "data": {"state": controlState}
-        }
+        #controlState = self.CreateControls()
+        #newControlPacket = {
+        #    "action": "control-Set",
+        #    "data": {"state": controlState}
+        #}
+
+        newControlPacket = packets.CreateControlsPacket()
         self.SendMessage(newControlPacket)
 
     def SetLogFromTable(self, LogOp:op) -> None:
         """Sends log info to SudoSignals Desktop Service
-        
-        Args
-        ----------
-        None
-
-        Returns 
-        ----------
-        None
         """
 
         newLog = self.CreateLogFromTable(LogOp)
@@ -261,11 +224,11 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         self.SendReport()
         REPORT_TIMER.par.start.pulse()
 
-    def _reset_websocket(self, websocket:callable) -> None:
-        websocket.par.reset.pulse()
-
     def Clean_up(self) -> None:
         self._clean_up()
 
     def _clean_up(self) -> None:
         parent.signals.par.Connected = False
+
+    def _reset_websocket(self, websocket:callable) -> None:
+        websocket.par.reset.pulse()
