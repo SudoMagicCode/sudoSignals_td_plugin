@@ -9,7 +9,7 @@ class SignalsRouter(object):
         self._routes = {}
         self._id = None
         self._socket = socket
-        self.AddActionRoute(packets.corePackets_pb2.PacketType.START, self.SendIdentifyPacket)
+        self.AddActionRoute(packets.corePackets_pb2.PacketType.START.Name(), self.SendIdentifyPacket)
         return
 
     @property

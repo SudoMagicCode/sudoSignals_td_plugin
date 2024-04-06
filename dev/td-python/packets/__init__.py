@@ -1,9 +1,6 @@
 try:
-	import corePackets_pb2
-	import dataTypes_pb2
 	import packets_pb2
 	import signalsOptions_pb2
-	import sudoSignalsTypes_pb2
 	import dynamo_pb2
 	import fieldTypes_pb2
 	import payloads_pb2
@@ -13,9 +10,9 @@ except:
 
 
 def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
-	newPacket = corePackets_pb2.CorePacket()
-	newPacket.action = corePackets_pb2.PacketType.IDENTIFY
-	newLocalIdentifier = corePackets_pb2.LocalIdentifier()
+	newPacket = packets_pb2.WebsocketPacket()
+	newPacket.action = packets_pb2.PacketType.IDENTIFY
+	newLocalIdentifier = packets_pb2.LocalIdentifier()
 	newLocalIdentifier.processId = signals_id
 	newPacket.local.CopyFrom(newLocalIdentifier)
 	newIdentifyData = dataTypes_pb2.IdentifyData()
