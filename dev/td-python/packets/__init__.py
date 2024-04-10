@@ -19,6 +19,7 @@ def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
 	newIdentity.additionalIdentifiers['software'] = software
 	newIdentity.additionalIdentifiers['software_version'] = softwareVersion
 	newIdentity.additionalIdentifiers['plugin_version'] = pluginVersion
+	newPacket.identity.CopyFrom(newIdentity)
 	return newPacket 
 
 def CreateLogPacket(logLevel: fieldTypes_pb2.Log.LogLevel, message: str):

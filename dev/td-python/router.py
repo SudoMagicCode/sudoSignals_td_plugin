@@ -10,7 +10,7 @@ class SignalsRouter(object):
         self._routes = {}
         self._id = None
         self._socket = socket
-        self.AddActionRoute(packets.packets_pb2.WebsocketPacket.START, self.SendIdentifyPacket)
+        self.AddActionRoute(packets.packets_pb2.WebsocketPacket.PacketType.Name(packets.packets_pb2.WebsocketPacket.PacketType.START), self.SendIdentifyPacket)
         return
 
     @property
@@ -56,8 +56,9 @@ class SignalsRouter(object):
         self._routes[routeName] = routeFunction
 
     def _routeMessage(self, packet) -> None:
+        packetActionName = packets.packets_pb2.WebsocketPacket.PacketType.Name(packet.action)
         try:
-            self._routes[packet["action"]](packet)
+            self._routes[packetActionName](packet)
         except KeyError:
             print('SIGNALS ROUTER | Action "'+packet['action']+'" is not recognized/implemented.')
 

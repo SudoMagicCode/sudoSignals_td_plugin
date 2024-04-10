@@ -1,4 +1,7 @@
+import google.protobuf
+import google.protobuf.struct_pb2
 import packets
+import google
 import time
 class SignalsReporter:
 	def __init__(self):
@@ -8,15 +11,19 @@ class SignalsReporter:
 		return
 	
 	def _pollFields(self):
-		currentTime = time.now()
+		currentTime = time.time()
 		if "time" in self.dataFields:
-			self.dataFields["time"].values.add(currentTime)
+			newVal = google.protobuf.struct_pb2.Value(currentTime)
+			newVal.number_value = currentTime
+			self.dataFields["time"].values.append(newVal)
 		else:
 			newDataField = packets.fieldTypes_pb2.DataField()
 			newDataField.name = "time"
 			newDataField.type = packets.fieldTypes_pb2.DataField.DataFieldTypes.TIME
+			newVal = google.protobuf.struct_pb2.Value()
+			newVal.number_value = currentTime
+			newDataField.values.append(newVal)
 			self.dataFields["time"] = newDataField
-			self.dataFields["time"].values.add(currentTime)
 		
 		for r in self._reportables:
 			for row in r.rows():
@@ -32,11 +39,13 @@ class SignalsReporter:
 					newDataField.type = packets.fieldTypes_pb2.DataField.DataFieldTypes.NUMBER
 					self.dataFields[fieldHash] = newDataField
 					dataField = newDataField
-					
-				dataField.values.add(value)
+				newVal = google.protobuf.struct_pb2.Value()
+				newVal.number_value = float(value)
+				dataField.values.append(newVal)
 		return 
 	
 	def CreateDataFrame(self) -> packets.fieldTypes_pb2.DataFrame:
+		self._pollFields()
 		newDataFrame = packets.fieldTypes_pb2.DataFrame()
 		newDataFrame.fields.extend(list(self.dataFields.values()))
 		self.dataFields = {}
