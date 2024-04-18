@@ -61,7 +61,8 @@ def CreateControlPacket(controlData: list[fieldTypes_pb2.ControlPage]):
 	newControlPayload = payloads_pb2.ProcessControlPayload()
 
 	for controlPage in controlData:
-		newControlPayload.data[controlPage.uuid] = controlPage
+		
+		newControlPayload.data[controlPage.uuid].CopyFrom(controlPage)
 
 	newPacket.payload.Pack(newControlPayload)
 

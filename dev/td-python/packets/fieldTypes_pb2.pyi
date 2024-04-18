@@ -124,7 +124,7 @@ class ControlPage(_message.Message):
     def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., controls: _Optional[_Mapping[int, Control]] = ...) -> None: ...
 
 class Control(_message.Message):
-    __slots__ = ("uuid", "controlType", "label", "entityReference", "values")
+    __slots__ = ("uuid", "controlType", "label", "entityReference", "values", "menuOptions")
     class ControlType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = ()
         RESERVED: _ClassVar[Control.ControlType]
@@ -148,17 +148,26 @@ class Control(_message.Message):
         key: str
         value: str
         def __init__(self, key: _Optional[str] = ..., value: _Optional[str] = ...) -> None: ...
+    class MenuOptionsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: str
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[str] = ...) -> None: ...
     UUID_FIELD_NUMBER: _ClassVar[int]
     CONTROLTYPE_FIELD_NUMBER: _ClassVar[int]
     LABEL_FIELD_NUMBER: _ClassVar[int]
     ENTITYREFERENCE_FIELD_NUMBER: _ClassVar[int]
     VALUES_FIELD_NUMBER: _ClassVar[int]
+    MENUOPTIONS_FIELD_NUMBER: _ClassVar[int]
     uuid: str
     controlType: Control.ControlType
     label: str
     entityReference: _containers.ScalarMap[str, str]
     values: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Value]
-    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[Control.ControlType, str]] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ...) -> None: ...
+    menuOptions: _containers.ScalarMap[str, str]
+    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[Control.ControlType, str]] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ..., menuOptions: _Optional[_Mapping[str, str]] = ...) -> None: ...
 
 class Alert_Rule(_message.Message):
     __slots__ = ("uuid",)
