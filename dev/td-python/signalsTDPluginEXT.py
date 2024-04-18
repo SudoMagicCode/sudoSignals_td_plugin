@@ -172,7 +172,8 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         #    "data": {"state": controlState}
         #}
 
-        newControlPacket = packets.CreateControlsPacket()
+        controlPages = self.CreateControls()
+        newControlPacket = packets.CreateControlPacket(controlPages)
         self.SendMessage(newControlPacket)
 
     def SetLogFromTable(self, LogOp:op) -> None:

@@ -22,6 +22,12 @@ class Tier(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     BASIC: _ClassVar[Tier]
     STANDARD: _ClassVar[Tier]
     ENTERPRISE: _ClassVar[Tier]
+
+class AccountTheme(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    DEFAULT: _ClassVar[AccountTheme]
+    LIGHT: _ClassVar[AccountTheme]
+    DARK: _ClassVar[AccountTheme]
 PAID: PaymentStatus
 UNPAID: PaymentStatus
 PENDING: PaymentStatus
@@ -29,20 +35,29 @@ FREE: Tier
 BASIC: Tier
 STANDARD: Tier
 ENTERPRISE: Tier
+DEFAULT: AccountTheme
+LIGHT: AccountTheme
+DARK: AccountTheme
 
 class Account(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "email", "name", "adminViewer")
+    __slots__ = ("dynamoLookup", "uuid", "email", "name", "adminViewer", "lastLogin", "preferedTheme", "lastPathVisited")
     DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
     EMAIL_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     ADMINVIEWER_FIELD_NUMBER: _ClassVar[int]
+    LASTLOGIN_FIELD_NUMBER: _ClassVar[int]
+    PREFEREDTHEME_FIELD_NUMBER: _ClassVar[int]
+    LASTPATHVISITED_FIELD_NUMBER: _ClassVar[int]
     dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
     email: str
     name: str
     adminViewer: bool
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., email: _Optional[str] = ..., name: _Optional[str] = ..., adminViewer: bool = ...) -> None: ...
+    lastLogin: int
+    preferedTheme: AccountTheme
+    lastPathVisited: str
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., email: _Optional[str] = ..., name: _Optional[str] = ..., adminViewer: bool = ..., lastLogin: _Optional[int] = ..., preferedTheme: _Optional[_Union[AccountTheme, str]] = ..., lastPathVisited: _Optional[str] = ...) -> None: ...
 
 class Team(_message.Message):
     __slots__ = ("dynamoLookup", "uuid", "name", "ownerUuid", "isDefault", "members", "installations", "machines", "invitations")
@@ -88,7 +103,7 @@ class Team(_message.Message):
     def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., ownerUuid: _Optional[str] = ..., isDefault: bool = ..., members: _Optional[_Mapping[str, Member]] = ..., installations: _Optional[_Mapping[str, InstallationLink]] = ..., machines: _Optional[_Mapping[str, MachineLink]] = ..., invitations: _Optional[_Iterable[_Union[Invitation, _Mapping]]] = ...) -> None: ...
 
 class Member(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "role")
+    __slots__ = ("dynamoLookup", "uuid", "role", "email", "name", "lastActive")
     class Role(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = ()
         RESERVED: _ClassVar[Member.Role]
@@ -104,10 +119,16 @@ class Member(_message.Message):
     DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
     ROLE_FIELD_NUMBER: _ClassVar[int]
+    EMAIL_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    LASTACTIVE_FIELD_NUMBER: _ClassVar[int]
     dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
     role: Member.Role
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., role: _Optional[_Union[Member.Role, str]] = ...) -> None: ...
+    email: str
+    name: str
+    lastActive: int
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., role: _Optional[_Union[Member.Role, str]] = ..., email: _Optional[str] = ..., name: _Optional[str] = ..., lastActive: _Optional[int] = ...) -> None: ...
 
 class Invitation(_message.Message):
     __slots__ = ("dynamoLookup", "email", "role")
@@ -241,16 +262,20 @@ class Machine(_message.Message):
     def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[_fieldTypes_pb2.StatusTypes, str]] = ..., installationUuid: _Optional[str] = ..., installationName: _Optional[str] = ..., teamUuid: _Optional[str] = ..., teamName: _Optional[str] = ..., connection: _Optional[_Union[_fieldTypes_pb2.SourceConnection, _Mapping]] = ..., lastUpdated: _Optional[int] = ..., latestLog: _Optional[_Union[_fieldTypes_pb2.Log, _Mapping]] = ..., latestReport: _Optional[_Union[_fieldTypes_pb2.Report, _Mapping]] = ..., systemInfo: _Optional[_Union[_struct_pb2.Struct, _Mapping]] = ..., activeProfile: _Optional[_Union[_fieldTypes_pb2.Profile, _Mapping]] = ..., processes: _Optional[_Mapping[str, _fieldTypes_pb2.Process]] = ..., profiles: _Optional[_Mapping[str, _fieldTypes_pb2.Profile]] = ..., alert_rules: _Optional[_Iterable[_Union[_fieldTypes_pb2.Alert_Rule, _Mapping]]] = ..., logs: _Optional[_Iterable[_Union[_fieldTypes_pb2.Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[_fieldTypes_pb2.Report, _Mapping]]] = ...) -> None: ...
 
 class MachineLink(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "name", "status")
+    __slots__ = ("dynamoLookup", "uuid", "name", "status", "totalProcesses", "activeProcesses")
     DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
+    TOTALPROCESSES_FIELD_NUMBER: _ClassVar[int]
+    ACTIVEPROCESSES_FIELD_NUMBER: _ClassVar[int]
     dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
     name: str
     status: _fieldTypes_pb2.StatusTypes
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[_fieldTypes_pb2.StatusTypes, str]] = ...) -> None: ...
+    totalProcesses: int
+    activeProcesses: int
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[_fieldTypes_pb2.StatusTypes, str]] = ..., totalProcesses: _Optional[int] = ..., activeProcesses: _Optional[int] = ...) -> None: ...
 
 class Client(_message.Message):
     __slots__ = ("dynamoLookup", "connected", "hasToken", "accessCode", "token")
@@ -267,15 +292,19 @@ class Client(_message.Message):
     def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., connected: bool = ..., hasToken: bool = ..., accessCode: _Optional[str] = ..., token: _Optional[str] = ...) -> None: ...
 
 class Subscription(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "handle", "token", "listening")
+    __slots__ = ("dynamoLookup", "uuid", "handle", "token", "listening", "partition", "sort")
     DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
     HANDLE_FIELD_NUMBER: _ClassVar[int]
     TOKEN_FIELD_NUMBER: _ClassVar[int]
     LISTENING_FIELD_NUMBER: _ClassVar[int]
+    PARTITION_FIELD_NUMBER: _ClassVar[int]
+    SORT_FIELD_NUMBER: _ClassVar[int]
     dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
     handle: str
     token: str
     listening: str
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., handle: _Optional[str] = ..., token: _Optional[str] = ..., listening: _Optional[str] = ...) -> None: ...
+    partition: str
+    sort: str
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., handle: _Optional[str] = ..., token: _Optional[str] = ..., listening: _Optional[str] = ..., partition: _Optional[str] = ..., sort: _Optional[str] = ...) -> None: ...

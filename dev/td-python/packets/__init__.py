@@ -51,14 +51,17 @@ def CreateReportPacket(dataFrame: fieldTypes_pb2.DataFrame):
 
 	return newPacket
 
-def CreateControlsPacket():
+def CreateControlPacket(controlData: list[fieldTypes_pb2.ControlPage]):
 	newPacket = packets_pb2.WebsocketPacket()
 	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_CONTROLS
 	
 	newIdentity = packets_pb2.PacketIdentity()
 	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
 
-	newControlPayload = fieldTypes_pb2.Control()
+	newControlPayload = payloads_pb2.ProcessControlPayload()
+
+	for controlPage in controlData:
+		newControlPayload.data[controlPage.uuid] = controlPage
 
 	newPacket.payload.Pack(newControlPayload)
 

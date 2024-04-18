@@ -77,6 +77,7 @@ class WebsocketPacket(_message.Message):
         PROCESS_REPORT: _ClassVar[WebsocketPacket.PacketType]
         PROCESS_CONTROLS: _ClassVar[WebsocketPacket.PacketType]
         SUBSCRIBER_UPDATE: _ClassVar[WebsocketPacket.PacketType]
+        SUBSCRIBER_DELETE: _ClassVar[WebsocketPacket.PacketType]
         SUBSCRIPTION_DATA: _ClassVar[WebsocketPacket.PacketType]
         SUBSCRIPTION_PARTIAL: _ClassVar[WebsocketPacket.PacketType]
         ACCESS_UPDATE: _ClassVar[WebsocketPacket.PacketType]
@@ -99,6 +100,7 @@ class WebsocketPacket(_message.Message):
     PROCESS_REPORT: WebsocketPacket.PacketType
     PROCESS_CONTROLS: WebsocketPacket.PacketType
     SUBSCRIBER_UPDATE: WebsocketPacket.PacketType
+    SUBSCRIBER_DELETE: WebsocketPacket.PacketType
     SUBSCRIPTION_DATA: WebsocketPacket.PacketType
     SUBSCRIPTION_PARTIAL: WebsocketPacket.PacketType
     ACCESS_UPDATE: WebsocketPacket.PacketType

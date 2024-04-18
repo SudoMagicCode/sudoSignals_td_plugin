@@ -1,39 +1,57 @@
 from datetime import datetime
+import packets
+from google.protobuf import struct_pb2
 
-def parDataBlock(par, group=False):
-	dataBlock = {
-		"name": par.name,
-		"label": par.label,
-		"path": par.owner.path,
-		"style": par.style,
-		"index": par.index,
-		"currentValue": par.eval(),
-		"inGroup": group,
-	}
-	if(par.style == "Menu" or par.style == "StrMenu"):
-		dataBlock['menuLabels'] = par.menuLabels
-		dataBlock['menuNames'] = par.menuNames
-	return dataBlock
+
+
+styleToControlTypeMap = {
+	"Float": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"Int": packets.fieldTypes_pb2.Control.ControlType.INT,
+	"Str": packets.fieldTypes_pb2.Control.ControlType.STRING,
+	"Pulse": packets.fieldTypes_pb2.Control.ControlType.PULSE,
+	"Toggle": packets.fieldTypes_pb2.Control.ControlType.TOGGLE,
+	"Menu": packets.fieldTypes_pb2.Control.ControlType.MENU,
+	"StrMenu": packets.fieldTypes_pb2.Control.ControlType.MENU,
+	"RGB": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"RGBA": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"UV": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"UVW": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"XY": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"XYZ": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"WH": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+}
+
+
+
+def parDataBlock(parGroup) -> packets.fieldTypes_pb2.Control:
+	newControl = packets.fieldTypes_pb2.Control()
+
+	newControl.controlType = styleToControlTypeMap[parGroup.style]
+	newControl.label = parGroup.label
+	newControl.entityReference["path"] = parGroup.owner.path
+	newControl.entityReference["name"] = parGroup.name
+
+	for parVal in parGroup.val:
+		if parVal is not None:
+			newValue = struct_pb2.Value()
+			if isinstance(parVal, str):
+				newValue.string_value = parVal
+			elif isinstance(parVal, int | float):
+				newValue.number_value = parVal
+			elif isinstance(parVal, bool):
+				newValue.bool_value = parVal	
+			
+			newControl.values.append(newValue)
+	return newControl
 	
-def groupDataBlock(group):
-	if(len(group)>1):
-		return {
-			"group": True,
-			"name": group[0].name,
-			"label": group[0].label,
-			"style": group[0].style,
-			"index": group[0].index,
-			"path": group[0].owner.path,
-			"pars": [parDataBlock(par, group=True) for par in group]
-		}
-	else:
-		return parDataBlock(group[0], group=False)
+def groupDataBlock(group) -> packets.fieldTypes_pb2.Control:
+	return parDataBlock(group)
 
-def CreateAllParDataBlocks(page):
-	parsData = []
-	groups = page.parTuplets
-	for g in groups:
-		parsData.append(groupDataBlock(g))
+def CreateAllParDataBlocks(page) -> dict[int, packets.fieldTypes_pb2.Control] :
+	parsData = {}
+	groups = page.parGroups
+	for idx,g in enumerate(groups):
+		parsData[idx] = groupDataBlock(g)
 	return parsData
 
 def GetLogTimeStamp() -> str:

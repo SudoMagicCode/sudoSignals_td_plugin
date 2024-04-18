@@ -106,11 +106,59 @@ class Event(_message.Message):
     uuid: str
     def __init__(self, uuid: _Optional[str] = ...) -> None: ...
 
-class Control(_message.Message):
-    __slots__ = ("uuid",)
+class ControlPage(_message.Message):
+    __slots__ = ("uuid", "name", "controls")
+    class ControlsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: int
+        value: Control
+        def __init__(self, key: _Optional[int] = ..., value: _Optional[_Union[Control, _Mapping]] = ...) -> None: ...
     UUID_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    CONTROLS_FIELD_NUMBER: _ClassVar[int]
     uuid: str
-    def __init__(self, uuid: _Optional[str] = ...) -> None: ...
+    name: str
+    controls: _containers.MessageMap[int, Control]
+    def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., controls: _Optional[_Mapping[int, Control]] = ...) -> None: ...
+
+class Control(_message.Message):
+    __slots__ = ("uuid", "controlType", "label", "entityReference", "values")
+    class ControlType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+        __slots__ = ()
+        RESERVED: _ClassVar[Control.ControlType]
+        STRING: _ClassVar[Control.ControlType]
+        INT: _ClassVar[Control.ControlType]
+        FLOAT: _ClassVar[Control.ControlType]
+        TOGGLE: _ClassVar[Control.ControlType]
+        PULSE: _ClassVar[Control.ControlType]
+        MENU: _ClassVar[Control.ControlType]
+    RESERVED: Control.ControlType
+    STRING: Control.ControlType
+    INT: Control.ControlType
+    FLOAT: Control.ControlType
+    TOGGLE: Control.ControlType
+    PULSE: Control.ControlType
+    MENU: Control.ControlType
+    class EntityReferenceEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: str
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[str] = ...) -> None: ...
+    UUID_FIELD_NUMBER: _ClassVar[int]
+    CONTROLTYPE_FIELD_NUMBER: _ClassVar[int]
+    LABEL_FIELD_NUMBER: _ClassVar[int]
+    ENTITYREFERENCE_FIELD_NUMBER: _ClassVar[int]
+    VALUES_FIELD_NUMBER: _ClassVar[int]
+    uuid: str
+    controlType: Control.ControlType
+    label: str
+    entityReference: _containers.ScalarMap[str, str]
+    values: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Value]
+    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[Control.ControlType, str]] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ...) -> None: ...
 
 class Alert_Rule(_message.Message):
     __slots__ = ("uuid",)
@@ -131,7 +179,7 @@ class Log_Rule(_message.Message):
     def __init__(self, uuid: _Optional[str] = ...) -> None: ...
 
 class Process(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "name", "status", "config", "latestLog", "latestReport", "logs", "reports")
+    __slots__ = ("dynamoLookup", "uuid", "name", "status", "software", "softwareVersion", "pluginVersion", "config", "latestLog", "latestReport", "controlPages", "logs", "reports")
     class Status(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
         __slots__ = ()
         RESERVED: _ClassVar[Process.Status]
@@ -140,25 +188,40 @@ class Process(_message.Message):
     RESERVED: Process.Status
     ONLINE: Process.Status
     OFFLINE: Process.Status
+    class ControlPagesEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: ControlPage
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ControlPage, _Mapping]] = ...) -> None: ...
     DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
+    SOFTWARE_FIELD_NUMBER: _ClassVar[int]
+    SOFTWAREVERSION_FIELD_NUMBER: _ClassVar[int]
+    PLUGINVERSION_FIELD_NUMBER: _ClassVar[int]
     CONFIG_FIELD_NUMBER: _ClassVar[int]
     LATESTLOG_FIELD_NUMBER: _ClassVar[int]
     LATESTREPORT_FIELD_NUMBER: _ClassVar[int]
+    CONTROLPAGES_FIELD_NUMBER: _ClassVar[int]
     LOGS_FIELD_NUMBER: _ClassVar[int]
     REPORTS_FIELD_NUMBER: _ClassVar[int]
     dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
     name: str
     status: Process.Status
+    software: str
+    softwareVersion: str
+    pluginVersion: str
     config: ProcessConfig
     latestLog: Log
     latestReport: Report
+    controlPages: _containers.MessageMap[str, ControlPage]
     logs: _containers.RepeatedCompositeFieldContainer[Log]
     reports: _containers.RepeatedCompositeFieldContainer[Report]
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[Process.Status, str]] = ..., config: _Optional[_Union[ProcessConfig, _Mapping]] = ..., latestLog: _Optional[_Union[Log, _Mapping]] = ..., latestReport: _Optional[_Union[Report, _Mapping]] = ..., logs: _Optional[_Iterable[_Union[Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[Report, _Mapping]]] = ...) -> None: ...
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[Process.Status, str]] = ..., software: _Optional[str] = ..., softwareVersion: _Optional[str] = ..., pluginVersion: _Optional[str] = ..., config: _Optional[_Union[ProcessConfig, _Mapping]] = ..., latestLog: _Optional[_Union[Log, _Mapping]] = ..., latestReport: _Optional[_Union[Report, _Mapping]] = ..., controlPages: _Optional[_Mapping[str, ControlPage]] = ..., logs: _Optional[_Iterable[_Union[Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[Report, _Mapping]]] = ...) -> None: ...
 
 class SourceConnection(_message.Message):
     __slots__ = ("dynamoLookup", "status", "token", "handle")

@@ -2,7 +2,7 @@ from google.protobuf import any_pb2 as _any_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -18,13 +18,13 @@ class SourcePayload(_message.Message):
     token: str
     def __init__(self, token: _Optional[str] = ...) -> None: ...
 
-class SubscriberPayload(_message.Message):
-    __slots__ = ("listening", "object")
-    LISTENING_FIELD_NUMBER: _ClassVar[int]
-    OBJECT_FIELD_NUMBER: _ClassVar[int]
-    listening: str
-    object: _any_pb2.Any
-    def __init__(self, listening: _Optional[str] = ..., object: _Optional[_Union[_any_pb2.Any, _Mapping]] = ...) -> None: ...
+class SubscriptionPayload(_message.Message):
+    __slots__ = ("partitionKey", "sortKey")
+    PARTITIONKEY_FIELD_NUMBER: _ClassVar[int]
+    SORTKEY_FIELD_NUMBER: _ClassVar[int]
+    partitionKey: str
+    sortKey: str
+    def __init__(self, partitionKey: _Optional[str] = ..., sortKey: _Optional[str] = ...) -> None: ...
 
 class ProcessPayload(_message.Message):
     __slots__ = ("token",)
