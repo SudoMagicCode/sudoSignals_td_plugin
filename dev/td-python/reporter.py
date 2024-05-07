@@ -36,7 +36,7 @@ class SignalsReporter:
 				else:
 					newDataField = packets.fieldTypes_pb2.DataField()
 					newDataField.name = key
-					newDataField.type = packets.fieldTypes_pb2.DataField.DataFieldTypes.NUMBER
+					newDataField.type = packets.signalsEnums_pb2.DataFieldTypes.NUMBER
 					self.dataFields[fieldHash] = newDataField
 					dataField = newDataField
 				newVal = google.protobuf.struct_pb2.Value()
