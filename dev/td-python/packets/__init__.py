@@ -1,10 +1,19 @@
+import sys
+signals_libs_path = me.var("SIGNALS_LIBS")+"\python"
+
+if signals_libs_path in sys.path:
+	pass
+else:
+	sys.path.insert(0, signals_libs_path)
+	
+	
 try:
-	import packets_pb2
-	import signalsOptions_pb2
-	import dynamo_pb2
-	import fieldTypes_pb2
-	import payloads_pb2
-	import records_pb2
+	import common.fieldTypes_pb2 as fieldTypes_pb2
+	import common.packets_pb2 as packets_pb2
+	import common.payloads_pb2 as payloads_pb2
+	import common.signalsEnums_pb2 as signalsEnums_pb2
+	import common.signalsOptions_pb2 as signalsOptions_pb2
+	from objects import *
 except:
 	print("[~] WARNING! Could not import protobuf types. Please add them to the python path.")
 
@@ -22,7 +31,7 @@ def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
 	newPacket.identity.CopyFrom(newIdentity)
 	return newPacket 
 
-def CreateLogPacket(logLevel: fieldTypes_pb2.Log.LogLevel, message: str):
+def CreateLogPacket(logLevel: signalsEnums_pb2.LogLevel, message: str):
 	newPacket = packets_pb2.WebsocketPacket()
 	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_LOG
 

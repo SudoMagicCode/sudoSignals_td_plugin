@@ -1,4 +1,6 @@
-import fieldTypes_pb2 as _fieldTypes_pb2
+from common import fieldTypes_pb2 as _fieldTypes_pb2
+from common import signalsEnums_pb2 as _signalsEnums_pb2
+from google.protobuf import any_pb2 as _any_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -19,12 +21,28 @@ class SourcePayload(_message.Message):
     def __init__(self, token: _Optional[str] = ...) -> None: ...
 
 class SubscriptionPayload(_message.Message):
-    __slots__ = ("partitionKey", "sortKey")
+    __slots__ = ("objectUuid", "accountUuid", "subscriptionType", "subscriptionUuid")
+    OBJECTUUID_FIELD_NUMBER: _ClassVar[int]
+    ACCOUNTUUID_FIELD_NUMBER: _ClassVar[int]
+    SUBSCRIPTIONTYPE_FIELD_NUMBER: _ClassVar[int]
+    SUBSCRIPTIONUUID_FIELD_NUMBER: _ClassVar[int]
+    objectUuid: str
+    accountUuid: str
+    subscriptionType: _signalsEnums_pb2.SubscriptionTypes
+    subscriptionUuid: str
+    def __init__(self, objectUuid: _Optional[str] = ..., accountUuid: _Optional[str] = ..., subscriptionType: _Optional[_Union[_signalsEnums_pb2.SubscriptionTypes, str]] = ..., subscriptionUuid: _Optional[str] = ...) -> None: ...
+
+class PublisherPayload(_message.Message):
+    __slots__ = ("payload", "eventName", "PartitionKey", "SortKey")
+    PAYLOAD_FIELD_NUMBER: _ClassVar[int]
+    EVENTNAME_FIELD_NUMBER: _ClassVar[int]
     PARTITIONKEY_FIELD_NUMBER: _ClassVar[int]
     SORTKEY_FIELD_NUMBER: _ClassVar[int]
-    partitionKey: str
-    sortKey: str
-    def __init__(self, partitionKey: _Optional[str] = ..., sortKey: _Optional[str] = ...) -> None: ...
+    payload: _any_pb2.Any
+    eventName: str
+    PartitionKey: str
+    SortKey: str
+    def __init__(self, payload: _Optional[_Union[_any_pb2.Any, _Mapping]] = ..., eventName: _Optional[str] = ..., PartitionKey: _Optional[str] = ..., SortKey: _Optional[str] = ...) -> None: ...
 
 class ProcessPayload(_message.Message):
     __slots__ = ("token",)

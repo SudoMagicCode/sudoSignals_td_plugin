@@ -5,20 +5,20 @@ from google.protobuf import struct_pb2
 
 
 styleToControlTypeMap = {
-	"Float": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"Int": packets.fieldTypes_pb2.Control.ControlType.INT,
-	"Str": packets.fieldTypes_pb2.Control.ControlType.STRING,
-	"Pulse": packets.fieldTypes_pb2.Control.ControlType.PULSE,
-	"Toggle": packets.fieldTypes_pb2.Control.ControlType.TOGGLE,
-	"Menu": packets.fieldTypes_pb2.Control.ControlType.MENU,
-	"StrMenu": packets.fieldTypes_pb2.Control.ControlType.MENU,
-	"RGB": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"RGBA": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"UV": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"UVW": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"XY": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"XYZ": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
-	"WH": packets.fieldTypes_pb2.Control.ControlType.FLOAT,
+	"Float": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"Int": packets.signalsEnums_pb2.ControlType.CONTROL_INT,
+	"Str": packets.signalsEnums_pb2.ControlType.CONTROL_STRING,
+	"Pulse": packets.signalsEnums_pb2.ControlType.CONTROL_PULSE,
+	"Toggle": packets.signalsEnums_pb2.ControlType.CONTROL_TOGGLE,
+	"Menu": packets.signalsEnums_pb2.ControlType.CONTROL_MENU,
+	"StrMenu": packets.signalsEnums_pb2.ControlType.CONTROL_MENU,
+	"RGB": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"RGBA": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"UV": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"UVW": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"XY": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"XYZ": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+	"WH": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
 }
 
 

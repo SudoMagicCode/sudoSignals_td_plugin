@@ -19,7 +19,7 @@ class SignalsReporter:
 		else:
 			newDataField = packets.fieldTypes_pb2.DataField()
 			newDataField.name = "time"
-			newDataField.type = packets.fieldTypes_pb2.DataField.DataFieldTypes.TIME
+			newDataField.type = packets.signalsEnums_pb2.DataFieldTypes.TIME
 			newVal = google.protobuf.struct_pb2.Value()
 			newVal.number_value = currentTime
 			newDataField.values.append(newVal)

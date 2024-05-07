@@ -1,6 +1,7 @@
-import dynamo_pb2 as _dynamo_pb2
+from common import dynamo_pb2 as _dynamo_pb2
 from google.protobuf import struct_pb2 as _struct_pb2
-import signalsOptions_pb2 as _signalsOptions_pb2
+from common import signalsOptions_pb2 as _signalsOptions_pb2
+from common import signalsEnums_pb2 as _signalsEnums_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -8,17 +9,6 @@ from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
-
-class StatusTypes(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-    __slots__ = ()
-    RESERVED: _ClassVar[StatusTypes]
-    ONLINE: _ClassVar[StatusTypes]
-    OFFLINE: _ClassVar[StatusTypes]
-    WARNING: _ClassVar[StatusTypes]
-RESERVED: StatusTypes
-ONLINE: StatusTypes
-OFFLINE: StatusTypes
-WARNING: StatusTypes
 
 class Document(_message.Message):
     __slots__ = ("dynamoLookup", "encoding", "data")
@@ -46,43 +36,25 @@ class DataFrame(_message.Message):
 
 class DataField(_message.Message):
     __slots__ = ("name", "type", "values")
-    class DataFieldTypes(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = ()
-        RESERVED: _ClassVar[DataField.DataFieldTypes]
-        TIME: _ClassVar[DataField.DataFieldTypes]
-        NUMBER: _ClassVar[DataField.DataFieldTypes]
-        STRING: _ClassVar[DataField.DataFieldTypes]
-    RESERVED: DataField.DataFieldTypes
-    TIME: DataField.DataFieldTypes
-    NUMBER: DataField.DataFieldTypes
-    STRING: DataField.DataFieldTypes
     NAME_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     VALUES_FIELD_NUMBER: _ClassVar[int]
     name: str
-    type: DataField.DataFieldTypes
+    type: _signalsEnums_pb2.DataFieldTypes
     values: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Value]
-    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[DataField.DataFieldTypes, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., type: _Optional[_Union[_signalsEnums_pb2.DataFieldTypes, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ...) -> None: ...
 
 class Log(_message.Message):
-    __slots__ = ("uuid", "level", "message")
-    class LogLevel(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = ()
-        RESERVED: _ClassVar[Log.LogLevel]
-        INFO: _ClassVar[Log.LogLevel]
-        WARN: _ClassVar[Log.LogLevel]
-        CRIT: _ClassVar[Log.LogLevel]
-    RESERVED: Log.LogLevel
-    INFO: Log.LogLevel
-    WARN: Log.LogLevel
-    CRIT: Log.LogLevel
+    __slots__ = ("dynamoLookup", "uuid", "level", "message")
+    DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
     UUID_FIELD_NUMBER: _ClassVar[int]
     LEVEL_FIELD_NUMBER: _ClassVar[int]
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
-    level: Log.LogLevel
+    level: _signalsEnums_pb2.LogLevel
     message: str
-    def __init__(self, uuid: _Optional[str] = ..., level: _Optional[_Union[Log.LogLevel, str]] = ..., message: _Optional[str] = ...) -> None: ...
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., level: _Optional[_Union[_signalsEnums_pb2.LogLevel, str]] = ..., message: _Optional[str] = ...) -> None: ...
 
 class Report(_message.Message):
     __slots__ = ("dynamoLookup", "uuid", "data")
@@ -125,22 +97,6 @@ class ControlPage(_message.Message):
 
 class Control(_message.Message):
     __slots__ = ("uuid", "controlType", "label", "entityReference", "values", "menuOptions")
-    class ControlType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = ()
-        RESERVED: _ClassVar[Control.ControlType]
-        STRING: _ClassVar[Control.ControlType]
-        INT: _ClassVar[Control.ControlType]
-        FLOAT: _ClassVar[Control.ControlType]
-        TOGGLE: _ClassVar[Control.ControlType]
-        PULSE: _ClassVar[Control.ControlType]
-        MENU: _ClassVar[Control.ControlType]
-    RESERVED: Control.ControlType
-    STRING: Control.ControlType
-    INT: Control.ControlType
-    FLOAT: Control.ControlType
-    TOGGLE: Control.ControlType
-    PULSE: Control.ControlType
-    MENU: Control.ControlType
     class EntityReferenceEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -162,12 +118,12 @@ class Control(_message.Message):
     VALUES_FIELD_NUMBER: _ClassVar[int]
     MENUOPTIONS_FIELD_NUMBER: _ClassVar[int]
     uuid: str
-    controlType: Control.ControlType
+    controlType: _signalsEnums_pb2.ControlType
     label: str
     entityReference: _containers.ScalarMap[str, str]
     values: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Value]
     menuOptions: _containers.ScalarMap[str, str]
-    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[Control.ControlType, str]] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ..., menuOptions: _Optional[_Mapping[str, str]] = ...) -> None: ...
+    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[_signalsEnums_pb2.ControlType, str]] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ..., menuOptions: _Optional[_Mapping[str, str]] = ...) -> None: ...
 
 class Alert_Rule(_message.Message):
     __slots__ = ("uuid",)
@@ -187,16 +143,20 @@ class Log_Rule(_message.Message):
     uuid: str
     def __init__(self, uuid: _Optional[str] = ...) -> None: ...
 
+class Profile(_message.Message):
+    __slots__ = ("uuid", "name", "token", "processConfigs")
+    UUID_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    TOKEN_FIELD_NUMBER: _ClassVar[int]
+    PROCESSCONFIGS_FIELD_NUMBER: _ClassVar[int]
+    uuid: str
+    name: str
+    token: str
+    processConfigs: _containers.RepeatedCompositeFieldContainer[ProcessConfig]
+    def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., token: _Optional[str] = ..., processConfigs: _Optional[_Iterable[_Union[ProcessConfig, _Mapping]]] = ...) -> None: ...
+
 class Process(_message.Message):
     __slots__ = ("dynamoLookup", "uuid", "name", "status", "software", "softwareVersion", "pluginVersion", "config", "latestLog", "latestReport", "controlPages", "logs", "reports")
-    class Status(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = ()
-        RESERVED: _ClassVar[Process.Status]
-        ONLINE: _ClassVar[Process.Status]
-        OFFLINE: _ClassVar[Process.Status]
-    RESERVED: Process.Status
-    ONLINE: Process.Status
-    OFFLINE: Process.Status
     class ControlPagesEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -220,7 +180,7 @@ class Process(_message.Message):
     dynamoLookup: _dynamo_pb2.DynamoRecord
     uuid: str
     name: str
-    status: Process.Status
+    status: _signalsEnums_pb2.Status
     software: str
     softwareVersion: str
     pluginVersion: str
@@ -230,51 +190,7 @@ class Process(_message.Message):
     controlPages: _containers.MessageMap[str, ControlPage]
     logs: _containers.RepeatedCompositeFieldContainer[Log]
     reports: _containers.RepeatedCompositeFieldContainer[Report]
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[Process.Status, str]] = ..., software: _Optional[str] = ..., softwareVersion: _Optional[str] = ..., pluginVersion: _Optional[str] = ..., config: _Optional[_Union[ProcessConfig, _Mapping]] = ..., latestLog: _Optional[_Union[Log, _Mapping]] = ..., latestReport: _Optional[_Union[Report, _Mapping]] = ..., controlPages: _Optional[_Mapping[str, ControlPage]] = ..., logs: _Optional[_Iterable[_Union[Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[Report, _Mapping]]] = ...) -> None: ...
-
-class SourceConnection(_message.Message):
-    __slots__ = ("dynamoLookup", "status", "token", "handle")
-    class Status(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
-        __slots__ = ()
-        RESERVED: _ClassVar[SourceConnection.Status]
-        ONLINE: _ClassVar[SourceConnection.Status]
-        OFFLINE: _ClassVar[SourceConnection.Status]
-    RESERVED: SourceConnection.Status
-    ONLINE: SourceConnection.Status
-    OFFLINE: SourceConnection.Status
-    DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
-    STATUS_FIELD_NUMBER: _ClassVar[int]
-    TOKEN_FIELD_NUMBER: _ClassVar[int]
-    HANDLE_FIELD_NUMBER: _ClassVar[int]
-    dynamoLookup: _dynamo_pb2.DynamoRecord
-    status: SourceConnection.Status
-    token: str
-    handle: str
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., status: _Optional[_Union[SourceConnection.Status, str]] = ..., token: _Optional[str] = ..., handle: _Optional[str] = ...) -> None: ...
-
-class AccessCode(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "code", "handle")
-    DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
-    UUID_FIELD_NUMBER: _ClassVar[int]
-    CODE_FIELD_NUMBER: _ClassVar[int]
-    HANDLE_FIELD_NUMBER: _ClassVar[int]
-    dynamoLookup: _dynamo_pb2.DynamoRecord
-    uuid: str
-    code: str
-    handle: str
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., code: _Optional[str] = ..., handle: _Optional[str] = ...) -> None: ...
-
-class Profile(_message.Message):
-    __slots__ = ("uuid", "name", "token", "processConfigs")
-    UUID_FIELD_NUMBER: _ClassVar[int]
-    NAME_FIELD_NUMBER: _ClassVar[int]
-    TOKEN_FIELD_NUMBER: _ClassVar[int]
-    PROCESSCONFIGS_FIELD_NUMBER: _ClassVar[int]
-    uuid: str
-    name: str
-    token: str
-    processConfigs: _containers.RepeatedCompositeFieldContainer[ProcessConfig]
-    def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., token: _Optional[str] = ..., processConfigs: _Optional[_Iterable[_Union[ProcessConfig, _Mapping]]] = ...) -> None: ...
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[_signalsEnums_pb2.Status, str]] = ..., software: _Optional[str] = ..., softwareVersion: _Optional[str] = ..., pluginVersion: _Optional[str] = ..., config: _Optional[_Union[ProcessConfig, _Mapping]] = ..., latestLog: _Optional[_Union[Log, _Mapping]] = ..., latestReport: _Optional[_Union[Report, _Mapping]] = ..., controlPages: _Optional[_Mapping[str, ControlPage]] = ..., logs: _Optional[_Iterable[_Union[Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[Report, _Mapping]]] = ...) -> None: ...
 
 class ProcessConfig(_message.Message):
     __slots__ = ("uuid", "name", "startCmd", "processPath", "autoStart", "autoRestart", "restartLimit", "envVars")
@@ -307,3 +223,15 @@ class EnvVars(_message.Message):
 class AccountView(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class SourceConnection(_message.Message):
+    __slots__ = ("dynamoLookup", "status", "token", "handle")
+    DYNAMOLOOKUP_FIELD_NUMBER: _ClassVar[int]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    TOKEN_FIELD_NUMBER: _ClassVar[int]
+    HANDLE_FIELD_NUMBER: _ClassVar[int]
+    dynamoLookup: _dynamo_pb2.DynamoRecord
+    status: _signalsEnums_pb2.Status
+    token: str
+    handle: str
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., status: _Optional[_Union[_signalsEnums_pb2.Status, str]] = ..., token: _Optional[str] = ..., handle: _Optional[str] = ...) -> None: ...
