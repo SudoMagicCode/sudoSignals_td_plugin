@@ -47,11 +47,11 @@ def parDataBlock(parGroup) -> packets.fieldTypes_pb2.Control:
 def groupDataBlock(group) -> packets.fieldTypes_pb2.Control:
 	return parDataBlock(group)
 
-def CreateAllParDataBlocks(page) -> dict[int, packets.fieldTypes_pb2.Control] :
+def CreateAllParDataBlocks(page) -> dict[str, packets.fieldTypes_pb2.Control] :
 	parsData = {}
 	groups = page.parGroups
-	for idx,g in enumerate(groups):
-		parsData[idx] = groupDataBlock(g)
+	for g in groups:
+		parsData[g.name] = groupDataBlock(g)
 	return parsData
 
 def GetLogTimeStamp() -> str:
