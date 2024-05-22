@@ -56,7 +56,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         self._getSignalsName
 
         # Add Action Routes to hand incoming messages.
-        self.AddActionRoute("control-Update", self.UpdateControls)
+        self.AddActionRoute("PROCESS_CONTROLS", self.UpdateControls)
         
         # Setup Reporting
         self.AddReportable( self.signalsReports )
@@ -186,8 +186,11 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         # clear message
         LogOp[1, 1] = ''
 
-    def UpdateControls(self, packet):
-        self.UpdateControlComp(packet['data'])
+    def UpdateControls(self, packet:packets.packets_pb2.WebsocketPacket):
+        updatedControl = packets.fieldTypes_pb2.Control()
+        packet.payload.Unpack(updatedControl)
+
+        self.UpdateControlComp(updatedControl)
 
     def UpdateConnected(self, state):
         self.PARConnected.val = state
