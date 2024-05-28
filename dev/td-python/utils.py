@@ -40,8 +40,6 @@ def parDataBlock(parGroup) -> packets.fieldTypes_pb2.Control:
 			newDefault = struct_pb2.Value()
 			if isinstance(parVal, str):
 				newValue.string_value = parVal
-				newMin.string_value = parGroup.min[index]
-				newMax.string_value = parGroup.max[index]
 				newDefault.string_value = parGroup.default[index]
 			elif isinstance(parVal, int | float):
 				newValue.number_value = parVal
