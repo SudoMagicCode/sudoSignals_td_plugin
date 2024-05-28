@@ -51,7 +51,7 @@ class ProcessPayload(_message.Message):
     def __init__(self, token: _Optional[str] = ...) -> None: ...
 
 class RpcPayload(_message.Message):
-    __slots__ = ("request", "response")
+    __slots__ = ("request", "response", "data")
     class RequestEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -68,9 +68,11 @@ class RpcPayload(_message.Message):
         def __init__(self, key: _Optional[str] = ..., value: _Optional[str] = ...) -> None: ...
     REQUEST_FIELD_NUMBER: _ClassVar[int]
     RESPONSE_FIELD_NUMBER: _ClassVar[int]
+    DATA_FIELD_NUMBER: _ClassVar[int]
     request: _containers.ScalarMap[str, str]
     response: _containers.ScalarMap[str, str]
-    def __init__(self, request: _Optional[_Mapping[str, str]] = ..., response: _Optional[_Mapping[str, str]] = ...) -> None: ...
+    data: _any_pb2.Any
+    def __init__(self, request: _Optional[_Mapping[str, str]] = ..., response: _Optional[_Mapping[str, str]] = ..., data: _Optional[_Union[_any_pb2.Any, _Mapping]] = ...) -> None: ...
 
 class ProcessLogPayload(_message.Message):
     __slots__ = ()

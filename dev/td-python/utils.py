@@ -30,18 +30,33 @@ def parDataBlock(parGroup) -> packets.fieldTypes_pb2.Control:
 	newControl.label = parGroup.label
 	newControl.entityReference["path"] = parGroup.owner.path
 	newControl.entityReference["name"] = parGroup.name
+	newControl.index = parGroup.index
 
-	for parVal in parGroup.val:
+	for index, parVal in enumerate(parGroup.val):
 		if parVal is not None:
 			newValue = struct_pb2.Value()
+			newMin = struct_pb2.Value()
+			newMax = struct_pb2.Value()
+			newDefault = struct_pb2.Value()
 			if isinstance(parVal, str):
 				newValue.string_value = parVal
+				newMin.string_value = parGroup.min[index]
+				newMax.string_value = parGroup.max[index]
+				newDefault.string_value = parGroup.default[index]
 			elif isinstance(parVal, int | float):
 				newValue.number_value = parVal
+				newMin.number_value = parGroup.min[index]
+				newMax.number_value = parGroup.max[index]
+				newDefault.number_value = parGroup.default[index]
 			elif isinstance(parVal, bool):
 				newValue.bool_value = parVal	
-			
+				newMin.bool_value = parGroup.min[index]
+				newMax.bool_value = parGroup.max[index]
+				newDefault.number_value = parGroup.default[index]
 			newControl.values.append(newValue)
+			newControl.minVal.append(newMin)
+			newControl.maxVal.append(newMax)
+			newControl.defaultValues.append(newDefault)
 	return newControl
 	
 def groupDataBlock(group) -> packets.fieldTypes_pb2.Control:

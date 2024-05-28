@@ -84,19 +84,19 @@ class ControlPage(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
-        key: int
+        key: str
         value: Control
-        def __init__(self, key: _Optional[int] = ..., value: _Optional[_Union[Control, _Mapping]] = ...) -> None: ...
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[Control, _Mapping]] = ...) -> None: ...
     UUID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
     CONTROLS_FIELD_NUMBER: _ClassVar[int]
     uuid: str
     name: str
-    controls: _containers.MessageMap[int, Control]
-    def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., controls: _Optional[_Mapping[int, Control]] = ...) -> None: ...
+    controls: _containers.MessageMap[str, Control]
+    def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., controls: _Optional[_Mapping[str, Control]] = ...) -> None: ...
 
 class Control(_message.Message):
-    __slots__ = ("uuid", "controlType", "label", "entityReference", "values", "menuOptions")
+    __slots__ = ("uuid", "controlType", "index", "label", "entityReference", "minVal", "maxVal", "values", "defaultValues", "menuOptions")
     class EntityReferenceEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -113,17 +113,25 @@ class Control(_message.Message):
         def __init__(self, key: _Optional[str] = ..., value: _Optional[str] = ...) -> None: ...
     UUID_FIELD_NUMBER: _ClassVar[int]
     CONTROLTYPE_FIELD_NUMBER: _ClassVar[int]
+    INDEX_FIELD_NUMBER: _ClassVar[int]
     LABEL_FIELD_NUMBER: _ClassVar[int]
     ENTITYREFERENCE_FIELD_NUMBER: _ClassVar[int]
+    MINVAL_FIELD_NUMBER: _ClassVar[int]
+    MAXVAL_FIELD_NUMBER: _ClassVar[int]
     VALUES_FIELD_NUMBER: _ClassVar[int]
+    DEFAULTVALUES_FIELD_NUMBER: _ClassVar[int]
     MENUOPTIONS_FIELD_NUMBER: _ClassVar[int]
     uuid: str
     controlType: _signalsEnums_pb2.ControlType
+    index: int
     label: str
     entityReference: _containers.ScalarMap[str, str]
+    minVal: float
+    maxVal: float
     values: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Value]
+    defaultValues: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Value]
     menuOptions: _containers.ScalarMap[str, str]
-    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[_signalsEnums_pb2.ControlType, str]] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ..., menuOptions: _Optional[_Mapping[str, str]] = ...) -> None: ...
+    def __init__(self, uuid: _Optional[str] = ..., controlType: _Optional[_Union[_signalsEnums_pb2.ControlType, str]] = ..., index: _Optional[int] = ..., label: _Optional[str] = ..., entityReference: _Optional[_Mapping[str, str]] = ..., minVal: _Optional[float] = ..., maxVal: _Optional[float] = ..., values: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ..., defaultValues: _Optional[_Iterable[_Union[_struct_pb2.Value, _Mapping]]] = ..., menuOptions: _Optional[_Mapping[str, str]] = ...) -> None: ...
 
 class Alert_Rule(_message.Message):
     __slots__ = ("uuid",)
@@ -156,7 +164,7 @@ class Profile(_message.Message):
     def __init__(self, uuid: _Optional[str] = ..., name: _Optional[str] = ..., token: _Optional[str] = ..., processConfigs: _Optional[_Iterable[_Union[ProcessConfig, _Mapping]]] = ...) -> None: ...
 
 class Process(_message.Message):
-    __slots__ = ("dynamoLookup", "uuid", "name", "status", "software", "softwareVersion", "pluginVersion", "config", "latestLog", "latestReport", "controlPages", "logs", "reports")
+    __slots__ = ("dynamoLookup", "uuid", "name", "status", "software", "softwareVersion", "pluginVersion", "restarts", "config", "latestLog", "latestReport", "controlPages", "logs", "reports")
     class ControlPagesEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -171,6 +179,7 @@ class Process(_message.Message):
     SOFTWARE_FIELD_NUMBER: _ClassVar[int]
     SOFTWAREVERSION_FIELD_NUMBER: _ClassVar[int]
     PLUGINVERSION_FIELD_NUMBER: _ClassVar[int]
+    RESTARTS_FIELD_NUMBER: _ClassVar[int]
     CONFIG_FIELD_NUMBER: _ClassVar[int]
     LATESTLOG_FIELD_NUMBER: _ClassVar[int]
     LATESTREPORT_FIELD_NUMBER: _ClassVar[int]
@@ -184,13 +193,14 @@ class Process(_message.Message):
     software: str
     softwareVersion: str
     pluginVersion: str
+    restarts: int
     config: ProcessConfig
     latestLog: Log
     latestReport: Report
     controlPages: _containers.MessageMap[str, ControlPage]
     logs: _containers.RepeatedCompositeFieldContainer[Log]
     reports: _containers.RepeatedCompositeFieldContainer[Report]
-    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[_signalsEnums_pb2.Status, str]] = ..., software: _Optional[str] = ..., softwareVersion: _Optional[str] = ..., pluginVersion: _Optional[str] = ..., config: _Optional[_Union[ProcessConfig, _Mapping]] = ..., latestLog: _Optional[_Union[Log, _Mapping]] = ..., latestReport: _Optional[_Union[Report, _Mapping]] = ..., controlPages: _Optional[_Mapping[str, ControlPage]] = ..., logs: _Optional[_Iterable[_Union[Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[Report, _Mapping]]] = ...) -> None: ...
+    def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., uuid: _Optional[str] = ..., name: _Optional[str] = ..., status: _Optional[_Union[_signalsEnums_pb2.Status, str]] = ..., software: _Optional[str] = ..., softwareVersion: _Optional[str] = ..., pluginVersion: _Optional[str] = ..., restarts: _Optional[int] = ..., config: _Optional[_Union[ProcessConfig, _Mapping]] = ..., latestLog: _Optional[_Union[Log, _Mapping]] = ..., latestReport: _Optional[_Union[Report, _Mapping]] = ..., controlPages: _Optional[_Mapping[str, ControlPage]] = ..., logs: _Optional[_Iterable[_Union[Log, _Mapping]]] = ..., reports: _Optional[_Iterable[_Union[Report, _Mapping]]] = ...) -> None: ...
 
 class ProcessConfig(_message.Message):
     __slots__ = ("uuid", "name", "startCmd", "processPath", "autoStart", "autoRestart", "restartLimit", "envVars")
@@ -235,3 +245,21 @@ class SourceConnection(_message.Message):
     token: str
     handle: str
     def __init__(self, dynamoLookup: _Optional[_Union[_dynamo_pb2.DynamoRecord, _Mapping]] = ..., status: _Optional[_Union[_signalsEnums_pb2.Status, str]] = ..., token: _Optional[str] = ..., handle: _Optional[str] = ...) -> None: ...
+
+class Custody(_message.Message):
+    __slots__ = ("ownerUuid", "teamUuid", "installationUuid", "machineUuid", "teamName", "installationName", "machineName")
+    OWNERUUID_FIELD_NUMBER: _ClassVar[int]
+    TEAMUUID_FIELD_NUMBER: _ClassVar[int]
+    INSTALLATIONUUID_FIELD_NUMBER: _ClassVar[int]
+    MACHINEUUID_FIELD_NUMBER: _ClassVar[int]
+    TEAMNAME_FIELD_NUMBER: _ClassVar[int]
+    INSTALLATIONNAME_FIELD_NUMBER: _ClassVar[int]
+    MACHINENAME_FIELD_NUMBER: _ClassVar[int]
+    ownerUuid: str
+    teamUuid: str
+    installationUuid: str
+    machineUuid: str
+    teamName: str
+    installationName: str
+    machineName: str
+    def __init__(self, ownerUuid: _Optional[str] = ..., teamUuid: _Optional[str] = ..., installationUuid: _Optional[str] = ..., machineUuid: _Optional[str] = ..., teamName: _Optional[str] = ..., installationName: _Optional[str] = ..., machineName: _Optional[str] = ...) -> None: ...

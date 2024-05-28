@@ -42,7 +42,6 @@ def onReceiveBinary(dat, contents):
 
 def onReceivePing(dat, contents):
 	dat.sendPong(contents) # send a reply with same message
-	print('ping')
 	return
 
 # me - this DAT
@@ -52,7 +51,6 @@ def onReceivePing(dat, contents):
 # Only pong messages will be handled in this function.
 
 def onReceivePong(dat, contents):
-	print('pong')
 	return
 
 

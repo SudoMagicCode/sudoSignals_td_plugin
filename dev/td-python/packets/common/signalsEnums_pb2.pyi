@@ -26,9 +26,10 @@ class AccountTheme(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
 class Role(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
     VIEWER: _ClassVar[Role]
-    OWNER: _ClassVar[Role]
-    ADMIN: _ClassVar[Role]
     EDITOR: _ClassVar[Role]
+    ADMIN: _ClassVar[Role]
+    OWNER: _ClassVar[Role]
+    SUDO: _ClassVar[Role]
 
 class DataFieldTypes(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -58,6 +59,8 @@ class ControlType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     CONTROL_TOGGLE: _ClassVar[ControlType]
     CONTROL_PULSE: _ClassVar[ControlType]
     CONTROL_MENU: _ClassVar[ControlType]
+    CONTROL_COLOR: _ClassVar[ControlType]
+    CONTROL_HEADER: _ClassVar[ControlType]
 
 class SubscriptionTypes(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -65,6 +68,9 @@ class SubscriptionTypes(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TEAM_SUBSCRIPTION: _ClassVar[SubscriptionTypes]
     INSTALLATION_SUBSCRIPTION: _ClassVar[SubscriptionTypes]
     MACHINE_SUBSCRIPTION: _ClassVar[SubscriptionTypes]
+    REPORT_SUBSCRIPTION: _ClassVar[SubscriptionTypes]
+    LOG_SUBSCRIPTION: _ClassVar[SubscriptionTypes]
+    CONTROL_SUBSCRIPTION: _ClassVar[SubscriptionTypes]
 PAID: PaymentStatus
 UNPAID: PaymentStatus
 PENDING: PaymentStatus
@@ -76,9 +82,10 @@ DEFAULT: AccountTheme
 LIGHT: AccountTheme
 DARK: AccountTheme
 VIEWER: Role
-OWNER: Role
-ADMIN: Role
 EDITOR: Role
+ADMIN: Role
+OWNER: Role
+SUDO: Role
 TIME: DataFieldTypes
 NUMBER: DataFieldTypes
 STRING: DataFieldTypes
@@ -96,7 +103,12 @@ CONTROL_FLOAT: ControlType
 CONTROL_TOGGLE: ControlType
 CONTROL_PULSE: ControlType
 CONTROL_MENU: ControlType
+CONTROL_COLOR: ControlType
+CONTROL_HEADER: ControlType
 UNDEFINED_SUBSCRIPTION: SubscriptionTypes
 TEAM_SUBSCRIPTION: SubscriptionTypes
 INSTALLATION_SUBSCRIPTION: SubscriptionTypes
 MACHINE_SUBSCRIPTION: SubscriptionTypes
+REPORT_SUBSCRIPTION: SubscriptionTypes
+LOG_SUBSCRIPTION: SubscriptionTypes
+CONTROL_SUBSCRIPTION: SubscriptionTypes
