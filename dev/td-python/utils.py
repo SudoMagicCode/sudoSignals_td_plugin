@@ -46,14 +46,13 @@ def parDataBlock(parGroup) -> packets.fieldTypes_pb2.Control:
 				newMin.number_value = parGroup.min[index]
 				newMax.number_value = parGroup.max[index]
 				newDefault.number_value = parGroup.default[index]
+				newControl.minVal.append(newMin)
+				newControl.maxVal.append(newMax)
 			elif isinstance(parVal, bool):
 				newValue.bool_value = parVal	
-				newMin.bool_value = parGroup.min[index]
-				newMax.bool_value = parGroup.max[index]
-				newDefault.number_value = parGroup.default[index]
+				newDefault.bool_value = parGroup.default[index]
+			
 			newControl.values.append(newValue)
-			newControl.minVal.append(newMin)
-			newControl.maxVal.append(newMax)
 			newControl.defaultValues.append(newDefault)
 	return newControl
 	
