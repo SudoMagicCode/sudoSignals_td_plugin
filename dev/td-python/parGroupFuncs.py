@@ -83,8 +83,8 @@ def parGroupMenuFunc(control: packets.fieldTypes_pb2.Control, parGroup: helperTy
         parLabels = parGroup.menuLabels[index]
         parNames = parGroup.menuNames[index]
 
-        for eachIndex, eachLabel in enumerate(parLabels):
-            control.menuOptions[eachLabel] = parNames[eachIndex]
+        for eachIndex, eachName in enumerate(parNames):
+            control.menuOptions[eachName] = parLabels[eachIndex]
 
     return control
 

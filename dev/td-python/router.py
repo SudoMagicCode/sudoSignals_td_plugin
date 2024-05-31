@@ -3,14 +3,18 @@ from google.protobuf.json_format import MessageToJson, Parse
 import signalsErrors
 import tdDialogHelper
 import packets
+
+
 class SignalsRouter(object):
     '''
     '''
-    def __init__(self, socket:OP) -> None:
+
+    def __init__(self, socket: OP) -> None:
         self._routes = {}
         self._id = None
         self._socket = socket
-        self.AddActionRoute(packets.packets_pb2.WebsocketPacket.PacketType.Name(packets.packets_pb2.WebsocketPacket.PacketType.START), self.SendIdentifyPacket)
+        self.AddActionRoute(packets.packets_pb2.WebsocketPacket.PacketType.Name(
+            packets.packets_pb2.WebsocketPacket.PacketType.START), self.SendIdentifyPacket)
         return
 
     @property
@@ -30,7 +34,8 @@ class SignalsRouter(object):
         tdVersion = f"{app.version} {app.build}"
         pluginVersion = parent.signals.par.Version.eval()
 
-        newPacket = packets.CreateIdentifyPacket(self._id, "TouchDesigner", tdVersion, pluginVersion)
+        newPacket = packets.CreateIdentifyPacket(
+            self._id, "TouchDesigner", tdVersion, pluginVersion)
         self.SendMessage(newPacket)
 
     def RecvMessage(self, message) -> None:
@@ -56,14 +61,17 @@ class SignalsRouter(object):
         self._routes[routeName] = routeFunction
 
     def _routeMessage(self, packet) -> None:
-        packetActionName = packets.packets_pb2.WebsocketPacket.PacketType.Name(packet.action)
+        packetActionName = packets.packets_pb2.WebsocketPacket.PacketType.Name(
+            packet.action)
         try:
             self._routes[packetActionName](packet)
         except KeyError:
-            print('SIGNALS ROUTER | Action "'+packet['action']+'" is not recognized/implemented.')
+            print('SIGNALS ROUTER | Action "' +
+                  packet['action']+'" is not recognized/implemented.')
 
     def _routeBinaryMessage(self, packet, route) -> None:
         try:
             self._routes[route](packet)
         except KeyError:
-            print('SIGNALS ROUTER | Action "'+packets.packets_pb2.WebsocketPacket.PacketType.Name(route)+'" is not recognized/implemented.')
+            print('SIGNALS ROUTER | Action "'+packets.packets_pb2.WebsocketPacket.PacketType.Name(
+                route)+'" is not recognized/implemented.')
