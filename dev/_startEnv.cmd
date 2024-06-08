@@ -2,7 +2,7 @@ rem turn off echo
 @echo off
 
 rem set TouchDesigner build numbers
-set TOUCHVERSION=2022.33910
+set TOUCHVERSION=2023.11760
 
 rem set our project file target
 set TOEFILE="dev-env.toe"
