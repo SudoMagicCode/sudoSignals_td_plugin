@@ -9,12 +9,13 @@ class SignalsLogger:
     def CreateLog(self, logLvl:int, logMsg:str) -> packets.fieldTypes_pb2.Log:
         newLog = None
 
-        valid_log_lvl = [0, 1, 2, 3]
+        valid_log_lvl = [0, 1, 2, 3, 4]
         log_level_map = [
-            packets.fieldTypes_pb2.Log.LogLevel.RESERVED,
-            packets.fieldTypes_pb2.Log.LogLevel.INFO,
-            packets.fieldTypes_pb2.Log.LogLevel.WARN,
-            packets.fieldTypes_pb2.Log.LogLevel.CRIT
+            packets.signalsEnums_pb2.LogLevel.LOG,
+            packets.signalsEnums_pb2.LogLevel.INFO,
+            packets.signalsEnums_pb2.LogLevel.WARN,
+            packets.signalsEnums_pb2.LogLevel.CRIT,
+            packets.signalsEnums_pb2.LogLevel.ALERT
         ]
         if logLvl not in valid_log_lvl:
             print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, or 2'))
@@ -26,12 +27,13 @@ class SignalsLogger:
 
     def CreateLogFromTable(self, logOp:op) -> packets.fieldTypes_pb2.Log:
         newLog = None
-        valid_log_level = ['0', '1', '2', '3']
+        valid_log_level = ['0', '1', '2', '3', '4']
         log_level_map = {
-            '0':packets.fieldTypes_pb2.Log.LogLevel.RESERVED,
-            '1':packets.fieldTypes_pb2.Log.LogLevel.INFO,
-            '2':packets.fieldTypes_pb2.Log.LogLevel.WARN,
-            '3':packets.fieldTypes_pb2.Log.LogLevel.CRIT
+            '0':packets.signalsEnums_pb2.LogLevel.LOG,
+            '1':packets.signalsEnums_pb2.LogLevel.INFO,
+            '2':packets.signalsEnums_pb2.LogLevel.WARN,
+            '3':packets.signalsEnums_pb2.LogLevel.CRIT,
+            '4':packets.signalsEnums_pb2.LogLevel.ALERT
         }
         
         #check to ensure op is table
