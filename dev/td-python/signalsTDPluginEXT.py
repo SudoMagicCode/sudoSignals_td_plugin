@@ -231,6 +231,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
     def Clean_up(self) -> None:
         self._clean_up()
 
+    def Restart_connection(self) -> None:
+        self._reset_websocket(WEBSOCKET)
+
     def _clean_up(self) -> None:
         parent.signals.par.Connected = False
 

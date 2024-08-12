@@ -10,6 +10,7 @@ def onConnect(dat):
 
 def onDisconnect(dat):
 	op('base_private_ext').ext.Signals.UpdateConnected(False)
+	op('base_private_ext').ext.Signals.Restart_connection()
 	return
 
 # me - this DAT

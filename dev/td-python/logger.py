@@ -18,7 +18,7 @@ class SignalsLogger:
             packets.signalsEnums_pb2.LogLevel.ALERT
         ]
         if logLvl not in valid_log_lvl:
-            print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, or 2'))
+            print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, 2, 3, 4'))
         else:
             newLog = packets.fieldTypes_pb2.Log()
             newLog.level = log_level_map[logLvl]

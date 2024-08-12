@@ -67,21 +67,32 @@ class WebsocketPacket(_message.Message):
         CREATE_ACCESS: _ClassVar[WebsocketPacket.PacketType]
         CREATE_SOURCE: _ClassVar[WebsocketPacket.PacketType]
         CREATE_SUBSCRIBER: _ClassVar[WebsocketPacket.PacketType]
-        SOURCE_LOG: _ClassVar[WebsocketPacket.PacketType]
-        SOURCE_REPORT: _ClassVar[WebsocketPacket.PacketType]
-        SOURCE_CONTROLS: _ClassVar[WebsocketPacket.PacketType]
+        ACCESS_UPDATE: _ClassVar[WebsocketPacket.PacketType]
         SOURCE_UPDATE: _ClassVar[WebsocketPacket.PacketType]
-        SOURCE_INFO: _ClassVar[WebsocketPacket.PacketType]
+        SUBSCRIBER_UPDATE: _ClassVar[WebsocketPacket.PacketType]
+        SUBSCRIBER_DELETE: _ClassVar[WebsocketPacket.PacketType]
+        MACHINE_LOG: _ClassVar[WebsocketPacket.PacketType]
+        MACHINE_REPORT: _ClassVar[WebsocketPacket.PacketType]
+        MACHINE_CONTROLS: _ClassVar[WebsocketPacket.PacketType]
+        MACHINE_INFO: _ClassVar[WebsocketPacket.PacketType]
+        MACHINE_UPDATE: _ClassVar[WebsocketPacket.PacketType]
         PROCESS_IDENTIFY: _ClassVar[WebsocketPacket.PacketType]
         PROCESS_LOG: _ClassVar[WebsocketPacket.PacketType]
         PROCESS_REPORT: _ClassVar[WebsocketPacket.PacketType]
         PROCESS_CONTROLS: _ClassVar[WebsocketPacket.PacketType]
-        SUBSCRIBER_UPDATE: _ClassVar[WebsocketPacket.PacketType]
-        SUBSCRIBER_DELETE: _ClassVar[WebsocketPacket.PacketType]
-        SUBSCRIPTION_DATA: _ClassVar[WebsocketPacket.PacketType]
+        SUBSCRIPTION_CREATE: _ClassVar[WebsocketPacket.PacketType]
         SUBSCRIPTION_PARTIAL: _ClassVar[WebsocketPacket.PacketType]
-        ACCESS_UPDATE: _ClassVar[WebsocketPacket.PacketType]
+        SUBSCRIPTION_DATA: _ClassVar[WebsocketPacket.PacketType]
         ACCESS_INFO: _ClassVar[WebsocketPacket.PacketType]
+        RTC_SIGNALING: _ClassVar[WebsocketPacket.PacketType]
+        PROFILE_CREATE: _ClassVar[WebsocketPacket.PacketType]
+        PROFILE_UPDATE: _ClassVar[WebsocketPacket.PacketType]
+        PROFILE_DELETE: _ClassVar[WebsocketPacket.PacketType]
+        PROFILE_SET_ACTIVE: _ClassVar[WebsocketPacket.PacketType]
+        SOURCE_LOG: _ClassVar[WebsocketPacket.PacketType]
+        SOURCE_REPORT: _ClassVar[WebsocketPacket.PacketType]
+        SOURCE_CONTROLS: _ClassVar[WebsocketPacket.PacketType]
+        SOURCE_INFO: _ClassVar[WebsocketPacket.PacketType]
     RESERVED: WebsocketPacket.PacketType
     ACKNOWLEDGED: WebsocketPacket.PacketType
     START: WebsocketPacket.PacketType
@@ -90,21 +101,32 @@ class WebsocketPacket(_message.Message):
     CREATE_ACCESS: WebsocketPacket.PacketType
     CREATE_SOURCE: WebsocketPacket.PacketType
     CREATE_SUBSCRIBER: WebsocketPacket.PacketType
-    SOURCE_LOG: WebsocketPacket.PacketType
-    SOURCE_REPORT: WebsocketPacket.PacketType
-    SOURCE_CONTROLS: WebsocketPacket.PacketType
+    ACCESS_UPDATE: WebsocketPacket.PacketType
     SOURCE_UPDATE: WebsocketPacket.PacketType
-    SOURCE_INFO: WebsocketPacket.PacketType
+    SUBSCRIBER_UPDATE: WebsocketPacket.PacketType
+    SUBSCRIBER_DELETE: WebsocketPacket.PacketType
+    MACHINE_LOG: WebsocketPacket.PacketType
+    MACHINE_REPORT: WebsocketPacket.PacketType
+    MACHINE_CONTROLS: WebsocketPacket.PacketType
+    MACHINE_INFO: WebsocketPacket.PacketType
+    MACHINE_UPDATE: WebsocketPacket.PacketType
     PROCESS_IDENTIFY: WebsocketPacket.PacketType
     PROCESS_LOG: WebsocketPacket.PacketType
     PROCESS_REPORT: WebsocketPacket.PacketType
     PROCESS_CONTROLS: WebsocketPacket.PacketType
-    SUBSCRIBER_UPDATE: WebsocketPacket.PacketType
-    SUBSCRIBER_DELETE: WebsocketPacket.PacketType
-    SUBSCRIPTION_DATA: WebsocketPacket.PacketType
+    SUBSCRIPTION_CREATE: WebsocketPacket.PacketType
     SUBSCRIPTION_PARTIAL: WebsocketPacket.PacketType
-    ACCESS_UPDATE: WebsocketPacket.PacketType
+    SUBSCRIPTION_DATA: WebsocketPacket.PacketType
     ACCESS_INFO: WebsocketPacket.PacketType
+    RTC_SIGNALING: WebsocketPacket.PacketType
+    PROFILE_CREATE: WebsocketPacket.PacketType
+    PROFILE_UPDATE: WebsocketPacket.PacketType
+    PROFILE_DELETE: WebsocketPacket.PacketType
+    PROFILE_SET_ACTIVE: WebsocketPacket.PacketType
+    SOURCE_LOG: WebsocketPacket.PacketType
+    SOURCE_REPORT: WebsocketPacket.PacketType
+    SOURCE_CONTROLS: WebsocketPacket.PacketType
+    SOURCE_INFO: WebsocketPacket.PacketType
     ACTION_FIELD_NUMBER: _ClassVar[int]
     IDENTITY_FIELD_NUMBER: _ClassVar[int]
     PAYLOAD_FIELD_NUMBER: _ClassVar[int]
