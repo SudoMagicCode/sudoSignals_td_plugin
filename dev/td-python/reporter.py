@@ -12,18 +12,18 @@ class SignalsReporter:
 	
 	def _pollFields(self):
 		currentTime = time.time()
-		if "time" in self.dataFields:
+		if "_time" in self.dataFields:
 			newVal = google.protobuf.struct_pb2.Value(currentTime)
 			newVal.number_value = currentTime
-			self.dataFields["time"].values.append(newVal)
+			self.dataFields["_time"].values.append(newVal)
 		else:
 			newDataField = packets.fieldTypes_pb2.DataField()
-			newDataField.name = "time"
+			newDataField.name = "_time"
 			newDataField.type = packets.signalsEnums_pb2.DataFieldTypes.TIME
 			newVal = google.protobuf.struct_pb2.Value()
 			newVal.number_value = currentTime
 			newDataField.values.append(newVal)
-			self.dataFields["time"] = newDataField
+			self.dataFields["_time"] = newDataField
 		
 		for r in self._reportables:
 			for row in r.rows():
