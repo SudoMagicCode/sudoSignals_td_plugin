@@ -1,39 +1,43 @@
-import json
-import os
+import depImporter
 
+try:
+    depImporter.loadSignalsLibs()
+except Exception as e:
+    print("[*] Missing Signals Libs")
+
+import packets
+import utils
 from reporter import SignalsReporter
+from logger import SignalsLogger
 from controls import SignalsControls
 from router import SignalsRouter
-from logger import SignalsLogger
 
-import tdDialogHelper
-import utils
-import packets
 
 WEBSOCKET = op('websocket_signals')
 REPORT_TIMER = op('report_timer')
 RELEASE_SOURCE = "https://github.com/SudoMagicCode/sudoSignals_td_plugin_releases/releases/latest"
 
+
 class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogger):
     """SiganlsClient Doc Strings
     """
-    
+
     LINKS = {
-        'Help' 					: "https://sudomagiccode.github.io/SudoSignals/",
-        'Forum'					: "https://github.com/SudoMagicCode/SudoSignals/discussions",
-        'Sudosignalsdashboard' 	: "https://dashboard.sudosignals.com/",
-        'Bugreport'				: "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
+        'Help': "https://sudomagiccode.github.io/SudoSignals/",
+        'Forum': "https://github.com/SudoMagicCode/SudoSignals/discussions",
+        'Sudosignalsdashboard': "https://dashboard.sudosignals.com/",
+        'Bugreport': "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
     }
     DEFAULT_CUSTOM_PARS = op('base_default_custom_pars')
 
     def __init__(self):
-        self.PARSignalsid		= parent.signals.par.Signalsid
-        self.PARSignalsName 	= parent.signals.par.Signalsname
-        self.PARConnected 		= parent.signals.par.Connected
-        self.PARControlcomp 	= parent.signals.par.Controlcomp
-        self.PARStartupdelay	= parent.signals.par.Startupdelay
-        self.PARManualconfig    = parent.signals.par.Manualconfig
-        self.signalsReports 	= op('null_defaultReport')
+        self.PARSignalsid = parent.signals.par.Signalsid
+        self.PARSignalsName = parent.signals.par.Signalsname
+        self.PARConnected = parent.signals.par.Connected
+        self.PARControlcomp = parent.signals.par.Controlcomp
+        self.PARStartupdelay = parent.signals.par.Startupdelay
+        self.PARManualconfig = parent.signals.par.Manualconfig
+        self.signalsReports = op('null_defaultReport')
 
         self._reset_websocket(WEBSOCKET)
 
@@ -46,7 +50,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         # Get current controlComp then inherit Signals
         SignalsControls.__init__(self, self.PARControlcomp.eval())
 
-        #Inherit Signals Logger
+        # Inherit Signals Logger
         SignalsLogger.__init__(self)
 
         # Set Product ID
@@ -57,9 +61,9 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
         # Add Action Routes to hand incoming messages.
         self.AddActionRoute("PROCESS_CONTROLS", self.UpdateControls)
-        
+
         # Setup Reporting
-        self.AddReportable( self.signalsReports )
+        self.AddReportable(self.signalsReports)
 
         print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
         # self.SetLog(0, '[*] :: SudoSignals TouchDesigner Plugin Initialized')
@@ -75,7 +79,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
     @property
     def parConnected(self):
         return self.PARConnected.eval()
-    
+
     @property
     def parControlcomp(self):
         return self.PARControlcomp.eval()
@@ -91,7 +95,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
     @property
     def _getSignalsId(self):
         """Updates Signals ID - both member and par
-        
+
         Args
         ----------
         None
@@ -118,7 +122,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
     @property
     def _getSignalsName(self):
         """Updates Signals Name - both member and par
-        
+
         Args
         ----------
         None
@@ -127,14 +131,14 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         ----------
         signalsName (str)
         > signals Name string retrieved from the signals env var
-        """		
+        """
 
         try:
             signalsName = me.var('SIGNALS_NAME')
         except:
             signalsName = 'no_name_assigned'
 
-        self.PARSignalsName.val	= signalsName
+        self.PARSignalsName.val = signalsName
         self.Name = signalsName
         return signalsName
 
@@ -150,15 +154,15 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
         self.SendMessage(newReportPacket)
 
-    def SendLog(self, log:packets.fieldTypes_pb2.Log) -> None:
+    def SendLog(self, log: packets.fieldTypes_pb2.Log) -> None:
         if log == None:
             print(utils.TextPortMsg('WARN', 'Log suppressed - Nonetype received'))
 
         else:
-            newLogPacket = packets.CreateLogPacket(log.level,log.message)
-            self.SendMessage(newLogPacket)        
+            newLogPacket = packets.CreateLogPacket(log.level, log.message)
+            self.SendMessage(newLogPacket)
 
-    def SetLog(self, logLvl:int, logMsg:str) -> None:
+    def SetLog(self, logLvl: int, logMsg: str) -> None:
         newLog = self.CreateLog(logLvl, logMsg)
         self.SendLog(newLog)
 
@@ -166,27 +170,27 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         """Sends control-Set packet to SudoSignals Desktop Service
         """
 
-        #controlState = self.CreateControls()
-        #newControlPacket = {
+        # controlState = self.CreateControls()
+        # newControlPacket = {
         #    "action": "control-Set",
         #    "data": {"state": controlState}
-        #}
+        # }
 
         controlPages = self.CreateControls()
         newControlPacket = packets.CreateControlPacket(controlPages)
         self.SendMessage(newControlPacket)
 
-    def SetLogFromTable(self, LogOp:op) -> None:
+    def SetLogFromTable(self, LogOp: op) -> None:
         """Sends log info to SudoSignals Desktop Service
         """
 
         newLog = self.CreateLogFromTable(LogOp)
         self.SendLog(newLog)
-        
+
         # clear message
         LogOp[1, 1] = ''
 
-    def UpdateControls(self, packet:packets.packets_pb2.WebsocketPacket):
+    def UpdateControls(self, packet: packets.packets_pb2.WebsocketPacket):
         updatedControl = packets.fieldTypes_pb2.Control()
         packet.payload.Unpack(updatedControl)
 
@@ -202,7 +206,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         Waits to send control updates until 60 frames have passed. This
         Should ensure that we've completed any necessary start-up and 
         initialization elements
-        
+
         Args
         ----------
         None
@@ -237,5 +241,5 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
     def _clean_up(self) -> None:
         parent.signals.par.Connected = False
 
-    def _reset_websocket(self, websocket:callable) -> None:
+    def _reset_websocket(self, websocket: callable) -> None:
         websocket.par.reset.pulse()

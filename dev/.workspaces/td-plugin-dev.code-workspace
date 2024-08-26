@@ -9,5 +9,8 @@
 	"settings": {
 		"files.exclude": {},
 		"workbench.colorTheme": "Monokai",
-	}
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "never"
+		},
+	},
 }
