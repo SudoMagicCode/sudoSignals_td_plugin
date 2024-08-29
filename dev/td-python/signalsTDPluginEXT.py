@@ -5,8 +5,8 @@ try:
 except Exception as e:
     print("[*] Missing Signals Libs")
 
-import packets
 import utils
+import packets
 from reporter import SignalsReporter
 from logger import SignalsLogger
 from controls import SignalsControls

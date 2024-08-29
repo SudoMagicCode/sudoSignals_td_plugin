@@ -1,78 +1,69 @@
-import sys
-signals_libs_path = me.var("SIGNALS_LIBS")+"\python"
-
-if signals_libs_path in sys.path:
-	pass
-else:
-	sys.path.insert(0, signals_libs_path)
-	
-	
-try:
-	import common.fieldTypes_pb2 as fieldTypes_pb2
-	import common.packets_pb2 as packets_pb2
-	import common.payloads_pb2 as payloads_pb2
-	import common.signalsEnums_pb2 as signalsEnums_pb2
-	import common.signalsOptions_pb2 as signalsOptions_pb2
-	from objects import *
-except:
-	print("[~] WARNING! Could not import protobuf types. Please add them to the python path.")
+import common.fieldTypes_pb2 as fieldTypes_pb2
+import common.packets_pb2 as packets_pb2
+import common.payloads_pb2 as payloads_pb2
+import common.signalsEnums_pb2 as signalsEnums_pb2
+import common.signalsOptions_pb2 as signalsOptions_pb2
+from objects import *
 
 
 def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
-	newPacket = packets_pb2.WebsocketPacket()
-	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_IDENTIFY
-	
-	newIdentity = packets_pb2.PacketIdentity()
-	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
-	newIdentity.additionalIdentifiers['process_id'] = signals_id
-	newIdentity.additionalIdentifiers['software'] = software
-	newIdentity.additionalIdentifiers['software_version'] = softwareVersion
-	newIdentity.additionalIdentifiers['plugin_version'] = pluginVersion
-	newPacket.identity.CopyFrom(newIdentity)
-	return newPacket 
+    newPacket = packets_pb2.WebsocketPacket()
+    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_IDENTIFY
+
+    newIdentity = packets_pb2.PacketIdentity()
+    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newIdentity.additionalIdentifiers['process_id'] = signals_id
+    newIdentity.additionalIdentifiers['software'] = software
+    newIdentity.additionalIdentifiers['software_version'] = softwareVersion
+    newIdentity.additionalIdentifiers['plugin_version'] = pluginVersion
+    newPacket.identity.CopyFrom(newIdentity)
+    return newPacket
+
 
 def CreateLogPacket(logLevel: signalsEnums_pb2.LogLevel, message: str):
-	newPacket = packets_pb2.WebsocketPacket()
-	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_LOG
+    newPacket = packets_pb2.WebsocketPacket()
+    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_LOG
 
-	newIdentity = packets_pb2.PacketIdentity()
-	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newIdentity = packets_pb2.PacketIdentity()
+    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
 
-	newLogPayload = fieldTypes_pb2.Log()
-	newLogPayload.level = logLevel
-	newLogPayload.message = message
+    newLogPayload = fieldTypes_pb2.Log()
+    newLogPayload.level = logLevel
+    newLogPayload.message = message
 
-	newPacket.payload.Pack(newLogPayload)
+    newPacket.payload.Pack(newLogPayload)
 
-	return newPacket
+    return newPacket
+
 
 def CreateReportPacket(dataFrame: fieldTypes_pb2.DataFrame):
-	newPacket = packets_pb2.WebsocketPacket()
-	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_REPORT
-	
-	newIdentity = packets_pb2.PacketIdentity()
-	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newPacket = packets_pb2.WebsocketPacket()
+    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_REPORT
 
-	newReportPayload = fieldTypes_pb2.Report()
-	newReportPayload.data.CopyFrom(dataFrame)
+    newIdentity = packets_pb2.PacketIdentity()
+    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
 
-	newPacket.payload.Pack(newReportPayload)
+    newReportPayload = fieldTypes_pb2.Report()
+    newReportPayload.data.CopyFrom(dataFrame)
 
-	return newPacket
+    newPacket.payload.Pack(newReportPayload)
+
+    return newPacket
+
 
 def CreateControlPacket(controlData: list[fieldTypes_pb2.ControlPage]):
-	newPacket = packets_pb2.WebsocketPacket()
-	newPacket.action = packets_pb2.WebsocketPacket.PROCESS_CONTROLS
-	
-	newIdentity = packets_pb2.PacketIdentity()
-	newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newPacket = packets_pb2.WebsocketPacket()
+    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_CONTROLS
 
-	newControlPayload = payloads_pb2.ProcessControlPayload()
+    newIdentity = packets_pb2.PacketIdentity()
+    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
 
-	for controlPage in controlData:
-		
-		newControlPayload.data[controlPage.uuid].CopyFrom(controlPage)
+    newControlPayload = payloads_pb2.ProcessControlPayload()
 
-	newPacket.payload.Pack(newControlPayload)
+    for controlPage in controlData:
 
-	return newPacket
+        newControlPayload.data[controlPage.uuid].CopyFrom(controlPage)
+
+    newPacket.payload.Pack(newControlPayload)
+
+    return newPacket
