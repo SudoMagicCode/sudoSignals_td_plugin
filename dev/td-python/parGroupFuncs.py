@@ -153,3 +153,49 @@ def parGroupToggleFunc(control: packets.fieldTypes_pb2.Control, parGroup: helper
             control.values.append(newValue)
             control.defaultValues.append(newDefault)
     return control
+
+
+def parGroupRGBFunc(control: packets.fieldTypes_pb2.Control, parGroup: helperTypes.parGroup) -> packets.fieldTypes_pb2.Control:
+    # Par Group Toggle - will return controls for toggle controls
+
+    for index, parVal in enumerate(parGroup.val):
+        if parVal is not None:
+            newValue = struct_pb2.Value()
+            newMin = struct_pb2.Value()
+            newMax = struct_pb2.Value()
+            newDefault = struct_pb2.Value()
+
+            newValue.number_value = parVal
+            newMin.number_value = parGroup.normMin[index]
+            newMax.number_value = parGroup.normMax[index]
+            newDefault.number_value = parGroup.default[index]
+            control.minVal.append(newMin)
+            control.maxVal.append(newMax)
+
+            control.values.append(newValue)
+            control.defaultValues.append(newDefault)
+
+    return control
+
+
+def parGroupRGBAFunc(control: packets.fieldTypes_pb2.Control, parGroup: helperTypes.parGroup) -> packets.fieldTypes_pb2.Control:
+    # Par Group Toggle - will return controls for toggle controls
+
+    for index, parVal in enumerate(parGroup.val):
+        if parVal is not None:
+            newValue = struct_pb2.Value()
+            newMin = struct_pb2.Value()
+            newMax = struct_pb2.Value()
+            newDefault = struct_pb2.Value()
+
+            newValue.number_value = parVal
+            newMin.number_value = parGroup.normMin[index]
+            newMax.number_value = parGroup.normMax[index]
+            newDefault.number_value = parGroup.default[index]
+            control.minVal.append(newMin)
+            control.maxVal.append(newMax)
+
+            control.values.append(newValue)
+            control.defaultValues.append(newDefault)
+
+    return control
