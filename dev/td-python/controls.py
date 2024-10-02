@@ -40,19 +40,30 @@ class SignalsControls:
         match control_style:
             case packets.signalsEnums_pb2.CONTROL_PULSE:
                 op(path_to_control_tox).parGroup[par_name].pulse()
+
             case packets.signalsEnums_pb2.CONTROL_INT:
                 my_int_values = [
                     value.number_value for value in control_values]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
+
             case packets.signalsEnums_pb2.CONTROL_FLOAT:
                 my_int_values = [
                     value.number_value for value in control_values]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
+
+            case packets.signalsEnums_pb2.CONTROL_COLOR:
+                my_int_values = [
+                    value.number_value for value in control_values]
+                op(path_to_control_tox).parGroup[par_name] = my_int_values
+
             case packets.signalsEnums_pb2.CONTROL_MENU:
                 op(path_to_control_tox).parGroup[par_name] = control_values[0].string_value
+
             case packets.signalsEnums_pb2.CONTROL_TOGGLE:
                 op(path_to_control_tox).parGroup[par_name] = control_values[0].bool_value
+
             case packets.signalsEnums_pb2.CONTROL_STRING:
                 op(path_to_control_tox).parGroup[par_name] = control_values[0].string_value
+
             case _:
                 print(f"{control_style} control type is not yet supported")
