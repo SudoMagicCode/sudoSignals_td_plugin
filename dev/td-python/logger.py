@@ -6,34 +6,34 @@ class SignalsLogger:
         self.__logTables = []
         return
     
-    def CreateLog(self, logLvl:int, logMsg:str) -> packets.fieldTypes_pb2.Log:
+    def CreateLog(self, logLvl:int, logMsg:str) -> packets.logs.Log:
         newLog = None
 
         valid_log_lvl = [0, 1, 2, 3, 4]
         log_level_map = [
-            packets.signalsEnums_pb2.LogLevel.LOG,
-            packets.signalsEnums_pb2.LogLevel.INFO,
-            packets.signalsEnums_pb2.LogLevel.WARN,
-            packets.signalsEnums_pb2.LogLevel.CRIT,
-            packets.signalsEnums_pb2.LogLevel.ALERT
+            packets.log_enums.LOG_LOG,
+            packets.log_enums.LOG_INFO,
+            packets.log_enums.LOG_WARN,
+            packets.log_enums.LOG_CRIT,
+            packets.log_enums.LOG_ALERT
         ]
         if logLvl not in valid_log_lvl:
             print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, 2, 3, 4'))
         else:
-            newLog = packets.fieldTypes_pb2.Log()
+            newLog = packets.logs.Log()
             newLog.level = log_level_map[logLvl]
             newLog.message = logMsg
         return newLog
 
-    def CreateLogFromTable(self, logOp:op) -> packets.fieldTypes_pb2.Log:
+    def CreateLogFromTable(self, logOp:op) -> packets.logs.Log:
         newLog = None
         valid_log_level = ['0', '1', '2', '3', '4']
         log_level_map = {
-            '0':packets.signalsEnums_pb2.LogLevel.LOG,
-            '1':packets.signalsEnums_pb2.LogLevel.INFO,
-            '2':packets.signalsEnums_pb2.LogLevel.WARN,
-            '3':packets.signalsEnums_pb2.LogLevel.CRIT,
-            '4':packets.signalsEnums_pb2.LogLevel.ALERT
+            '0':packets.log_enums.LOG_LOG,
+            '1':packets.log_enums.LOG_INFO,
+            '2':packets.log_enums.LOG_WARN,
+            '3':packets.log_enums.LOG_CRIT,
+            '4':packets.log_enums.LOG_ALERT
         }
         
         #check to ensure op is table
@@ -48,7 +48,7 @@ class SignalsLogger:
                 if logOp[0, 1].val not in valid_log_level:
                     print(utils.TextPortMsg('WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, or 2'))
                 else:
-                    newLog = packets.fieldTypes_pb2.Log()
+                    newLog = packets.logs.Log()
                     newLog.level = log_level_map[logOp[0, 1].val]
                     newLog.message = logOp[1, 1].val
 

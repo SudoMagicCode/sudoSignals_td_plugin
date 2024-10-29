@@ -1,17 +1,25 @@
-import common.fieldTypes_pb2 as fieldTypes_pb2
-import common.packets_pb2 as packets_pb2
-import common.payloads_pb2 as payloads_pb2
-import common.signalsEnums_pb2 as signalsEnums_pb2
-import common.signalsOptions_pb2 as signalsOptions_pb2
-from objects import *
+
+import common.generic_pb2 as generic
+import common.enums.logs_pb2 as log_enums
+import common.enums.packets_pb2 as packet_enums
+import common.enums.data_field_pb2 as report_enums
+import common.enums.controls_pb2 as control_enums
+
+import common.packets.websockets_pb2 as websockets_packets
+import common.payloads.process_pb2 as process_payloads
+import objects.controls.controls_fields_pb2 as controls_fields
+import objects.controls.controls_pb2 as controls
+import objects.log.log_pb2 as logs
+import objects.report.report_fields_pb2 as report_fields
+import objects.report.report_pb2 as reports
 
 
 def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
-    newPacket = packets_pb2.WebsocketPacket()
-    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_IDENTIFY
+    newPacket = websockets_packets.WebsocketPacket()
+    newPacket.action = packet_enums.PROCESS_IDENTIFY
 
-    newIdentity = packets_pb2.PacketIdentity()
-    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newIdentity = websockets_packets.PacketIdentity()
+    newIdentity.origin = packet_enums.PROCESS
     newIdentity.additionalIdentifiers['process_id'] = signals_id
     newIdentity.additionalIdentifiers['software'] = software
     newIdentity.additionalIdentifiers['software_version'] = softwareVersion
@@ -20,14 +28,14 @@ def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
     return newPacket
 
 
-def CreateLogPacket(logLevel: signalsEnums_pb2.LogLevel, message: str):
-    newPacket = packets_pb2.WebsocketPacket()
-    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_LOG
+def CreateLogPacket(logLevel: log_enums.LogLevel, message: str):
+    newPacket = websockets_packets.WebsocketPacket()
+    newPacket.action = packet_enums.PROCESS_LOG
 
-    newIdentity = packets_pb2.PacketIdentity()
-    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newIdentity = websockets_packets.PacketIdentity()
+    newIdentity.origin = packet_enums.PROCESS
 
-    newLogPayload = fieldTypes_pb2.Log()
+    newLogPayload = logs.Log()
     newLogPayload.level = logLevel
     newLogPayload.message = message
 
@@ -36,14 +44,14 @@ def CreateLogPacket(logLevel: signalsEnums_pb2.LogLevel, message: str):
     return newPacket
 
 
-def CreateReportPacket(dataFrame: fieldTypes_pb2.DataFrame):
-    newPacket = packets_pb2.WebsocketPacket()
-    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_REPORT
+def CreateReportPacket(dataFrame: report_fields.DataFrame):
+    newPacket = websockets_packets.WebsocketPacket()
+    newPacket.action = packet_enums.PROCESS_REPORT
 
-    newIdentity = packets_pb2.PacketIdentity()
-    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newIdentity = websockets_packets.PacketIdentity()
+    newIdentity.origin = packet_enums.PROCESS
 
-    newReportPayload = fieldTypes_pb2.Report()
+    newReportPayload = reports.Report()
     newReportPayload.data.CopyFrom(dataFrame)
 
     newPacket.payload.Pack(newReportPayload)
@@ -51,18 +59,18 @@ def CreateReportPacket(dataFrame: fieldTypes_pb2.DataFrame):
     return newPacket
 
 
-def CreateControlPacket(controlData: list[fieldTypes_pb2.ControlPage]):
-    newPacket = packets_pb2.WebsocketPacket()
-    newPacket.action = packets_pb2.WebsocketPacket.PROCESS_CONTROLS
+def CreateControlPacket(controlData: list[controls.ControlPage]):
+    newPacket = websockets_packets.WebsocketPacket()
+    newPacket.action = packet_enums.PROCESS_CONTROLS
 
-    newIdentity = packets_pb2.PacketIdentity()
-    newIdentity.origin = packets_pb2.PacketIdentity.PROCESS
+    newIdentity = websockets_packets.PacketIdentity()
+    newIdentity.origin = packet_enums.PROCESS
 
-    newControlPayload = payloads_pb2.ProcessControlPayload()
+    newControlPayload = process_payloads.ProcessControlPayload()
 
     for controlPage in controlData:
 
-        newControlPayload.data[controlPage.uuid].CopyFrom(controlPage)
+        newControlPayload.data[controlPage.uuid.value].CopyFrom(controlPage)
 
     newPacket.payload.Pack(newControlPayload)
 

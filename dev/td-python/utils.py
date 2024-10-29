@@ -5,21 +5,21 @@ import parGroupFuncs
 import helperTypes
 
 styleToControlTypeMap = {
-    "Float": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
-    "Int": packets.signalsEnums_pb2.ControlType.CONTROL_INT,
-    "Header": packets.signalsEnums_pb2.ControlType.CONTROL_HEADER,
-    "Str": packets.signalsEnums_pb2.ControlType.CONTROL_STRING,
-    "Pulse": packets.signalsEnums_pb2.ControlType.CONTROL_PULSE,
-    "Toggle": packets.signalsEnums_pb2.ControlType.CONTROL_TOGGLE,
-    "Menu": packets.signalsEnums_pb2.ControlType.CONTROL_MENU,
-    "StrMenu": packets.signalsEnums_pb2.ControlType.CONTROL_MENU,
-    "RGB": packets.signalsEnums_pb2.ControlType.CONTROL_COLOR,
-    "RGBA": packets.signalsEnums_pb2.ControlType.CONTROL_COLOR,
-    "UV": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
-    "UVW": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
-    "XY": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
-    "XYZ": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
-    "WH": packets.signalsEnums_pb2.ControlType.CONTROL_FLOAT,
+    "Float": packets.control_enums.CONTROL_FLOAT,
+    "Int": packets.control_enums.CONTROL_INT,
+    "Header": packets.control_enums.CONTROL_HEADER,
+    "Str": packets.control_enums.CONTROL_STRING,
+    "Pulse": packets.control_enums.CONTROL_PULSE,
+    "Toggle": packets.control_enums.CONTROL_TOGGLE,
+    "Menu": packets.control_enums.CONTROL_MENU,
+    "StrMenu": packets.control_enums.CONTROL_MENU,
+    "RGB": packets.control_enums.CONTROL_COLOR,
+    "RGBA": packets.control_enums.CONTROL_COLOR,
+    "UV": packets.control_enums.CONTROL_FLOAT,
+    "UVW": packets.control_enums.CONTROL_FLOAT,
+    "XY": packets.control_enums.CONTROL_FLOAT,
+    "XYZ": packets.control_enums.CONTROL_FLOAT,
+    "WH": packets.control_enums.CONTROL_FLOAT,
 }
 
 parGroupFunctionMap = {
@@ -44,15 +44,15 @@ parGroupFunctionMap = {
 }
 
 
-def parDataBlock(parGroup: helperTypes.parGroup) -> packets.fieldTypes_pb2.Control:
+def parDataBlock(parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # construct new control
-    newControl = packets.fieldTypes_pb2.Control()
+    newControl = packets.controls.Control()
 
-    newControl.controlType = styleToControlTypeMap[parGroup.style]
-    newControl.label = parGroup.label
-    newControl.entityReference["path"] = parGroup.owner.path
-    newControl.entityReference["name"] = parGroup.name
-    newControl.index = parGroup.order
+    newControl.control_type = styleToControlTypeMap[parGroup.style]
+    newControl.label.CopyFrom(packets.controls_fields.ControlLabel(value=parGroup.label))
+    newControl.entity_reference.value["path"] = parGroup.owner.path
+    newControl.entity_reference.value["name"] = parGroup.name
+    newControl.index.CopyFrom(packets.controls_fields.ControlIndex(value=parGroup.order))
 
     # use parGroup funcs to match to an appropriate function and fill in control
     parGroupFunc = parGroupFunctionMap.get(parGroup.style)
@@ -64,11 +64,11 @@ def parDataBlock(parGroup: helperTypes.parGroup) -> packets.fieldTypes_pb2.Contr
     return control
 
 
-def groupDataBlock(group) -> packets.fieldTypes_pb2.Control:
+def groupDataBlock(group) -> packets.controls.Control:
     return parDataBlock(group)
 
 
-def CreateAllParDataBlocks(page) -> dict[str, packets.fieldTypes_pb2.Control]:
+def CreateAllParDataBlocks(page) -> dict[str, packets.controls.Control]:
     parsData = {}
     groups = page.parGroups
     for g in groups:

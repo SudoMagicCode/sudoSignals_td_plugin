@@ -154,7 +154,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
         self.SendMessage(newReportPacket)
 
-    def SendLog(self, log: packets.fieldTypes_pb2.Log) -> None:
+    def SendLog(self, log: packets.logs.Log) -> None:
         if log == None:
             print(utils.TextPortMsg('WARN', 'Log suppressed - Nonetype received'))
 
@@ -190,8 +190,8 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         # clear message
         LogOp[1, 1] = ''
 
-    def UpdateControls(self, packet: packets.packets_pb2.WebsocketPacket):
-        updatedControl = packets.fieldTypes_pb2.Control()
+    def UpdateControls(self, packet: packets.websockets_packets.WebsocketPacket):
+        updatedControl = packets.controls.Control()
         packet.payload.Unpack(updatedControl)
 
         self.UpdateControlComp(updatedControl)

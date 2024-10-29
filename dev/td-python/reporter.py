@@ -20,9 +20,9 @@ class SignalsReporter:
 				if fieldHash in self.dataFields:
 					dataField = self.dataFields[fieldHash]
 				else:
-					newDataField = packets.fieldTypes_pb2.DataField()
+					newDataField = packets.report_fields.DataField()
 					newDataField.name = key
-					newDataField.type = packets.signalsEnums_pb2.DataFieldTypes.NUMBER
+					newDataField.type = packets.report_enums.NUMBER
 					self.dataFields[fieldHash] = newDataField
 					dataField = newDataField
 				newVal = google.protobuf.struct_pb2.Value()
@@ -30,9 +30,9 @@ class SignalsReporter:
 				dataField.values.append(newVal)
 		return 
 	
-	def CreateDataFrame(self) -> packets.fieldTypes_pb2.DataFrame:
+	def CreateDataFrame(self) -> packets.report_fields.DataFrame:
 		self._pollFields()
-		newDataFrame = packets.fieldTypes_pb2.DataFrame()
+		newDataFrame = packets.report_fields.DataFrame()
 		newDataFrame.fields.extend(list(self.dataFields.values()))
 		self.dataFields = {}
 		self._reportables.extend(self._pendingReportables)

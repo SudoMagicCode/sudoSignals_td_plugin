@@ -1,7 +1,6 @@
-import json
+
 from google.protobuf.json_format import MessageToJson, Parse
 import signalsErrors
-import tdDialogHelper
 import packets
 
 
@@ -13,8 +12,8 @@ class SignalsRouter(object):
         self._routes = {}
         self._id = None
         self._socket = socket
-        self.AddActionRoute(packets.packets_pb2.WebsocketPacket.PacketType.Name(
-            packets.packets_pb2.WebsocketPacket.PacketType.START), self.SendIdentifyPacket)
+        self.AddActionRoute(packets.packet_enums.PacketType.Name(
+            packets.packet_enums.PacketType.START), self.SendIdentifyPacket)
         return
 
     @property
@@ -40,16 +39,16 @@ class SignalsRouter(object):
 
     def RecvMessage(self, message) -> None:
         '''We are receiving a message from the Daemon'''
-        newPacket = Parse(message, packets.packets_pb2.WebsocketPacket())
+        newPacket = Parse(message, packets.websockets_packets.WebsocketPacket())
         self._routeMessage(newPacket)
 
     def RecvBinary(self, contents) -> None:
         '''We are receiving a binary, possible protobuf'''
-        packet = packets.packets_pb2.WebsocketPacket()
+        packet = packets.websockets_packets.WebsocketPacket()
         packet.ParseFromString(contents)
         self._routeBinaryMessage(packet, packet.action)
 
-    def SendMessage(self, packet: packets.packets_pb2.WebsocketPacket) -> None:
+    def SendMessage(self, packet: packets.websockets_packets.WebsocketPacket) -> None:
         if self._id is None:
             print("No id present. Supressing Message.")
             return
@@ -61,7 +60,7 @@ class SignalsRouter(object):
         self._routes[routeName] = routeFunction
 
     def _routeMessage(self, packet) -> None:
-        packetActionName = packets.packets_pb2.WebsocketPacket.PacketType.Name(
+        packetActionName = packets.packet_enums.PacketType.Name(
             packet.action)
         try:
             self._routes[packetActionName](packet)
@@ -73,5 +72,5 @@ class SignalsRouter(object):
         try:
             self._routes[route](packet)
         except KeyError:
-            print('SIGNALS ROUTER | Action "'+packets.packets_pb2.WebsocketPacket.PacketType.Name(
+            print('SIGNALS ROUTER | Action "'+packets.packet_enums.PacketType.Name(
                 route)+'" is not recognized/implemented.')
