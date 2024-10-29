@@ -31,9 +31,9 @@ class SignalsControls:
         return controlPages
 
     def UpdateControlComp(self, state: packets.controls.Control) -> None:
-        path_to_control_tox = state.entityReference.value["path"]
-        par_name = state.entityReference.value["name"]
-        control_style = state.controlType
+        path_to_control_tox = state.entity_reference.value["path"]
+        par_name = state.entity_reference.value["name"]
+        control_style = state.control_type
         control_values = state.values
 
         match control_style:
@@ -42,27 +42,27 @@ class SignalsControls:
 
             case packets.control_enums.CONTROL_INT:
                 my_int_values = [
-                    value.number_value for value in control_values]
+                    value.number_value for value in control_values.value]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
 
             case packets.control_enums.CONTROL_FLOAT:
                 my_int_values = [
-                    value.number_value for value in control_values]
+                    value.number_value for value in control_values.value]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
 
             case packets.control_enums.CONTROL_COLOR:
                 my_int_values = [
-                    value.number_value for value in control_values]
+                    value.number_value for value in control_values.value]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
 
             case packets.control_enums.CONTROL_MENU:
-                op(path_to_control_tox).parGroup[par_name] = control_values[0].string_value
+                op(path_to_control_tox).parGroup[par_name] = control_values.value[0].string_value
 
             case packets.control_enums.CONTROL_TOGGLE:
-                op(path_to_control_tox).parGroup[par_name] = control_values[0].bool_value
+                op(path_to_control_tox).parGroup[par_name] = control_values.value[0].bool_value
 
             case packets.control_enums.CONTROL_STRING:
-                op(path_to_control_tox).parGroup[par_name] = control_values[0].string_value
+                op(path_to_control_tox).parGroup[par_name] = control_values.value[0].string_value
 
             case _:
                 print(f"{control_style} control type is not yet supported")
