@@ -2,7 +2,10 @@ import sys
 
 
 def loadSignalsLibs():
-    signals_libs_path = me.var("SIGNALS_LIBS")+"\python"
+    if me.var("SIGNALS_LIBS") != "":
+        signals_libs_path = me.var("SIGNALS_LIBS")+"\python"
+    else:
+        signals_libs_path = project.folder+"//td-python//packets"
 
     if signals_libs_path in sys.path:
         pass

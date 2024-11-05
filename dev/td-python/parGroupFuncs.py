@@ -8,26 +8,17 @@ import helperTypes
 def parGroupFloatFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Floats - will return controls for floats of all dimensions
 
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
-    newMultiMax = packets.controls_fields.MultiValue(value=[])    
-    newMultiMin = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
+    newMultiMax = packets.controls_fields.MultiValue(value={})    
+    newMultiMin = packets.controls_fields.MultiValue(value={})  
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newMin = struct_pb2.Value()
-            newMax = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
-
-            newValue.number_value = parVal
-            newMin.number_value = parGroup.normMin[index]
-            newMax.number_value = parGroup.normMax[index]
-            newDefault.number_value = parGroup.default[index]
-            newMultiMin.value.append(newMin)
-            newMultiMax.value.append(newMax)
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiMin.value[index].number_value = parGroup.normMin[index]
+            newMultiMax.value[index].number_value = parGroup.normMax[index]
+            
+            newMultiValue.value[index].number_value = parVal
+            newMultiValueDefault.value[index].number_value = parGroup.default[index]
 
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -38,26 +29,17 @@ def parGroupFloatFunc(control: packets.controls.Control, parGroup: helperTypes.p
 
 def parGroupIntFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Ints - will return controls for ints of all dimensions
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
-    newMultiMax = packets.controls_fields.MultiValue(value=[])    
-    newMultiMin = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
+    newMultiMax = packets.controls_fields.MultiValue(value={})    
+    newMultiMin = packets.controls_fields.MultiValue(value={})  
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newMin = struct_pb2.Value()
-            newMax = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
+            newMultiMin.value[index].number_value = parGroup.normMin[index]
+            newMultiMax.value[index].number_value = parGroup.normMax[index]
 
-            newValue.number_value = parVal
-            newMin.number_value = parGroup.normMin[index]
-            newMax.number_value = parGroup.normMax[index]
-            newDefault.number_value = parGroup.default[index]
-            newMultiMin.value.append(newMin)
-            newMultiMax.value.append(newMax)
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].number_value = parVal
+            newMultiValueDefault.value[index].number_value = parGroup.default[index]
 
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -68,18 +50,13 @@ def parGroupIntFunc(control: packets.controls.Control, parGroup: helperTypes.par
 
 def parGroupHeaderFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Header - will return controls for headers
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.string_value = parVal
-            newDefault.string_value = parGroup.default[index]  
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].string_value = parVal
+            newMultiValueDefault.value[index].string_value = parGroup.default[index] 
 
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -89,20 +66,15 @@ def parGroupHeaderFunc(control: packets.controls.Control, parGroup: helperTypes.
 def parGroupMenuFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Menu - returns menu objects that contain menu options (labels and names)
 
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
     newMenuOptions = packets.controls_fields.MenuOptions(value={}) 
 
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.string_value = parVal
-            newDefault.string_value = parGroup.default[index]
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].string_value = parVal
+            newMultiValueDefault.value[index].string_value = parGroup.default[index]
 
         parLabels = parGroup.menuLabels[index]
         parNames = parGroup.menuNames[index]
@@ -124,19 +96,14 @@ def parGroupMomentaryFunc(control: packets.controls.Control, parGroup: helperTyp
 
 def parGroupPulseFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Pulse - will return controls for pulse controls
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
 
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.number_value = parVal
-            newDefault.number_value = parGroup.default[index]
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].number_value = parVal
+            newMultiValueDefault.value[index].number_value = parGroup.default[index]
     
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -157,19 +124,14 @@ def parGroupSequenceFunc(control: packets.controls.Control, parGroup: helperType
 
 def parGroupStringFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group String - will return controls for string controls
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
 
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.string_value = parVal
-            newDefault.string_value = parGroup.default[index]
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].string_value = parVal
+            newMultiValueDefault.value[index].string_value = parGroup.default[index]
 
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -178,19 +140,14 @@ def parGroupStringFunc(control: packets.controls.Control, parGroup: helperTypes.
 
 def parGroupToggleFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Toggle - will return controls for toggle controls
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
 
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.bool_value = parVal
-            newDefault.bool_value = parGroup.default[index]
-
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].bool_value = parVal
+            newMultiValueDefault.value[index].bool_value = parGroup.default[index]
 
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -200,27 +157,19 @@ def parGroupToggleFunc(control: packets.controls.Control, parGroup: helperTypes.
 def parGroupRGBFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Toggle - will return controls for toggle controls
 
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
-    newMultiMax = packets.controls_fields.MultiValue(value=[])    
-    newMultiMin = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
+    newMultiMax = packets.controls_fields.MultiValue(value={})    
+    newMultiMin = packets.controls_fields.MultiValue(value={})  
 
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newMin = struct_pb2.Value()
-            newMax = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.number_value = parVal
-            newMin.number_value = parGroup.normMin[index]
-            newMax.number_value = parGroup.normMax[index]
-            newDefault.number_value = parGroup.default[index]
-            newMultiMin.value.append(newMin)
-            newMultiMax.value.append(newMax)
+            newMultiMin.value[index].number_value = parGroup.normMin[index]
+            newMultiMax.value[index].number_value = parGroup.normMax[index]
 
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].number_value = parVal
+            newMultiValueDefault.value[index].number_value = parGroup.default[index]
 
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
@@ -232,27 +181,19 @@ def parGroupRGBFunc(control: packets.controls.Control, parGroup: helperTypes.par
 def parGroupRGBAFunc(control: packets.controls.Control, parGroup: helperTypes.parGroup) -> packets.controls.Control:
     # Par Group Toggle - will return controls for toggle controls
 
-    newMultiValue = packets.controls_fields.MultiValue(value=[])    
-    newMultiValueDefault = packets.controls_fields.MultiValue(value=[])  
-    newMultiMax = packets.controls_fields.MultiValue(value=[])    
-    newMultiMin = packets.controls_fields.MultiValue(value=[])  
+    newMultiValue = packets.controls_fields.MultiValue(value={})    
+    newMultiValueDefault = packets.controls_fields.MultiValue(value={})  
+    newMultiMax = packets.controls_fields.MultiValue(value={})    
+    newMultiMin = packets.controls_fields.MultiValue(value={})  
 
     for index, parVal in enumerate(parGroup.val):
         if parVal is not None:
-            newValue = struct_pb2.Value()
-            newMin = struct_pb2.Value()
-            newMax = struct_pb2.Value()
-            newDefault = struct_pb2.Value()
 
-            newValue.number_value = parVal
-            newMin.number_value = parGroup.normMin[index]
-            newMax.number_value = parGroup.normMax[index]
-            newDefault.number_value = parGroup.default[index]
-            newMultiMin.value.append(newMin)
-            newMultiMax.value.append(newMax)
+            newMultiMin.value[index].number_value = parGroup.normMin[index]
+            newMultiMax.value[index].number_value = parGroup.normMax[index]
 
-            newMultiValue.value.append(newValue)
-            newMultiValueDefault.value.append(newDefault)
+            newMultiValue.value[index].number_value = parVal
+            newMultiValueDefault.value[index].number_value = parGroup.default[index]
             
     control.values.CopyFrom(newMultiValue)
     control.default_values.CopyFrom(newMultiValueDefault)
