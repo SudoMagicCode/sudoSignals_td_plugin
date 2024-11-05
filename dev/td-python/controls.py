@@ -42,17 +42,17 @@ class SignalsControls:
 
             case packets.control_enums.CONTROL_INT:
                 my_int_values = [
-                    value.number_value for value in control_values.value]
+                   control_values.value[idx].number_value for idx in control_values.value]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
 
             case packets.control_enums.CONTROL_FLOAT:
                 my_int_values = [
-                    value.number_value for value in control_values.value]
+                    control_values.value[idx].number_value for idx in control_values.value]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
 
             case packets.control_enums.CONTROL_COLOR:
                 my_int_values = [
-                    value.number_value for value in control_values.value]
+                    control_values.value[idx].number_value for idx in control_values.value]
                 op(path_to_control_tox).parGroup[par_name] = my_int_values
 
             case packets.control_enums.CONTROL_MENU:
