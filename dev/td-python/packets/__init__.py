@@ -10,6 +10,7 @@ import common.payloads.process_pb2 as process_payloads
 import objects.controls.controls_fields_pb2 as controls_fields
 import objects.controls.controls_pb2 as controls
 import objects.log.log_pb2 as logs
+import objects.log.log_fields_pb2 as log_fields
 import objects.report.report_fields_pb2 as report_fields
 import objects.report.report_pb2 as reports
 
@@ -28,7 +29,7 @@ def CreateIdentifyPacket(signals_id, software, softwareVersion, pluginVersion):
     return newPacket
 
 
-def CreateLogPacket(logLevel: log_enums.LogLevel, message: str):
+def CreateLogPacket(logLevel: log_enums.LogLevel, message: log_fields.LogMessage):
     newPacket = websockets_packets.WebsocketPacket()
     newPacket.action = packet_enums.PROCESS_LOG
 
@@ -37,7 +38,7 @@ def CreateLogPacket(logLevel: log_enums.LogLevel, message: str):
 
     newLogPayload = logs.Log()
     newLogPayload.level = logLevel
-    newLogPayload.message = message
+    newLogPayload.message.CopyFrom(message)
 
     newPacket.payload.Pack(newLogPayload)
 

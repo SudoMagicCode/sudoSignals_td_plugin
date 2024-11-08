@@ -22,7 +22,8 @@ class SignalsLogger:
         else:
             newLog = packets.logs.Log()
             newLog.level = log_level_map[logLvl]
-            newLog.message = logMsg
+            newLogMessage = packets.log_fields.LogMessage(value=logMsg)
+            newLog.message.CopyFrom(newLogMessage)
         return newLog
 
     def CreateLogFromTable(self, logOp:op) -> packets.logs.Log:
@@ -50,6 +51,7 @@ class SignalsLogger:
                 else:
                     newLog = packets.logs.Log()
                     newLog.level = log_level_map[logOp[0, 1].val]
-                    newLog.message = logOp[1, 1].val
+                    newLogMessage = packets.log_fields.LogMessage(value=logOp[1, 1].val)
+                    newLog.message.CopyFrom(newLogMessage)
 
         return newLog
