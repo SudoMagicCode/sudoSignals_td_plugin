@@ -1,2 +1,6 @@
 
 dev/proto_packages/python/common/
+
+scripts/__pycache__/
+
+release/latest/

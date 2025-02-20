@@ -7,5 +7,6 @@ latest_dir: str = f"{dest_dir}/latest"
 env_vars: dict = {
     "SM_BUILD": "TRUE",
     "SM_PRIVACY": "FALSE",
+    "SIGNALS_LIBS": "C:/Program Files/sudoSignals/libs",
     "SM_SAVE_PATH": latest_dir
 }
