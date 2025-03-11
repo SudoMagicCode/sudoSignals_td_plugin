@@ -6,18 +6,18 @@
 # Make sure the corresponding toggle is enabled in the Execute DAT.
 
 def onStart():
-	op('base_private_ext').par.reinitextensions.pulse()
-	op('base_private_ext').SignalsStartUp()
+	parent.service.par.reinitextensions.pulse()
+	parent.service.SignalsStartUp()
 	
 	return
 
 def onCreate():
-	op('base_private_ext').par.reinitextensions.pulse()
-	op('base_private_ext').SignalsStartUp()
+	parent.service.par.reinitextensions.pulse()
+	parent.service.SignalsStartUp()
 	return
 
 def onExit():
-	op('base_private_ext').Clean_up()
+	parent.service.Clean_up()
 	return
 
 def onProjectPreSave():

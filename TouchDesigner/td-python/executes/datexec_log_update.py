@@ -26,7 +26,7 @@ def onCellChange(dat, cells, prev):
 			if each_cell.val == '':
 				pass
 			else:
-				op('base_private_ext').ext.Signals.SetLogFromTable(op(dat.par.dat.eval()))
+				parent.service.ext.Signals.SetLogFromTable(op(dat.par.dat.eval()))
 	return
 
 def onSizeChange(dat):

@@ -6,10 +6,10 @@
 # Make sure the corresponding toggle is enabled in the Parameter Execute DAT.
 
 def onValueChange(par, prev) -> None:
-    op('base_private_ext').Parse_par(par)
+    parent.service.Parse_par(par)
     return
     
 def onPulse(par) -> None:
-    op('base_private_ext').Parse_par(par)
+    parent.service.Parse_par(par)
     return
 

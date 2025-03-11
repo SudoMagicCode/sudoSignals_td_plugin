@@ -6,7 +6,7 @@ except:
     pass
 
 # type hinting used for code completion
-SIGNALS:signalsTDPluginEXT.SignalsClient = op('base_private_ext')
+SIGNALS:signalsTDPluginEXT.SignalsClient = op('../base_core')
 SIGNALS_COMP = parent.signals
 
 POP_UP = op('base_modals/popDialog')

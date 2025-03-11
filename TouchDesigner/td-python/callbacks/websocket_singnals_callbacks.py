@@ -2,15 +2,15 @@
 # dat - the DAT that received a message
 
 def onConnect(dat):
-	op('base_private_ext').ext.Signals.UpdateConnected(True)
+	parent.service.ext.Signals.UpdateConnected(True)
 	return
 
 # me - this DAT
 # dat - the DAT that received a message
 
 def onDisconnect(dat):
-	op('base_private_ext').ext.Signals.UpdateConnected(False)
-	op('base_private_ext').ext.Signals.Restart_connection()
+	parent.service.ext.Signals.UpdateConnected(False)
+	parent.service.ext.Signals.Restart_connection()
 	return
 
 # me - this DAT
@@ -21,7 +21,7 @@ def onDisconnect(dat):
 # Only text frame messages will be handled in this function.
 
 def onReceiveText(dat, rowIndex, message):
-	op('base_private_ext').ext.Signals.RecvMessage(message)
+	parent.service.ext.Signals.RecvMessage(message)
 	return
 
 
@@ -32,7 +32,7 @@ def onReceiveText(dat, rowIndex, message):
 # Only binary frame messages will be handled in this function.
 
 def onReceiveBinary(dat, contents):
-	op('base_private_ext').ext.Signals.RecvBinary(contents)
+	parent.service.ext.Signals.RecvBinary(contents)
 	return
 
 # me - this DAT

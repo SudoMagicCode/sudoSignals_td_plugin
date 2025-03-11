@@ -13,8 +13,8 @@ from controls import SignalsControls
 from router import SignalsRouter
 
 
-WEBSOCKET = op('websocket_signals')
-REPORT_TIMER = op('report_timer')
+WEBSOCKET = parent.signals.op('base_core/websocket_signals')
+REPORT_TIMER = parent.signals.op('base_core/report_timer')
 RELEASE_SOURCE = "https://github.com/SudoMagicCode/sudoSignals_td_plugin_releases/releases/latest"
 
 
@@ -28,16 +28,19 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         'Sudosignalsdashboard': "https://dashboard.sudosignals.com/",
         'Bugreport': "https://forms.clickup.com/f/16ky7-1036/3TNCU1Q2JMMEZ5XS43"
     }
-    DEFAULT_CUSTOM_PARS = op('base_default_custom_pars')
+    DEFAULT_CUSTOM_PARS = parent.signals.op(
+        'base_core/base_default_custom_pars')
 
     def __init__(self):
+
         self.PARSignalsid = parent.signals.par.Signalsid
         self.PARSignalsName = parent.signals.par.Signalsname
         self.PARConnected = parent.signals.par.Connected
         self.PARControlcomp = parent.signals.par.Controlcomp
         self.PARStartupdelay = parent.signals.par.Startupdelay
         self.PARManualconfig = parent.signals.par.Manualconfig
-        self.signalsReports = op('null_defaultReport')
+        self.signalsReports = parent.signals.op(
+            'base_core/null_defaultReport')
 
         self._reset_websocket(WEBSOCKET)
 
