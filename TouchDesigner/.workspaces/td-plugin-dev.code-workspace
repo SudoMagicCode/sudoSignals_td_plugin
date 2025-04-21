@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"name": "TD Python",
+			"path": "../td-python/",
+			"cwd": "${workspaceFolder}/td-python",
+		},
+	],
+	"settings": {
+		"files.exclude": {},
+		"workbench.colorTheme": "Monokai",
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "never"
+		},
+	},
+}

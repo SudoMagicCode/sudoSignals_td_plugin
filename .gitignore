@@ -1,0 +1,8 @@
+
+dev/proto_packages/python/common/
+
+scripts/__pycache__/
+
+release/latest/
+
+scripts/td_builder/__pycache__/
