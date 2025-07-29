@@ -1,6 +1,3 @@
 [submodule "TouchDesigner//sudoTools"]
 	path = TouchDesigner//sudoTools
 	url = https://github.com/SudoMagicCode/sudo_production_tools.git
-[submodule "TouchDesigner/sudoTools"]
-	path = TouchDesigner/sudoTools
-	url = https://github.com/SudoMagicCode/sudo_production_tools.git
