@@ -4,6 +4,3 @@
 [submodule "TouchDesigner/sudoTools"]
 	path = TouchDesigner/sudoTools
 	url = https://github.com/SudoMagicCode/sudo_production_tools.git
-[submodule "TouchDesigner/protobuf"]
-	path = TouchDesigner/protobuf
-	url = https://github.com/SudoMagicCode/sudoSignals-protobuf.git
