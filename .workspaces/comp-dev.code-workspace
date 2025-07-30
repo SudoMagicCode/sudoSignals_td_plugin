@@ -1,9 +1,20 @@
 {
 	"folders": [
 		{
-			"name": "TD Component Dev",
-			"path": "../TouchDesigner"
-		}
+			"name": "TD Python",
+			"path": "../TouchDesigner/td-python/",
+			"cwd": "${workspaceFolder}/TouchDesigner/td-python",
+		},
 	],
-	"settings": {}
+	"settings": {
+		"files.exclude": {},
+		"workbench.colorTheme": "Monokai",
+		"python.analysis.autoSearchPaths": true,
+		"python.autoComplete.extraPaths": [
+			"../TouchDesigner/td-python",
+		],
+		"python.analysis.extraPaths": [
+			"../TouchDesigner/td-python",
+		],
+	},
 }
