@@ -1,9 +1,8 @@
 import signalsErrors
-import signalsTDPluginEXT
-import logger
-import packets
+import signalsTDPlugin
+import utils
 
-signalsService: signalsTDPluginEXT.SignalsClient = parent.signals.op(
+signalsService: signalsTDPlugin.signalsClient = parent.signals.op(
     'base_core')
 
 
@@ -12,11 +11,11 @@ class signals:
         self.Owner_op = ownerOp
 
     def Send_log(self, logLevel: str, logMessage: str) -> None:
-        if logLevel not in logger.LOG_MAP_LOOKUP.keys():
+        if logLevel not in utils.LOG_MAP_LOOKUP.keys():
             raise signalsErrors.LogError(
                 f"{logLevel} is not a supported logLevel, please use {self.log_levels}")
 
         else:
-            level: int = logger.LOG_MAP_LOOKUP.get(logLevel)
-            print(signalsService)
-            signalsService.SetLog(level, logMessage)
+            level: int = utils.LOG_MAP_LOOKUP.get(logLevel)
+            new_log = signalsService.Create_log(level, logMessage)
+            signalsService.Send_log(level, new_log)

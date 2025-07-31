@@ -68,7 +68,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         # Setup Reporting
         self.AddReportable(self.signalsReports)
 
-        print(utils.TextPortMsg('INFO', 'Signals EXT Init'))
+        print(utils.Text_port_msg('INFO', 'Signals EXT Init'))
         # self.SetLog(0, '[*] :: SudoSignals TouchDesigner Plugin Initialized')
 
     @property
@@ -159,7 +159,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
 
     def SendLog(self, log: packets.logs.Log) -> None:
         if log == None:
-            print(utils.TextPortMsg('WARN', 'Log suppressed - Nonetype received'))
+            print(utils.Text_port_msg('WARN', 'Log suppressed - Nonetype received'))
 
         else:
             newLogPacket = packets.CreateLogPacket(log.level, log.message)
@@ -219,7 +219,7 @@ class SignalsClient(SignalsRouter, SignalsReporter, SignalsControls, SignalsLogg
         None
         """
         print('-'*20)
-        print(utils.TextPortMsg('INFO', 'Starting TD Client'))
+        print(utils.Text_port_msg('INFO', 'Starting TD Client'))
         print('-'*20)
 
         self._reset_websocket(WEBSOCKET)

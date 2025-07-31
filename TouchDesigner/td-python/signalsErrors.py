@@ -39,6 +39,18 @@ class NameError(Error):
         super().__init__(self.message)
 
 
+class NotYetImplemented(Error):
+    '''Exception raised for errors in the input.
+
+    Attributes:
+        message -- explanation of the error
+    '''
+
+    def __init__(self: callable, message: str = "This function is not yet implemented") -> None:
+        self.message = f"\n \t[*] --> {message}"
+        super().__init__(self.message)
+
+
 class LogError(Error):
     '''Exception raised for errors in the input.
 

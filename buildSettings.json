@@ -1,7 +1,8 @@
 {
     "BUILD": "TRUE",
-    "TD_VERSION": "2023.12230",
+    "TD_VERSION": "2023.12370",
     "PROJECT_FILE": "./TouchDesigner/dev-env.toe",
-    "REPO": "https://github.com/SudoMagicCode/sudoSignals_td_plugin",
-    "COMP_NAME": "sudoSignals"
+    "COMP_NAME": "sudoSignals",
+    "BUILD_CONTENTS": "packageZip",
+    "USE_TDM": true
 }

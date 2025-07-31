@@ -1,20 +1,20 @@
 import utils
 import packets
+import SudoSignals
 
-
-LOG_MAP_LOOKUP = {
+LOG_MAP_LOOKUP: dict['str', 'int'] = {
     "LOG": 0,
     "INFO": 1,
     "WARN": 2,
     "CRIT": 3,
     "ALERT": 4
 }
-LOG_LEVEL_LOOKUP = {
-    '0': packets.log_enums.LOG_LOG,
-    '1': packets.log_enums.LOG_INFO,
-    '2': packets.log_enums.LOG_WARN,
-    '3': packets.log_enums.LOG_CRIT,
-    '4': packets.log_enums.LOG_ALERT
+LOG_LEVEL_LOOKUP: dict['str': SudoSignals.signalsLogLevel] = {
+    '0': SudoSignals.signalsLogLevel.LOG,
+    '1': SudoSignals.signalsLogLevel.INFO,
+    '2': SudoSignals.signalsLogLevel.WARN,
+    '3': SudoSignals.signalsLogLevel.CRIT,
+    '4': SudoSignals.signalsLogLevel.ALERT
 }
 
 
@@ -29,14 +29,14 @@ class SignalsLogger:
 
         valid_log_lvl = [0, 1, 2, 3, 4]
         log_level_map = [
-            packets.log_enums.LOG_LOG,
-            packets.log_enums.LOG_INFO,
-            packets.log_enums.LOG_WARN,
-            packets.log_enums.LOG_CRIT,
-            packets.log_enums.LOG_ALERT
+            SudoSignals.signalsLogLevel.LOG,
+            SudoSignals.signalsLogLevel.INFO,
+            SudoSignals.signalsLogLevel.WARN,
+            SudoSignals.signalsLogLevel.CRIT,
+            SudoSignals.signalsLogLevel.ALERT
         ]
         if logLvl not in valid_log_lvl:
-            print(utils.TextPortMsg(
+            print(utils.Text_port_msg(
                 'WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, 2, 3, 4'))
         else:
             newLog = packets.logs.Log()
@@ -50,17 +50,17 @@ class SignalsLogger:
 
         # check to ensure op is table
         if logOp.type != 'table':
-            print(utils.TextPortMsg(
+            print(utils.Text_port_msg(
                 'WARN', 'Incorrect Log Op Type || Operator type should be TableDAT'))
         else:
             # check to ensure table DAT is the correct size
             if logOp.numCols != 2 and logOp.numRows != 2:
-                print(utils.TextPortMsg(
+                print(utils.Text_port_msg(
                     'WARN', 'Incorrect Table Size || Table DAT should be 2 x 2'))
             else:
                 # check to ensure log level is valid entry
                 if logOp[0, 1].val not in LOG_LEVEL_LOOKUP.keys():
-                    print(utils.TextPortMsg(
+                    print(utils.Text_port_msg(
                         'WARN', 'Incorrect Log Level || Log level should be a value of 0, 1, or 2'))
                 else:
                     newLog = packets.logs.Log()
