@@ -7,14 +7,14 @@ import json
 class signalsClient(SudoSignals.signalsInterface):
 
     def __init__(self, ownerOp):
-        self.signalsManager = SudoSignals.signalsManager(interface=self)
-        super().__init__()
 
         self.Owner_op = ownerOp
         self.websocket = ownerOp.op('websocket_signals')
         self.report_timer = ownerOp.op('report_timer')
-        self. default_custom_pars = ownerOp.op('base_default_custom_pars')
+        self.default_custom_pars = ownerOp.op('base_default_custom_pars')
         self.signalsReports = ownerOp.op('null_defaultReport')
+
+        self.Websocket_port: int = 57206
 
         self.PARSignalsid = parent.signals.par.Signalsid
         self.PARSignalsName = parent.signals.par.Signalsname
@@ -24,6 +24,9 @@ class signalsClient(SudoSignals.signalsInterface):
         self.PARManualconfig = parent.signals.par.Manualconfig
 
         self._reset_websocket(self.websocket)
+
+        # check for new websocket port
+        self._update_websocket_port()
 
         # Set Product ID
         self._get_signals_id
@@ -112,6 +115,12 @@ class signalsClient(SudoSignals.signalsInterface):
     def has_valid_signals_id(self):
         return True if self.Id is not None else False
 
+    def _update_websocket_port(self) -> None:
+        if me.var('SIGNALS_WEBSOCKET') == '':
+            pass
+        else:
+            self.websocket_port = me.var('SIGNALS_WEBSOCKET')
+
     def Update_connected(self, state):
         self.PARConnected.val = state
 
@@ -145,7 +154,7 @@ class signalsClient(SudoSignals.signalsInterface):
         run(startUpDelayControls, self, delayFrames=self.par_startup_delay)
 
         # Start Sending Reports.
-        self.Send_report()
+        self.Send_report(SudoSignals.signalsReport(name='startup', value=''))
         self.report_timer.par.start.pulse()
 
     def Clean_up(self) -> None:
@@ -166,7 +175,8 @@ class signalsClient(SudoSignals.signalsInterface):
             print(utils.Text_port_msg('WARN', 'Log suppressed - Nonetype received'))
 
         else:
-            self.signalsManager.sendLog(log)
+            self.send(actionType=SudoSignals.signalsActionType.LOG,
+                      data=log.to_dict)
 
     def Send_log_from_table_update(self, logOp) -> None:
         """Sends log info to SudoSignals Desktop Service
@@ -221,7 +231,8 @@ class signalsClient(SudoSignals.signalsInterface):
     def Send_report(self, report: SudoSignals.signalsReport):
         '''
         '''
-        self.signalsManager.send_report(report)
+        self.send(actionType=SudoSignals.signalsActionType.REPORT,
+                  data=report.to_dict)
 
     def Set_controls(self) -> None:
         '''
@@ -231,7 +242,44 @@ class signalsClient(SudoSignals.signalsInterface):
     def Send_controls(self) -> None:
         '''
         '''
-        ...
+        data = {}
+
+        self.send(actionType=SudoSignals.signalsActionType.CONTROL, data=data)
+
+    def _validate_action_name(self, actionType: str) -> bool:
+
+        if actionType in SudoSignals.signalsActionType._member_names_:
+            return True
+        else:
+            return False
+
+    # NOTE Interface required methods
+    def register_callback(self, cb):
+        pass
+
+    def send(self, actionType: SudoSignals.signalsActionType, data: dict):
+        currentAction: SudoSignals.signalsAction = SudoSignals.signalsAction(
+            actionType=actionType, data=data)
+        self.websocket.sendText(currentAction.message_object)
+        pass
+
+    def receive(self, msg):
+        if self.cb == None:
+            raise RuntimeError('[*] No callback currently registered')
+
+        else:
+            action_name = msg.get('type', '')
+            valid_action: bool = self._validate_action_name(action_name)
+
+            if valid_action:
+                action = SudoSignals.signalsActionType(action_name)
+                new_action: SudoSignals.signalsAction = SudoSignals.signalsAction(
+                    actionType=action, data=msg.get('data'))
+                self.cb(new_action)
+
+            else:
+                pass
+
 
 #    def __init__(self):
 
