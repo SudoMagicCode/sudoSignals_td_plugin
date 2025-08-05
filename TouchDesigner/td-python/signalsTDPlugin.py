@@ -13,7 +13,7 @@ class signalsClient(SudoSignals.signalsInterface):
         self.report_timer = ownerOp.op('report_timer')
         self.default_custom_pars = ownerOp.op('base_default_custom_pars')
         self.signalsReports = ownerOp.op('null_defaultReport')
-
+        self.signals_api_version = 'v1'
         self.Websocket_port: int = 57206
 
         self.PARSignalsid = parent.signals.par.Signalsid
@@ -36,6 +36,11 @@ class signalsClient(SudoSignals.signalsInterface):
 
         print(utils.Text_port_msg('INFO', 'Signals EXT Init'))
         # self.SetLog(0, '[*] :: SudoSignals TouchDesigner Plugin Initialized')
+
+    @property
+    def Websocket_address(self) -> str:
+        address: str = f'ws://localhost/{self.signals_api_version}/plugin/{self._get_signals_id}'
+        return address
 
     @property
     def _get_signals_id(self):
@@ -299,26 +304,29 @@ class signalsClient(SudoSignals.signalsInterface):
             "binary receive not yet supported")
 
     # NOTE Interface required methods
+
     def register_callback(self, cb):
         pass
 
     def send(self, action: SudoSignals.signalsAction):
-        self.websocket.sendText(action.message_object)
+        json_msg = json.dumps(action.message_object)
+        print(json_msg)
+        self.websocket.sendText(json_msg)
         pass
 
     def receive(self, msg):
-        if self.cb == None:
-            raise RuntimeError('[*] No callback currently registered')
+        action_name = msg.get('type', '')
+        valid_action: bool = utils.validate_action_name(action_name)
 
-        else:
-            action_name = msg.get('type', '')
-            valid_action: bool = utils.validate_action_name(action_name)
+        if valid_action:
+            action = SudoSignals.signalsActionType(action_name)
+            new_action: SudoSignals.signalsAction = SudoSignals.signalsAction(
+                actionType=action, data=msg.get('data'))
+            self.cb(new_action)
 
-            if valid_action:
-                action = SudoSignals.signalsActionType(action_name)
-                new_action: SudoSignals.signalsAction = SudoSignals.signalsAction(
-                    actionType=action, data=msg.get('data'))
-                self.cb(new_action)
+            match new_action.actionType:
 
-            else:
-                pass
+                case SudoSignals.signalsActionType.CONTROL:
+                    ...
+                case _:
+                    pass
