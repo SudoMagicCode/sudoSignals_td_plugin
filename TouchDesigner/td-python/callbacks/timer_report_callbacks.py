@@ -10,38 +10,48 @@
 # onInitialize(): if return value > 0, it will be
 # called again after the returned number of frames.
 
+
 def onInitialize(timerOp):
-	return 0
+    return 0
+
 
 def onReady(timerOp):
-	return
-	
+    return
+
+
 def onStart(timerOp):
-	return
-	
+    return
+
+
 def onTimerPulse(timerOp, segment):
-	return
+    return
+
 
 def whileTimerActive(timerOp, segment, cycle, fraction):
-	return
+    return
+
 
 def onSegmentEnter(timerOp, segment, interrupt):
-	return
-	
+    return
+
+
 def onSegmentExit(timerOp, segment, interrupt):
-	return
+    return
+
 
 def onCycleStart(timerOp, segment, cycle):
-	return
+    return
+
 
 def onCycleEndAlert(timerOp, segment, cycle, alertSegment, alertDone, interrupt):
-	return
-	
+    return
+
+
 def onCycle(timerOp, segment, cycle):
-	return
+    return
+
 
 def onDone(timerOp, segment, interrupt):
-	parent.service.ext.Signals.SendReport()
-	timerOp.par.start.pulse()
-	return
-	
+    parent.service.ext.Signals.Send_report(None)
+    timerOp.par.start.pulse()
+    return

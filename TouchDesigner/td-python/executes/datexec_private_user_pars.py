@@ -12,7 +12,7 @@
 
 
 def onTableChange(dat):
-	parent.service.ext.Signals.SetControls()
+	parent.service.ext.Signals.Send_controls()
 	return
 
 def onRowChange(dat, rows):

@@ -1,82 +1,5 @@
 from datetime import datetime
 import SudoSignals
-# from google.protobuf import struct_pb2
-# import packets
-# import parGroupFuncs
-# import helperTypes
-
-# styleToControlTypeMap = {
-#     "Float": packets.control_enums.CONTROL_FLOAT,
-#     "Int": packets.control_enums.CONTROL_INT,
-#     "Header": packets.control_enums.CONTROL_HEADER,
-#     "Str": packets.control_enums.CONTROL_STRING,
-#     "Pulse": packets.control_enums.CONTROL_PULSE,
-#     "Toggle": packets.control_enums.CONTROL_TOGGLE,
-#     "Menu": packets.control_enums.CONTROL_MENU,
-#     "StrMenu": packets.control_enums.CONTROL_MENU,
-#     "RGB": packets.control_enums.CONTROL_COLOR,
-#     "RGBA": packets.control_enums.CONTROL_COLOR,
-#     "UV": packets.control_enums.CONTROL_FLOAT,
-#     "UVW": packets.control_enums.CONTROL_FLOAT,
-#     "XY": packets.control_enums.CONTROL_FLOAT,
-#     "XYZ": packets.control_enums.CONTROL_FLOAT,
-#     "WH": packets.control_enums.CONTROL_FLOAT,
-# }
-
-# parGroupFunctionMap = {
-#     'Float': parGroupFuncs.parGroupFloatFunc,
-#     'Int': parGroupFuncs.parGroupIntFunc,
-#     'Menu': parGroupFuncs.parGroupMenuFunc,
-#     'StrMenu': parGroupFuncs.parGroupMenuFunc,
-#     'Momentary': parGroupFuncs.parGroupMomentaryFunc,
-#     'Header': parGroupFuncs.parGroupHeaderFunc,
-#     'Pulse': parGroupFuncs.parGroupPulseFunc,
-#     'Python': parGroupFuncs.parGroupPythonFunc,
-#     'Sequence': parGroupFuncs.parGroupSequenceFunc,
-#     'Str': parGroupFuncs.parGroupStringFunc,
-#     'RGB': parGroupFuncs.parGroupRGBFunc,
-#     'RGBA': parGroupFuncs.parGroupRGBAFunc,
-#     'UV': parGroupFuncs.parGroupFloatFunc,
-#     'UVW': parGroupFuncs.parGroupFloatFunc,
-#     'XY': parGroupFuncs.parGroupFloatFunc,
-#     'XYZ': parGroupFuncs.parGroupFloatFunc,
-#     'WH': parGroupFuncs.parGroupFloatFunc,
-#     'Toggle': parGroupFuncs.parGroupToggleFunc
-# }
-
-
-# def parDataBlock(parGroup: helperTypes.parGroup) -> packets.controls.Control:
-#     # construct new control
-#     newControl = packets.controls.Control()
-
-#     newControl.control_type = styleToControlTypeMap[parGroup.style]
-#     newControl.label.CopyFrom(
-#         packets.controls_fields.ControlLabel(value=parGroup.label))
-#     newControl.entity_reference.value["path"] = parGroup.owner.path
-#     newControl.entity_reference.value["name"] = parGroup.name
-#     newControl.index.CopyFrom(
-#         packets.controls_fields.ControlIndex(value=parGroup.order))
-
-#     # use parGroup funcs to match to an appropriate function and fill in control
-#     parGroupFunc = parGroupFunctionMap.get(parGroup.style)
-#     if parGroupFunc != None:
-#         control = parGroupFunc(newControl, parGroup)
-#     else:
-#         control = newControl
-
-#     return control
-
-
-# def groupDataBlock(group) -> packets.controls.Control:
-#     return parDataBlock(group)
-
-
-# def CreateAllParDataBlocks(page) -> dict[str, packets.controls.Control]:
-#     parsData = {}
-#     groups = page.parGroups
-#     for g in groups:
-#         parsData[g.name] = groupDataBlock(g)
-#     return parsData
 
 LINKS: dict[str, str] = {
     'Help': "https://sudomagiccode.github.io/SudoSignals/",
@@ -112,3 +35,105 @@ def Get_log_timeStamp() -> str:
 
 def Text_port_msg(level: str, msg: str) -> str:
     return f'{Get_log_timeStamp()} [*] SUDOSIGNALS :: {level} :: {msg}'
+
+
+def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
+    new_control = SudoSignals.signalsNumber(
+        controlType=SudoSignals.signalsControlType.FLOAT,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        minVal=[each for each in parGroup.min],
+        maxVal=[each for each in parGroup.max],
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
+def construct_signals_int(parGroup) -> SudoSignals.signalsNumber:
+    new_control = SudoSignals.signalsNumber(
+        controlType=SudoSignals.signalsControlType.INT,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        minVal=[each for each in parGroup.min],
+        maxVal=[each for each in parGroup.max],
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
+def construct_signals_string(parGroup) -> SudoSignals.signalsStr:
+    new_control = SudoSignals.signalsStr(
+        controlType=SudoSignals.signalsControlType.STR,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
+def construct_signals_menu(parGroup) -> SudoSignals.signalsMenu:
+    menuOptions = {}
+    for index, each in parGroup.menuLabels[0]:
+        menuOptions[each] = parGroup.menuNames[0][index]
+
+    new_control = SudoSignals.signalsMenu(
+        controlType=SudoSignals.signalsControlType.MENU,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        menuOptions=menuOptions,
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
+def control_not_yet_supported(parGroup):
+    print(f'{parGroup.style} not yet supported by signals')
+
+
+PAR_CONTROL_MAP = {
+    'Float': construct_signals_float,
+    'Int': construct_signals_int,
+    'Str': construct_signals_string,
+    'Menu': construct_signals_menu,
+    'Toggle': control_not_yet_supported,
+    'Momentary': control_not_yet_supported,
+    'Pulse': control_not_yet_supported,
+    'Header': control_not_yet_supported,
+    'RGB': control_not_yet_supported,
+    'RGBA': control_not_yet_supported,
+    'UV': construct_signals_float,
+    'UVW': construct_signals_float,
+    'XY': construct_signals_float,
+    'XYZ': construct_signals_float,
+    'WH': construct_signals_int
+}
+
+
+def control_from_par_group(parGroup) -> SudoSignals.signalsControl:
+
+    try:
+        func = PAR_CONTROL_MAP.get(parGroup.style)
+        new_control = func(parGroup=parGroup)
+        return new_control
+
+    except Exception as e:
+        print(e)
+
+
+def validate_action_name(actionType: str) -> bool:
+    if actionType in SudoSignals.signalsActionType._member_names_:
+        return True
+    else:
+        return False

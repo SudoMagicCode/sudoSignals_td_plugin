@@ -175,8 +175,9 @@ class signalsClient(SudoSignals.signalsInterface):
             print(utils.Text_port_msg('WARN', 'Log suppressed - Nonetype received'))
 
         else:
-            self.send(actionType=SudoSignals.signalsActionType.LOG,
-                      data=log.to_dict)
+            action = SudoSignals.signalsAction(actionType=SudoSignals.signalsActionType.LOG,
+                                               data=log.to_dict)
+            self.send(action=action)
 
     def Send_log_from_table_update(self, logOp) -> None:
         """Sends log info to SudoSignals Desktop Service
@@ -228,39 +229,81 @@ class signalsClient(SudoSignals.signalsInterface):
 
         return new_log
 
-    def Send_report(self, report: SudoSignals.signalsReport):
+    def Send_report(self, reportCollection: SudoSignals.signalsReportCollection):
         '''
         '''
-        self.send(actionType=SudoSignals.signalsActionType.REPORT,
-                  data=report.to_dict)
+        match reportCollection:
+            case None:
+                report_collection = self.convert_table_to_report_collection()
+                action = SudoSignals.signalsAction(actionType=SudoSignals.signalsActionType.REPORT,
+                                                   data=report_collection.to_dict)
+                self.send(action=action)
 
-    def Set_controls(self) -> None:
+            case _:
+                action = SudoSignals.signalsAction(actionType=SudoSignals.signalsActionType.REPORT,
+                                                   data=reportCollection.to_dict)
+                self.send(action=action)
+
+    def convert_table_to_report_collection(self) -> SudoSignals.signalsReportCollection:
+        '''Creates a report collection from self.signalReports
         '''
-        '''
-        ...
+        reportCollection = SudoSignals.signalsReportCollection(fields=[])
+        for each in self.signalsReports.rows():
+            newReport = SudoSignals.signalsReport(
+                name=each[0].val, value=float(each[1].val))
+            reportCollection.fields.append(newReport)
+        return reportCollection
 
     def Send_controls(self) -> None:
         '''
         '''
-        data = {}
+        control_list = self._construct_controls_from_comp(
+            parent.signals.par.Controlcomp.eval())
 
-        self.send(actionType=SudoSignals.signalsActionType.CONTROL, data=data)
+        if control_list == None or len(control_list) == 0:
+            pass
 
-    def _validate_action_name(self, actionType: str) -> bool:
-
-        if actionType in SudoSignals.signalsActionType._member_names_:
-            return True
         else:
-            return False
+            control_pages = [
+                each.to_dict for each in control_list]
+            data = {"action": "control",
+                    "data": {
+                        "pages": control_pages}
+                    }
+            print('\n')
+            print(data)
+            action = SudoSignals.signalsAction(
+                actionType=SudoSignals.signalsActionType.CONTROL, data=data)
+
+            self.send(action=action)
+
+    def _construct_controls_from_comp(self, comp) -> list[SudoSignals.signalsPage]:
+        control_pages = []
+        for each_page in comp.customPages:
+            new_control_page = SudoSignals.signalsPage(
+                name=each_page.name, controls=[])
+            for each_parGroup in each_page.parGroups:
+                new_control = utils.control_from_par_group(each_parGroup)
+                if new_control != None:
+                    new_control_page.controls.append(new_control)
+            control_pages.append(new_control_page)
+        return control_pages
+
+    def Receive_message(self, message: str) -> None:
+        json_msg = json.loads(message)
+
+        print(json_msg)
+
+    def Receive_binary(self, contents: bytearray) -> None:
+        raise signalsErrors.NotYetImplemented(
+            "binary receive not yet supported")
 
     # NOTE Interface required methods
     def register_callback(self, cb):
         pass
 
-    def send(self, actionType: SudoSignals.signalsActionType, data: dict):
-        currentAction: SudoSignals.signalsAction = SudoSignals.signalsAction(
-            actionType=actionType, data=data)
-        self.websocket.sendText(currentAction.message_object)
+    def send(self, action: SudoSignals.signalsAction):
+        self.websocket.sendText(action.message_object)
         pass
 
     def receive(self, msg):
@@ -269,7 +312,7 @@ class signalsClient(SudoSignals.signalsInterface):
 
         else:
             action_name = msg.get('type', '')
-            valid_action: bool = self._validate_action_name(action_name)
+            valid_action: bool = utils.validate_action_name(action_name)
 
             if valid_action:
                 action = SudoSignals.signalsActionType(action_name)
@@ -279,43 +322,3 @@ class signalsClient(SudoSignals.signalsInterface):
 
             else:
                 pass
-
-
-#    def __init__(self):
-
-#         # Add Action Routes to hand incoming messages.
-#         self.AddActionRoute("PROCESS_CONTROLS", self.UpdateControls)
-
-#         # Setup Reporting
-#         self.AddReportable(self.signalsReports)
-
-
-#     def SetControls(self):
-#         """Sends control-Set packet to SudoSignals Desktop Service
-#         """
-
-#         # controlState = self.CreateControls()
-#         # newControlPacket = {
-#         #    "action": "control-Set",
-#         #    "data": {"state": controlState}
-#         # }
-
-#         controlPages = self.CreateControls()
-#         newControlPacket = packets.CreateControlPacket(controlPages)
-#         self.SendMessage(newControlPacket)
-
-#     def SetLogFromTable(self, LogOp: op) -> None:
-#         """Sends log info to SudoSignals Desktop Service
-#         """
-
-#         newLog = self.CreateLogFromTable(LogOp)
-#         self.SendLog(newLog)
-
-#         # clear message
-#         LogOp[1, 1] = ''
-
-#     def UpdateControls(self, packet: packets.websockets_packets.WebsocketPacket):
-#         updatedControl = packets.controls.Control()
-#         packet.payload.Unpack(updatedControl)
-
-#         self.UpdateControlComp(updatedControl)
