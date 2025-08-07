@@ -271,10 +271,9 @@ class signalsClient(SudoSignals.signalsInterface):
         else:
             control_pages = [
                 each.to_dict for each in control_list]
-            data = {"action": "control",
-                    "data": {
-                        "pages": control_pages}
-                    }
+            data = {
+                "pages": control_pages
+            }
 
             action = SudoSignals.signalsAction(
                 actionType=SudoSignals.signalsActionType.CONTROL, data=data)
@@ -309,7 +308,7 @@ class signalsClient(SudoSignals.signalsInterface):
 
     def send(self, action: SudoSignals.signalsAction):
         json_msg = json.dumps(action.message_object)
-        # print(action.message_object)
+        print(action.message_object)
         self.websocket.sendText(json_msg)
         pass
 
