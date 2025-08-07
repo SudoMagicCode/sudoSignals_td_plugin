@@ -309,6 +309,7 @@ class signalsClient(SudoSignals.signalsInterface):
 
     def send(self, action: SudoSignals.signalsAction):
         json_msg = json.dumps(action.message_object)
+        print(action.message_object)
         self.websocket.sendText(json_msg)
         pass
 

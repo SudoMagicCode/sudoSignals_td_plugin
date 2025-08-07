@@ -1,5 +1,7 @@
 from datetime import datetime
 import SudoSignals
+from entityReference import entityReference
+
 
 LINKS: dict[str, str] = {
     'Help': "https://sudomagiccode.github.io/SudoSignals/",
@@ -37,6 +39,11 @@ def Text_port_msg(level: str, msg: str) -> str:
     return f'{Get_log_timeStamp()} [*] SUDOSIGNALS :: {level} :: {msg}'
 
 
+def entity_reference_from_parGroup(parGroup) -> dict[str, str]:
+    entity_reference = entityReference.from_parGroup(parGroup=parGroup)
+    return entity_reference.to_dict
+
+
 def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.FLOAT,
@@ -46,6 +53,7 @@ def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
         minVal=[each for each in parGroup.min],
         maxVal=[each for each in parGroup.max],
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -61,6 +69,7 @@ def construct_signals_color(parGroup) -> SudoSignals.signalsNumber:
         minVal=[each for each in parGroup.min],
         maxVal=[each for each in parGroup.max],
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -76,6 +85,7 @@ def construct_signals_int(parGroup) -> SudoSignals.signalsNumber:
         minVal=[each for each in parGroup.min],
         maxVal=[each for each in parGroup.max],
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -91,6 +101,7 @@ def construct_signals_toggle(parGroup) -> SudoSignals.signalsNumber:
         minVal=[each for each in parGroup.min],
         maxVal=[each for each in parGroup.max],
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -106,6 +117,7 @@ def construct_signals_pulse(parGroup) -> SudoSignals.signalsNumber:
         minVal=[each for each in parGroup.min],
         maxVal=[each for each in parGroup.max],
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -119,6 +131,7 @@ def construct_signals_string(parGroup) -> SudoSignals.signalsStr:
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -132,6 +145,7 @@ def construct_signals_header(parGroup) -> SudoSignals.signalsStr:
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
@@ -152,6 +166,7 @@ def construct_signals_menu(parGroup) -> SudoSignals.signalsMenu:
         label=parGroup.label,
         menuOptions=menuOptions,
         path=f'{parGroup.owner.path}#{parGroup.label}',
+        entityReference=entity_reference_from_parGroup(parGroup=parGroup),
         readOnly=parGroup.readOnly,
         values=[each for each in parGroup.val]
     )
