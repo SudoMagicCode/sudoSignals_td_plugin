@@ -275,8 +275,7 @@ class signalsClient(SudoSignals.signalsInterface):
                     "data": {
                         "pages": control_pages}
                     }
-            print('\n')
-            print(data)
+
             action = SudoSignals.signalsAction(
                 actionType=SudoSignals.signalsActionType.CONTROL, data=data)
 

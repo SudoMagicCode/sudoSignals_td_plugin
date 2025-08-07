@@ -2,7 +2,7 @@
 # dat - the DAT that received a message
 
 def onConnect(dat):
-    parent.service.ext.Signals.UpdateConnected(True)
+    parent.service.ext.Signals.Update_connected(True)
     return
 
 # me - this DAT
@@ -10,7 +10,7 @@ def onConnect(dat):
 
 
 def onDisconnect(dat):
-    parent.service.ext.Signals.UpdateConnected(False)
+    parent.service.ext.Signals.Update_connected(False)
     parent.service.ext.Signals.Restart_connection()
     return
 

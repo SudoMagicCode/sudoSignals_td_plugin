@@ -52,9 +52,54 @@ def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
     return new_control
 
 
+def construct_signals_color(parGroup) -> SudoSignals.signalsNumber:
+    new_control = SudoSignals.signalsNumber(
+        controlType=SudoSignals.signalsControlType.COLOR,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        minVal=[each for each in parGroup.min],
+        maxVal=[each for each in parGroup.max],
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
 def construct_signals_int(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.INT,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        minVal=[each for each in parGroup.min],
+        maxVal=[each for each in parGroup.max],
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
+def construct_signals_toggle(parGroup) -> SudoSignals.signalsNumber:
+    new_control = SudoSignals.signalsNumber(
+        controlType=SudoSignals.signalsControlType.TOGGLE,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        minVal=[each for each in parGroup.min],
+        maxVal=[each for each in parGroup.max],
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
+def construct_signals_pulse(parGroup) -> SudoSignals.signalsNumber:
+    new_control = SudoSignals.signalsNumber(
+        controlType=SudoSignals.signalsControlType.PULSE,
         index=parGroup.index,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
@@ -80,10 +125,25 @@ def construct_signals_string(parGroup) -> SudoSignals.signalsStr:
     return new_control
 
 
+def construct_signals_header(parGroup) -> SudoSignals.signalsStr:
+    new_control = SudoSignals.signalsStr(
+        controlType=SudoSignals.signalsControlType.HEADER,
+        index=parGroup.index,
+        defaultValues=[each for each in parGroup.default],
+        label=parGroup.label,
+        path=f'{parGroup.owner.path}#{parGroup.label}',
+        readOnly=parGroup.readOnly,
+        values=[each for each in parGroup.val]
+    )
+    return new_control
+
+
 def construct_signals_menu(parGroup) -> SudoSignals.signalsMenu:
+    current = parGroup[0]
     menuOptions = {}
-    for index, each in parGroup.menuLabels[0]:
-        menuOptions[each] = parGroup.menuNames[0][index]
+
+    for index, each in enumerate(current.menuLabels):
+        menuOptions[each] = current.menuNames[index]
 
     new_control = SudoSignals.signalsMenu(
         controlType=SudoSignals.signalsControlType.MENU,
@@ -107,12 +167,12 @@ PAR_CONTROL_MAP = {
     'Int': construct_signals_int,
     'Str': construct_signals_string,
     'Menu': construct_signals_menu,
-    'Toggle': control_not_yet_supported,
-    'Momentary': control_not_yet_supported,
-    'Pulse': control_not_yet_supported,
-    'Header': construct_signals_string,
-    'RGB': construct_signals_float,
-    'RGBA': construct_signals_float,
+    'Toggle': construct_signals_toggle,
+    'Momentary': construct_signals_pulse,
+    'Pulse': construct_signals_pulse,
+    'Header': construct_signals_header,
+    'RGB': construct_signals_color,
+    'RGBA': construct_signals_color,
     'UV': construct_signals_float,
     'UVW': construct_signals_float,
     'XY': construct_signals_float,
@@ -125,10 +185,11 @@ def control_from_par_group(parGroup) -> SudoSignals.signalsControl:
 
     try:
         func = PAR_CONTROL_MAP.get(parGroup.style)
-        new_control = func(parGroup=parGroup)
+        new_control = func(parGroup)
         return new_control
 
     except Exception as e:
+        print(f"{parGroup.label} failed")
         print(e)
 
 
