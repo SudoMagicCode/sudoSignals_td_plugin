@@ -47,7 +47,7 @@ def entity_reference_from_parGroup(parGroup) -> dict[str, str]:
 def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.FLOAT,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         minVal=[each for each in parGroup.min],
@@ -63,7 +63,7 @@ def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
 def construct_signals_color(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.COLOR,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         minVal=[each for each in parGroup.min],
@@ -79,7 +79,7 @@ def construct_signals_color(parGroup) -> SudoSignals.signalsNumber:
 def construct_signals_int(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.INT,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         minVal=[each for each in parGroup.min],
@@ -95,7 +95,7 @@ def construct_signals_int(parGroup) -> SudoSignals.signalsNumber:
 def construct_signals_toggle(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.TOGGLE,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         minVal=[each for each in parGroup.min],
@@ -111,7 +111,7 @@ def construct_signals_toggle(parGroup) -> SudoSignals.signalsNumber:
 def construct_signals_pulse(parGroup) -> SudoSignals.signalsNumber:
     new_control = SudoSignals.signalsNumber(
         controlType=SudoSignals.signalsControlType.PULSE,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         minVal=[each for each in parGroup.min],
@@ -127,7 +127,7 @@ def construct_signals_pulse(parGroup) -> SudoSignals.signalsNumber:
 def construct_signals_string(parGroup) -> SudoSignals.signalsStr:
     new_control = SudoSignals.signalsStr(
         controlType=SudoSignals.signalsControlType.STR,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         path=f'{parGroup.owner.path}#{parGroup.label}',
@@ -141,7 +141,7 @@ def construct_signals_string(parGroup) -> SudoSignals.signalsStr:
 def construct_signals_header(parGroup) -> SudoSignals.signalsStr:
     new_control = SudoSignals.signalsStr(
         controlType=SudoSignals.signalsControlType.HEADER,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         path=f'{parGroup.owner.path}#{parGroup.label}',
@@ -161,7 +161,7 @@ def construct_signals_menu(parGroup) -> SudoSignals.signalsMenu:
 
     new_control = SudoSignals.signalsMenu(
         controlType=SudoSignals.signalsControlType.MENU,
-        index=parGroup.index,
+        index=parGroup.order,
         defaultValues=[each for each in parGroup.default],
         label=parGroup.label,
         menuOptions=menuOptions,
