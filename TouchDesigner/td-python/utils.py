@@ -1,6 +1,6 @@
 from datetime import datetime
-import SudoSignals
 from entityReference import entityReference
+import SudoSignals
 
 
 LINKS: dict[str, str] = {

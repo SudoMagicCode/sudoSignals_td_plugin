@@ -284,6 +284,7 @@ class signalsClient(SudoSignals.signalsInterface):
         control_pages = []
         for each_page in comp.customPages:
             new_control_page = SudoSignals.signalsPage(
+                index=each_page.index,
                 name=each_page.name, controls=[])
             for each_parGroup in each_page.parGroups:
                 new_control = utils.control_from_par_group(each_parGroup)
@@ -308,7 +309,6 @@ class signalsClient(SudoSignals.signalsInterface):
 
     def send(self, action: SudoSignals.signalsAction):
         json_msg = json.dumps(action.message_object)
-        print(action.message_object)
         self.websocket.sendText(json_msg)
         pass
 
