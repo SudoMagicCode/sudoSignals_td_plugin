@@ -5,26 +5,30 @@ from dataclasses import dataclass
 class entityReference:
     par_path: str
     par_label: str
+    par_name: str
 
     @property
     def to_dict(self) -> dict[str, str]:
         return {
             'parPath': self.par_path,
-            'parLabel': self.par_label
+            'parLabel': self.par_label,
+            'parName': self.par_name
         }
 
     @staticmethod
     def from_dict(dict):
-        required_keys = ['parPath', 'parLabel']
+        required_keys = ['parPath', 'parLabel', 'parName']
         if required_keys not in dict.keys():
             raise TypeError("dict does not contain required keys")
 
         return entityReference(
             par_path=dict.get('parPath'),
-            par_label=dict.get('parLabel'))
+            par_label=dict.get('parLabel'),
+            par_name=dict.get('parName'))
 
     @staticmethod
     def from_parGroup(parGroup):
         return entityReference(
             par_path=parGroup.owner.path,
-            par_label=parGroup.label)
+            par_label=parGroup.label,
+            par_name=parGroup.name)

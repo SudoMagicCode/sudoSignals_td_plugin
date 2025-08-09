@@ -12,6 +12,7 @@ class signalsClient(SudoSignals.signalsInterface):
         self.websocket = ownerOp.op('websocket_signals')
         self.report_timer = ownerOp.op('report_timer')
         self.default_custom_pars = ownerOp.op('base_default_custom_pars')
+        self.user_par_exec_src = ownerOp.op('datexec_private_user_pars')
         self.signalsReports = ownerOp.op('null_defaultReport')
         self.signals_api_version = 'v1'
         self.Websocket_port: int = 57206
@@ -22,6 +23,9 @@ class signalsClient(SudoSignals.signalsInterface):
         self.PARControlcomp = parent.signals.par.Controlcomp
         self.PARStartupdelay = parent.signals.par.Startupdelay
         self.PARManualconfig = parent.signals.par.Manualconfig
+
+        self.last_par_change_frame = 0
+        self.change_threshold = 60
 
         self._reset_websocket(self.websocket)
 
@@ -155,7 +159,7 @@ class signalsClient(SudoSignals.signalsInterface):
         self.websocket.par.active = 1
 
         # Send control-Set packet.
-        startUpDelayControls = 'args[0].SetControls()'
+        startUpDelayControls = 'args[0].Send_controls()'
         run(startUpDelayControls, self, delayFrames=self.par_startup_delay)
 
         # Start Sending Reports.
@@ -278,7 +282,12 @@ class signalsClient(SudoSignals.signalsInterface):
             action = SudoSignals.signalsAction(
                 actionType=SudoSignals.signalsActionType.CONTROL, data=data)
 
-            self.send(action=action)
+            change_delta: int = absTime.frame - self.last_par_change_frame
+            if change_delta < 5:
+                pass
+            else:
+                self.send(action=action)
+            self.last_par_change_frame = absTime.frame
 
     def _construct_controls_from_comp(self, comp) -> list[SudoSignals.signalsPage]:
         control_pages = []
@@ -294,9 +303,16 @@ class signalsClient(SudoSignals.signalsInterface):
         return control_pages
 
     def Receive_message(self, message: str) -> None:
-        json_msg = json.loads(message)
+        msg_dict = json.loads(message)
+        action: str = msg_dict.get('action')
+        valid_action: bool = utils.validate_action_name(actionType=action)
+        if valid_action:
+            self.receive(msg=msg_dict)
 
-        print(json_msg)
+    def _update_control(self, control: SudoSignals.signalsControl):
+        target_op = control.entityReference.get('parPath')
+        par_name = control.entityReference.get('parName')
+        op(target_op).parGroup[par_name] = control.values
 
     def Receive_binary(self, contents: bytearray) -> None:
         raise signalsErrors.NotYetImplemented(
@@ -313,18 +329,21 @@ class signalsClient(SudoSignals.signalsInterface):
         pass
 
     def receive(self, msg):
-        action_name = msg.get('type', '')
-        valid_action: bool = utils.validate_action_name(action_name)
+        action: str = msg.get('action')
 
-        if valid_action:
-            action = SudoSignals.signalsActionType(action_name)
-            new_action: SudoSignals.signalsAction = SudoSignals.signalsAction(
-                actionType=action, data=msg.get('data'))
-            self.cb(new_action)
+        match action:
+            case 'control':
+                data: dict = msg.get('data')
+                new_control = utils.control_from_dict(data=data)
+                self.user_par_exec_src.par.active = False
+                self._update_control(new_control)
 
-            match new_action.actionType:
+                def enable_talkback():
+                    self.user_par_exec_src.par.active = True
 
-                case SudoSignals.signalsActionType.CONTROL:
-                    ...
-                case _:
-                    pass
+                run(enable_talkback, delayFrames=3)
+
+            case 'start':
+                ...
+            case _:
+                print(msg)
