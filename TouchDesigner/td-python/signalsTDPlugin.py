@@ -38,6 +38,7 @@ class signalsClient(SudoSignals.signalsInterface):
         # Set Product Name
         self._get_signals_name
 
+        self._par_runner = None
         print(utils.Text_port_msg('INFO', 'Signals EXT Init'))
         # self.SetLog(0, '[*] :: SudoSignals TouchDesigner Plugin Initialized')
 
@@ -263,6 +264,9 @@ class signalsClient(SudoSignals.signalsInterface):
             reportCollection.fields.append(newReport)
         return reportCollection
 
+    def Validate_controls(self, current) -> None:
+        self.Send_controls()
+
     def Send_controls(self) -> None:
         '''
         '''
@@ -281,13 +285,7 @@ class signalsClient(SudoSignals.signalsInterface):
 
             action = SudoSignals.signalsAction(
                 actionType=SudoSignals.signalsActionType.CONTROL, data=data)
-
-            change_delta: int = absTime.frame - self.last_par_change_frame
-            if change_delta < 5:
-                pass
-            else:
-                self.send(action=action)
-            self.last_par_change_frame = absTime.frame
+            self.send(action=action)
 
     def _construct_controls_from_comp(self, comp) -> list[SudoSignals.signalsPage]:
         control_pages = []
@@ -335,13 +333,7 @@ class signalsClient(SudoSignals.signalsInterface):
             case 'control':
                 data: dict = msg.get('data')
                 new_control = utils.control_from_dict(data=data)
-                self.user_par_exec_src.par.active = False
                 self._update_control(new_control)
-
-                def enable_talkback():
-                    self.user_par_exec_src.par.active = True
-
-                run(enable_talkback, delayFrames=3)
 
             case 'start':
                 ...

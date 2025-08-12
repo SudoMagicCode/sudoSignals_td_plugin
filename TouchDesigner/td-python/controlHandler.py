@@ -127,8 +127,8 @@ def construct_signals_menu(parGroup) -> SudoSignals.signalsMenu:
     current = parGroup[0]
     menuOptions = {}
 
-    for index, each in enumerate(current.menuLabels):
-        menuOptions[each] = current.menuNames[index]
+    for index, each in enumerate(current.menuNames):
+        menuOptions[each] = current.menuLabels[index]
 
     new_control = SudoSignals.signalsMenu(
         controlType=SudoSignals.signalsControlType.MENU,

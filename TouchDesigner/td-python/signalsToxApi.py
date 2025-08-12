@@ -1,4 +1,5 @@
 import signalsErrors
+import SudoSignals
 import signalsTDPlugin
 import utils
 
@@ -17,5 +18,6 @@ class signals:
 
         else:
             level: int = utils.LOG_MAP_LOOKUP.get(logLevel)
-            new_log = signalsService.Create_log(level, logMessage)
-            signalsService.Send_log(level, new_log)
+            new_log: SudoSignals.signalsLog = signalsService.Create_log(
+                level, logMessage)
+            signalsService.Send_log(new_log)
