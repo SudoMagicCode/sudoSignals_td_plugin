@@ -15,7 +15,6 @@ jobs:
           token: ${{secrets.SUBMODULE.PAT}}
           fetch-depth: 0
           fetch-tags: true
-          submodules: true 
 
       - name: SudoMagic TD Package Builder
         uses: SudoMagicCode/action-build-td-tox-package@v0.0.2
