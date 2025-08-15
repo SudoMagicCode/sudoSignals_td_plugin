@@ -11,18 +11,18 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
-          token: ${{secrets.SUBMODULE_PAT}}
           fetch-depth: 0
           fetch-tags: true
+          submodules: true 
 
-      - name: Start Python Runner
-        run: python scripts/build_tox.py
-        env:
-          IS_GITHUB: "TRUE"         
+      - name: SudoMagic TD Package Builder
+        uses: SudoMagicCode/action-build-td-tox-package@v0.0.2
+        with:
+          build_settings: ./buildSettings.json
 
+          
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses:  softprops/action-gh-release@v2.2.2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ./release/package.zip
