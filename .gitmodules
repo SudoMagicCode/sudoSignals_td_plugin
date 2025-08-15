@@ -4,6 +4,3 @@
 [submodule "dev/sudoTools"]
 	path = dev/sudoTools
 	url = https://github.com/SudoMagicCode/sudo_production_tools.git
-[submodule "dev/protobuf"]
-	path = dev/protobuf
-	url = https://github.com/SudoMagicCode/sudoSignals-protobuf
