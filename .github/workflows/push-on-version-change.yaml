@@ -11,6 +11,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
+          submodules: 'recursive'
+          token: ${{secrets.SUBMODULE.PAT}}
           fetch-depth: 0
           fetch-tags: true
           submodules: true 
