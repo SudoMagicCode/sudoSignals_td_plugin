@@ -1,0 +1,6 @@
+name: TD-SudoSignals-plugin
+tdVersion: "2023.12370"
+tdPackages:
+    - package: github.com/SudoMagicCode/td-comp-icon
+      releaseTag: v1.1.5
+pythonRequirements: []

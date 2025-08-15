@@ -1,2 +1,8 @@
 
 dev/proto_packages/python/common/
+TouchDesigner/tdPackages/
+scripts/__pycache__/
+
+release/latest/
+
+scripts/td_builder/__pycache__/
