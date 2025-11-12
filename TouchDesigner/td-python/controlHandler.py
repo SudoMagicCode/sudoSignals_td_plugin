@@ -19,7 +19,8 @@ def construct_signals_float(parGroup) -> SudoSignals.signalsNumber:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -36,7 +37,8 @@ def construct_signals_color(parGroup) -> SudoSignals.signalsNumber:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -53,7 +55,8 @@ def construct_signals_int(parGroup) -> SudoSignals.signalsNumber:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -70,7 +73,8 @@ def construct_signals_toggle(parGroup) -> SudoSignals.signalsNumber:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -87,7 +91,8 @@ def construct_signals_pulse(parGroup) -> SudoSignals.signalsNumber:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -102,7 +107,8 @@ def construct_signals_string(parGroup) -> SudoSignals.signalsStr:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -117,7 +123,8 @@ def construct_signals_header(parGroup) -> SudoSignals.signalsStr:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
@@ -139,7 +146,8 @@ def construct_signals_menu(parGroup) -> SudoSignals.signalsMenu:
         path=f'{parGroup.owner.path}#{parGroup.label}',
         entityReference=entity_reference_from_parGroup(
             parGroup=parGroup),
-        readOnly=parGroup.readOnly,
+        # a par can only be read only or not, partial not currently supported
+        readOnly=any(parGroup.readOnly),
         values=[each for each in parGroup.val]
     )
     return new_control
