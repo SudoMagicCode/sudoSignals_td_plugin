@@ -55,7 +55,7 @@ PAR_CONTROL_MAP = {
     'UV': controlHandler.construct_signals_float,
     'UVW': controlHandler.construct_signals_float,
     'XY': controlHandler.construct_signals_float,
-    'XYZ': controlHandler.construct_signals_float,
+    'XYZW': controlHandler.construct_signals_float,
     'WH': controlHandler.construct_signals_int
 }
 
@@ -69,6 +69,7 @@ def Text_port_msg(level: str, msg: str) -> str:
 
 
 def control_from_par_group(parGroup) -> SudoSignals.signalsControl:
+
     try:
         func = PAR_CONTROL_MAP.get(parGroup.style)
         new_control: SudoSignals.signalsControl = func(parGroup)
@@ -80,6 +81,7 @@ def control_from_par_group(parGroup) -> SudoSignals.signalsControl:
 
 
 def control_from_dict(data: dict) -> SudoSignals.signalsControl:
+
     control_type = SudoSignals.signalsControlType(data.get('controlType'))
     try:
         func = CONTROL_TYPE_MAP.get(control_type)
