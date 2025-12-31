@@ -310,7 +310,12 @@ class signalsClient(SudoSignals.signalsInterface):
     def _update_control(self, control: SudoSignals.signalsControl):
         target_op = control.entityReference.get('parPath')
         par_name = control.entityReference.get('parName')
-        op(target_op).parGroup[par_name] = control.values
+
+        match control.controlType:
+            case SudoSignals.signalsControlType.PULSE:
+                op(target_op).par[par_name].pulse()
+            case _:
+                op(target_op).parGroup[par_name] = control.values
 
     def Receive_binary(self, contents: bytearray) -> None:
         raise signalsErrors.NotYetImplemented(
