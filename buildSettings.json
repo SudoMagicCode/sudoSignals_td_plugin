@@ -1,6 +1,6 @@
 {
     "BUILD": "TRUE",
-    "TD_VERSION": "2025.31550",
+    "TD_VERSION": "2025.32050",
     "PROJECT_FILE": "./TouchDesigner/dev-env.toe",
     "COMP_NAME": "sudoSignals",
     "BUILD_CONTENTS": "packageZip",
