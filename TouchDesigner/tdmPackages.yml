@@ -1,5 +1,5 @@
 name: TD-SudoSignals-plugin
-tdVersion: "2025.31550.package"
+tdVersion: "2025.32050.Project"
 tdPackages:
     - package: github.com/SudoMagicCode/td-comp-icon
       releaseTag: v1.1.5
