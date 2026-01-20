@@ -285,6 +285,7 @@ class signalsClient(SudoSignals.signalsInterface):
 
             action = SudoSignals.signalsAction(
                 actionType=SudoSignals.signalsActionType.CONTROL, data=data)
+            
             self.send(action=action)
 
     def _construct_controls_from_comp(self, comp) -> list[SudoSignals.signalsPage]:
