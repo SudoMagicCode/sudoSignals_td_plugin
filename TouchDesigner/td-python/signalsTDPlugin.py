@@ -134,7 +134,7 @@ class signalsClient(SudoSignals.signalsInterface):
     def Update_connected(self, state):
         self.PARConnected.val = state
 
-    def Signals_start_up(self):
+    def Signals_start_up(self, resetWebSocket: bool = False):
         """Signals Start-up Sequence
 
         Ensures signals start up is consistent, and reliable.
@@ -154,7 +154,8 @@ class signalsClient(SudoSignals.signalsInterface):
         print(utils.Text_port_msg('INFO', 'Starting TD Client'))
         print('-'*20)
 
-        self._reset_websocket(self.websocket)
+        if resetWebSocket:
+            self._reset_websocket(self.websocket)
 
         # Start connection here.
         self.websocket.par.active = 1
@@ -285,7 +286,7 @@ class signalsClient(SudoSignals.signalsInterface):
 
             action = SudoSignals.signalsAction(
                 actionType=SudoSignals.signalsActionType.CONTROL, data=data)
-            
+
             self.send(action=action)
 
     def _construct_controls_from_comp(self, comp) -> list[SudoSignals.signalsPage]:
@@ -342,6 +343,6 @@ class signalsClient(SudoSignals.signalsInterface):
                 self._update_control(new_control)
 
             case 'start':
-                ...
+                self.Signals_start_up(resetWebSocket=True)
             case _:
                 print(msg)
