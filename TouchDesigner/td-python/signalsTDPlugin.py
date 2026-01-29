@@ -134,7 +134,7 @@ class signalsClient(SudoSignals.signalsInterface):
     def Update_connected(self, state):
         self.PARConnected.val = state
 
-    def Signals_start_up(self, resetWebSocket: bool = False):
+    def Signals_start_up(self, resetWebSocket: bool = True):
         """Signals Start-up Sequence
 
         Ensures signals start up is consistent, and reliable.
@@ -343,6 +343,6 @@ class signalsClient(SudoSignals.signalsInterface):
                 self._update_control(new_control)
 
             case 'start':
-                self.Signals_start_up(resetWebSocket=True)
+                self.Signals_start_up(resetWebSocket=False)
             case _:
                 print(msg)
