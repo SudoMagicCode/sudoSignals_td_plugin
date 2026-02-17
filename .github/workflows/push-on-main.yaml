@@ -13,9 +13,10 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
+          submodules: recursive
+          token: ${{secrets.SUBMODULE_PAT}} 
           fetch-depth: 0
           fetch-tags: true
-          submodules: true 
 
       - name: SudoMagic TD Package Builder
         uses: SudoMagicCode/action-build-td-tox-package@v0.0.5
