@@ -11,12 +11,11 @@ jobs:
     runs-on: [self-hosted, Windows, TouchDesigner]
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
-          submodules: recursive
-          token: ${{secrets.SUBMODULE_PAT}} 
           fetch-depth: 0
           fetch-tags: true
+          submodules: true 
 
       - name: SudoMagic TD Package Builder
         uses: SudoMagicCode/action-build-td-tox-package@v0.0.5
@@ -63,4 +62,4 @@ jobs:
           # Set to true if you want it to stay hidden until you review it
           draft: false 
           prerelease: false
-          files: ./release/package.zip
+          files: ./artifacts/package.zip
