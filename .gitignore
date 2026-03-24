@@ -1,8 +1,7 @@
 
+artifacts/
+scripts/__pycache__/
+scripts/td_builder/__pycache__/
 dev/proto_packages/python/common/
 TouchDesigner/tdPackages/
-scripts/__pycache__/
 
-release/latest/
-
-scripts/td_builder/__pycache__/
