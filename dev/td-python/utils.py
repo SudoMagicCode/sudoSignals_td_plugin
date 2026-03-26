@@ -1,7 +1,44 @@
 from datetime import datetime
 
 
-def parDataBlock(par, group=False):
+
+styleLookup = {
+    "RGBA": [
+        "",
+        "R",
+        "RG",
+        "RGB",
+        "RGBA"
+    ],
+    "UVW":[
+        "",
+        "U",
+        "UV",
+        "UVW"
+    ],
+    "XYZW":[
+        "",
+        "X",
+        "XY",
+        "XYZ",
+        "XYZW"
+    ]
+}
+
+
+
+
+
+def findGroupStyle(group):
+    baseStyle = group[0].style
+    if baseStyle in styleLookup:
+        return styleLookup[baseStyle][len(group)]
+    
+    return baseStyle
+
+
+
+def parDataBlock(par, group=False, style=""):
     # placeholder solution for sending pars that are ops
     op_pars = ['OP', 'COMP', 'TOP', 'CHOP', 'SOP', 'MAT', 'DAT']
 
@@ -9,7 +46,7 @@ def parDataBlock(par, group=False):
         par_style = 'Str'
         value = str(par.eval())
     else:
-        par_style = par.style
+        par_style = style
         value = par.eval()
 
     dataBlock = {
@@ -33,13 +70,13 @@ def groupDataBlock(group):
             "group": True,
             "name": group[0].name,
             "label": group[0].label,
-            "style": group[0].style,
+            "style": findGroupStyle(group),
             "index": group[0].index,
             "path": group[0].owner.path,
-            "pars": [parDataBlock(par, group=True) for par in group]
+            "pars": [parDataBlock(par, group=True, style=findGroupStyle(group)) for par in group]
         }
     else:
-        return parDataBlock(group[0], group=False)
+        return parDataBlock(group[0], group=False, style=group[0].style)
 
 
 def CreateAllParDataBlocks(page):
