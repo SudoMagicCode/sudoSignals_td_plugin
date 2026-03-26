@@ -1,3 +1,0 @@
-[submodule "dev//sudoTools"]
-	path = dev//sudoTools
-	url = https://github.com/SudoMagicCode/sudo_production_tools.git
